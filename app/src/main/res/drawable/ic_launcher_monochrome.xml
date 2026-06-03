@@ -1,0 +1,57 @@
+<!--
+  ~ Copyright (C) 2026 The Android Open Source Project
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~      http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="512"
+    android:viewportHeight="512">
+  <path
+      android:pathData="M120,58L392,58A62,62 0,0 1,454 120L454,392A62,62 0,0 1,392 454L120,454A62,62 0,0 1,58 392L58,120A62,62 0,0 1,120 58z">
+    <aapt:attr name="android:fillColor">
+      <gradient
+          android:startX="80"
+          android:startY="60"
+          android:endX="430"
+          android:endY="470"
+          android:type="linear">
+        <item android:offset="0" android:color="#FF35158F"/>
+        <item android:offset="1" android:color="#FF15045B"/>
+      </gradient>
+    </aapt:attr>
+  </path>
+  <path
+      android:pathData="M128,348l79,-165l55,102"
+      android:strokeLineJoin="miter"
+      android:strokeWidth="24"
+      android:fillColor="#00000000"
+      android:strokeColor="#ffffff"
+      android:strokeLineCap="butt"/>
+  <path
+      android:pathData="M206,260l58,98l70,-174l43,96"
+      android:strokeLineJoin="miter"
+      android:strokeWidth="24"
+      android:fillColor="#00000000"
+      android:strokeColor="#ffffff"
+      android:strokeLineCap="butt"/>
+  <path
+      android:pathData="M333,302l38,48l59,-118"
+      android:strokeLineJoin="miter"
+      android:strokeWidth="24"
+      android:fillColor="#00000000"
+      android:strokeColor="#ffffff"
+      android:strokeLineCap="butt"/>
+</vector>
