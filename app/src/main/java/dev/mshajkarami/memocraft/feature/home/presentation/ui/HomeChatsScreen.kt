@@ -7,54 +7,56 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import dev.mshajkarami.memocraft.core.presentation.ui.theme.MemoCraftAppTheme
 import dev.mshajkarami.memocraft.core.presentation.ui.theme.MemoCraftTheme
 import dev.mshajkarami.memocraft.feature.home.presentation.ui.components.AiInsightCard
+import dev.mshajkarami.memocraft.feature.home.presentation.ui.components.CompactDashboardTaskCard
 import dev.mshajkarami.memocraft.feature.home.presentation.ui.components.GreetingSection
 import dev.mshajkarami.memocraft.feature.home.presentation.ui.components.HomeTopBar
-import dev.mshajkarami.memocraft.feature.home.presentation.ui.components.ProgressCard
 import dev.mshajkarami.memocraft.feature.home.presentation.ui.components.SectionHeader
-import dev.mshajkarami.memocraft.feature.home.presentation.ui.components.TaskCard
+import dev.mshajkarami.memocraft.feature.home.presentation.ui.components.TaskCardUiModel
+import dev.mshajkarami.memocraft.feature.home.presentation.ui.components.TaskPriority
+import dev.mshajkarami.memocraft.feature.home.presentation.ui.components.TaskStatus
+import dev.mshajkarami.memocraft.feature.home.presentation.ui.components.progress.ProgressCard
 import dev.mshajkarami.memocraft.navigation.BottomNavBar
 
-
-
 @Composable
-fun MemoCraftScreen() {
+fun HomeScreen() {
     val colors = MemoCraftTheme.colors
 
     val tasks = listOf(
-        TaskItem(
+        TaskCardUiModel(
             title = "Project Proposal",
             subtitle = "Design the proposal deck",
-            time = "10:30 AM",
-            priority = "High Priority",
-            priorityColor = colors.successColor,
-            iconBg = colors.successContainer,
-            iconColor = colors.successContent,
-            trailingChecked = true
+            progress = 100,
+            priority = TaskPriority.Normal,
+            status = TaskStatus.Completed,
+            assigneeInitials = "MS",
+            isCompleted = true
         ),
-        TaskItem(
+        TaskCardUiModel(
             title = "Backend API Review",
             subtitle = "Review endpoints & docs",
-            time = "1:00 PM",
-            priority = "Urgent",
-            priorityColor = colors.errorColor,
-            iconBg = colors.errorContainer,
-            iconColor = colors.errorContent,
-            trailingText = "50%"
+            progress = 50,
+            priority = TaskPriority.Urgent,
+            status = TaskStatus.InProgress,
+            assigneeInitials = "BK",
+            isCompleted = false
         ),
-        TaskItem(
+        TaskCardUiModel(
             title = "Team Standup",
             subtitle = "Daily sync with team",
-            time = "3:00 PM",
-            priority = "Medium Priority",
-            priorityColor = colors.accentColor,
-            iconBg = colors.accentContainer,
-            iconColor = colors.accentContent
+            progress = 20,
+            priority = TaskPriority.Low,
+            status = TaskStatus.Pending,
+            assigneeInitials = "TM",
+            isCompleted = false
         )
     )
 
@@ -79,18 +81,28 @@ fun MemoCraftScreen() {
             ),
             verticalArrangement = Arrangement.spacedBy(18.dp)
         ) {
-            item { GreetingSection() }
-            item { ProgressCard() }
+            item {
+                GreetingSection()
+            }
+
+            item {
+                ProgressCard()
+            }
 
             item {
                 SectionHeader(
                     title = "Upcoming Tasks",
-                    action = "See all",
+                    action = "See all"
                 )
             }
 
-            items(tasks.size) { index ->
-                TaskCard(task = tasks[index])
+            items(
+                items = tasks,
+                key = { task -> task.title }
+            ) { task ->
+                CompactDashboardTaskCard(
+                    task = task
+                )
             }
 
             item {
@@ -100,9 +112,45 @@ fun MemoCraftScreen() {
                 )
             }
 
-            item { AiInsightCard() }
+            item {
+                AiInsightCard()
+            }
 
-            item { Spacer(modifier = Modifier.height(16.dp)) }
+            item {
+                Spacer(modifier = Modifier.height(16.dp))
+            }
         }
+    }
+}
+
+@Preview(
+    name = "MemoCraft Home - Light",
+    showBackground = true,
+    backgroundColor = 0xFFF8F8FF,
+    widthDp = 430,
+    heightDp = 932
+)
+@Composable
+private fun HomeScreenLightPreview() {
+    MemoCraftAppTheme(
+        darkTheme = false
+    ) {
+        HomeScreen()
+    }
+}
+
+@Preview(
+    name = "MemoCraft Home - Dark",
+    showBackground = true,
+    backgroundColor = 0xFF0F1226,
+    widthDp = 430,
+    heightDp = 932
+)
+@Composable
+private fun HomeScreenDarkPreview() {
+    MemoCraftAppTheme(
+        darkTheme = true
+    ) {
+        HomeScreen()
     }
 }

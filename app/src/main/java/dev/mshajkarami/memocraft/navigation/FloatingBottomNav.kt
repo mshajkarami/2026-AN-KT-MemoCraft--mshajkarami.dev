@@ -1,5 +1,6 @@
 package dev.mshajkarami.memocraft.navigation
 
+import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -21,6 +22,7 @@ import androidx.compose.material.icons.outlined.TaskAlt
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalContentColor
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -40,6 +42,8 @@ import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import dev.mshajkarami.memocraft.core.presentation.ui.theme.MemoCraftAppTheme
+import dev.mshajkarami.memocraft.core.presentation.ui.theme.MemoCraftTheme
 import dev.mshajkarami.memocraft.navigation.BottomNavItem
 
 @Composable
@@ -53,6 +57,7 @@ fun BottomNavBar(
     onProfileClick: () -> Unit = {}
 ) {
     val navShape = remember { bottomBarWithCenterNotchShape() }
+    val colors = MemoCraftTheme.colors
 
     Box(
         modifier = modifier.fillMaxWidth(),
@@ -67,7 +72,7 @@ fun BottomNavBar(
                     shape = navShape,
                     clip = false
                 ),
-            color = Color.White,
+            color = colors.bottomNavContainer,
             shape = navShape
         ) {
             Row(
@@ -136,6 +141,7 @@ fun BottomNavBar(
     }
 }
 
+
 @Composable
 private fun BottomNavItemView(
     icon: @Composable () -> Unit,
@@ -143,9 +149,13 @@ private fun BottomNavItemView(
     selected: Boolean,
     onClick: () -> Unit
 ) {
-    val selectedColor = Color(0xFF2F2FA2)
-    val unSelectedColor = Color(0xFF9B9BA1)
-    val contentColor = if (selected) selectedColor else unSelectedColor
+    val colors = MemoCraftTheme.colors
+
+    val contentColor = if (selected) {
+        colors.bottomNavSelectedContent
+    } else {
+        colors.bottomNavUnselectedContent
+    }
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -171,13 +181,20 @@ private fun BottomNavItemView(
     }
 }
 
+
 @Composable
 private fun AiCenterButton(
     selected: Boolean,
     onClick: () -> Unit
 ) {
-    val mainColor = Color(0xFF2F2FA2)
-    val unSelectedColor = Color(0xFF9B9BA1)
+    val colors = MemoCraftTheme.colors
+
+    val mainColor = colors.bottomNavSelectedIndicator
+    val textColor = if (selected) {
+        colors.bottomNavSelectedContent
+    } else {
+        colors.bottomNavUnselectedContent
+    }
 
     Column(
         modifier = Modifier.offset(y = (-28).dp),
@@ -193,6 +210,7 @@ private fun AiCenterButton(
                 ),
             shape = CircleShape,
             color = mainColor,
+            contentColor = MaterialTheme.colorScheme.onPrimary,
             onClick = onClick
         ) {
             Box(
@@ -201,7 +219,7 @@ private fun AiCenterButton(
                 Icon(
                     imageVector = Icons.Outlined.AutoAwesome,
                     contentDescription = "AI",
-                    tint = Color.White,
+                    tint = MaterialTheme.colorScheme.onPrimary,
                     modifier = Modifier.size(28.dp)
                 )
             }
@@ -211,12 +229,13 @@ private fun AiCenterButton(
 
         Text(
             text = "AI",
-            color = if (selected) mainColor else unSelectedColor,
+            color = textColor,
             fontSize = 11.sp,
             fontWeight = if (selected) FontWeight.SemiBold else FontWeight.Normal
         )
     }
 }
+
 
 private fun bottomBarWithCenterNotchShape(): Shape {
     return object : Shape {
@@ -279,19 +298,51 @@ private fun bottomBarWithCenterNotchShape(): Shape {
 }
 
 @Preview(
-    name = "Bottom Navigation Bar",
+    name = "Bottom Navigation Bar - Light",
     showBackground = true,
-    backgroundColor = 0xFFF5F5F5
+    backgroundColor = 0xFFF8F8FF
 )
 @Composable
-private fun BottomNavBarPreview() {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(160.dp)
-            .background(Color(0xFFF5F5F5)),
-        contentAlignment = Alignment.BottomCenter
+private fun BottomNavBarLightPreview() {
+    MemoCraftAppTheme(
+        darkTheme = false
     ) {
-        BottomNavBar()
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(160.dp)
+                .background(MaterialTheme.colorScheme.background),
+            contentAlignment = Alignment.BottomCenter
+        ) {
+            BottomNavBar(
+                selectedItem = BottomNavItem.Home
+            )
+        }
     }
 }
+
+@Preview(
+    name = "Bottom Navigation Bar - Dark",
+    showBackground = true,
+    backgroundColor = 0xFF0F1226,
+    uiMode = Configuration.UI_MODE_NIGHT_YES
+)
+@Composable
+private fun BottomNavBarDarkPreview() {
+    MemoCraftAppTheme(
+        darkTheme = true
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(160.dp)
+                .background(MaterialTheme.colorScheme.background),
+            contentAlignment = Alignment.BottomCenter
+        ) {
+            BottomNavBar(
+                selectedItem = BottomNavItem.Ai
+            )
+        }
+    }
+}
+

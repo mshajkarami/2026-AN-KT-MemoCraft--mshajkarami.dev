@@ -1,7 +1,11 @@
-package dev.mshajkarami.memocraft.feature.home.presentation.ui.components
+package dev.mshajkarami.memocraft.feature.home.presentation.ui.components.progress
 
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -31,21 +35,39 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import dev.mshajkarami.memocraft.core.presentation.ui.theme.MemoCraftAppTheme
+import dev.mshajkarami.memocraft.core.presentation.ui.theme.MemoCraftTheme
+import kotlin.math.PI
+import kotlin.math.cos
+import kotlin.math.sin
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.tween
+import androidx.compose.ui.graphics.drawscope.clipRect
+
 
 @Composable
-fun ProgressCard() {
+fun ProgressCard(
+    modifier: Modifier = Modifier
+) {
+    val colors = MemoCraftTheme.colors
+    val cardShape = RoundedCornerShape(28.dp)
+
     Box(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(28.dp))
+            .clip(cardShape)
             .background(
                 brush = Brush.linearGradient(
                     colors = listOf(
-                        Color(0xFF132C46),
-                        Color(0xFF24194B),
-                        Color(0xFF34134D)
+                        colors.progressCardBackground,
+                        colors.progressCardBackgroundSecondary
                     )
                 )
+            )
+            .border(
+                width = 1.dp,
+                color = colors.progressCardSurfaceBorder,
+                shape = cardShape
             )
             .padding(18.dp)
     ) {
@@ -76,19 +98,20 @@ fun ProgressCard() {
                     )
 
                     Row(
+                        modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.spacedBy(10.dp)
                     ) {
                         MiniMetricCard(
                             title = "Done",
                             value = "8",
-                            lineColor = Color(0xFF45D6FF),
+                            lineColor = colors.progressSparkBlue,
                             modifier = Modifier.weight(1f)
                         )
 
                         MiniMetricCard(
                             title = "Pending",
                             value = "5",
-                            lineColor = Color(0xFFA46CFF),
+                            lineColor = colors.progressSparkPurple,
                             modifier = Modifier.weight(1f)
                         )
                     }
@@ -96,26 +119,27 @@ fun ProgressCard() {
             }
 
             Row(
+                modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(10.dp)
             ) {
                 MiniMetricCard(
                     title = "Tasks",
                     value = "17",
-                    lineColor = Color(0xFF54B9FF),
+                    lineColor = colors.progressSparkBlue,
                     modifier = Modifier.weight(1f)
                 )
 
                 MiniMetricCard(
                     title = "Velocity",
                     value = "72%",
-                    lineColor = Color(0xFFB46DFF),
+                    lineColor = colors.progressSparkPurple,
                     modifier = Modifier.weight(1f)
                 )
 
                 MiniMetricCard(
                     title = "Progress",
                     value = "12/17",
-                    lineColor = Color(0xFFFFB36A),
+                    lineColor = colors.progressSparkOrange,
                     modifier = Modifier.weight(1f)
                 )
             }
@@ -125,6 +149,8 @@ fun ProgressCard() {
 
 @Composable
 private fun ProgressHeader() {
+    val colors = MemoCraftTheme.colors
+
     Row(
         modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically
@@ -136,13 +162,13 @@ private fun ProgressHeader() {
                 text = "Today's Progress",
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.SemiBold,
-                color = Color.White
+                color = colors.progressMiniCardContent
             )
 
             Text(
                 text = "A minimal overview of your tasks",
                 style = MaterialTheme.typography.bodySmall,
-                color = Color.White.copy(alpha = 0.62f)
+                color = colors.progressMiniCardContentSecondary
             )
         }
 
@@ -150,16 +176,19 @@ private fun ProgressHeader() {
             modifier = Modifier
                 .size(8.dp)
                 .clip(CircleShape)
-                .background(Color(0xFF5CE1FF))
+                .background(colors.progressCardBadge)
         )
     }
 }
 
 @Composable
-fun NeonProgressRing(
+private fun NeonProgressRing(
     percentage: Int,
     modifier: Modifier = Modifier
 ) {
+    val colors = MemoCraftTheme.colors
+    val safePercentage = percentage.coerceIn(0, 100)
+
     Box(
         modifier = modifier,
         contentAlignment = Alignment.Center
@@ -169,7 +198,7 @@ fun NeonProgressRing(
         ) {
             val strokeWidth = 15.dp.toPx()
             val glowStrokeWidth = 24.dp.toPx()
-            val sweep = 360f * (percentage / 100f)
+            val sweepAngle = 360f * (safePercentage / 100f)
 
             val arcSize = Size(
                 width = size.width - glowStrokeWidth,
@@ -181,18 +210,33 @@ fun NeonProgressRing(
                 y = glowStrokeWidth / 2f
             )
 
-            // Soft outer glow
+            val arcCenter = Offset(
+                x = topLeft.x + arcSize.width / 2f,
+                y = topLeft.y + arcSize.height / 2f
+            )
+
+            val arcRadius = arcSize.minDimension / 2f
+
+            val endAngleInDegrees = -90f + sweepAngle
+            val endAngleInRadians = endAngleInDegrees * PI.toFloat() / 180f
+
+            val highlightCenter = Offset(
+                x = arcCenter.x + arcRadius * cos(endAngleInRadians),
+                y = arcCenter.y + arcRadius * sin(endAngleInRadians)
+            )
+
             drawArc(
                 brush = Brush.sweepGradient(
                     colors = listOf(
-                        Color(0xFF36D8FF).copy(alpha = 0.20f),
-                        Color(0xFF755CFF).copy(alpha = 0.28f),
-                        Color(0xFFE070FF).copy(alpha = 0.24f),
-                        Color(0xFF36D8FF).copy(alpha = 0.20f)
-                    )
+                        colors.progressRingGlowStart.copy(alpha = 0.20f),
+                        colors.progressRingGlowMiddle.copy(alpha = 0.28f),
+                        colors.progressRingGlowEnd.copy(alpha = 0.24f),
+                        colors.progressRingGlowStart.copy(alpha = 0.20f)
+                    ),
+                    center = arcCenter
                 ),
                 startAngle = -90f,
-                sweepAngle = sweep,
+                sweepAngle = sweepAngle,
                 useCenter = false,
                 topLeft = topLeft,
                 size = arcSize,
@@ -202,9 +246,8 @@ fun NeonProgressRing(
                 )
             )
 
-            // Track
             drawArc(
-                color = Color.White.copy(alpha = 0.12f),
+                color = colors.progressRingLightOuter,
                 startAngle = -90f,
                 sweepAngle = 360f,
                 useCenter = false,
@@ -216,18 +259,18 @@ fun NeonProgressRing(
                 )
             )
 
-            // Main progress
             drawArc(
                 brush = Brush.sweepGradient(
                     colors = listOf(
-                        Color(0xFF42D9FF),
-                        Color(0xFF576DFF),
-                        Color(0xFFB260FF),
-                        Color(0xFF42D9FF)
-                    )
+                        colors.progressRingGlowStart,
+                        colors.progressRingGlowMiddle,
+                        colors.progressRingGlowEnd,
+                        colors.progressRingGlowStart
+                    ),
+                    center = arcCenter
                 ),
                 startAngle = -90f,
-                sweepAngle = sweep,
+                sweepAngle = sweepAngle,
                 useCenter = false,
                 topLeft = topLeft,
                 size = arcSize,
@@ -237,11 +280,27 @@ fun NeonProgressRing(
                 )
             )
 
-            // Small highlight dot at top
+            if (safePercentage > 0) {
+                drawCircle(
+                    color = colors.progressRingHighlight,
+                    radius = 3.5.dp.toPx(),
+                    center = highlightCenter
+                )
+            }
+
             drawCircle(
-                color = Color.White.copy(alpha = 0.55f),
-                radius = 3.5.dp.toPx(),
-                center = Offset(size.width / 2f, glowStrokeWidth / 2f)
+                color = colors.progressRingCenterFill,
+                radius = size.minDimension / 3.6f,
+                center = center
+            )
+
+            drawCircle(
+                color = colors.progressCardSurfaceBorder,
+                radius = size.minDimension / 3.6f,
+                center = center,
+                style = Stroke(
+                    width = 1.dp.toPx()
+                )
             )
         }
 
@@ -249,16 +308,16 @@ fun NeonProgressRing(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = "$percentage%",
+                text = "$safePercentage%",
                 style = MaterialTheme.typography.headlineMedium,
                 fontWeight = FontWeight.SemiBold,
-                color = Color.White
+                color = colors.progressMiniCardContent
             )
 
             Text(
                 text = "Completed",
                 style = MaterialTheme.typography.bodySmall,
-                color = Color.White.copy(alpha = 0.58f)
+                color = colors.progressMiniCardContentSecondary
             )
         }
     }
@@ -270,13 +329,23 @@ private fun RingLightMiniCard(
     value: String,
     modifier: Modifier = Modifier
 ) {
+    val colors = MemoCraftTheme.colors
+    val shape = RoundedCornerShape(18.dp)
+
     Box(
         modifier = modifier
-            .clip(RoundedCornerShape(18.dp))
-            .background(Color.White.copy(alpha = 0.08f))
-            .padding(12.dp)
+            .height(82.dp)
+            .clip(shape)
+            .background(colors.progressMiniCardBackground)
+            .border(
+                width = 1.dp,
+                color = colors.progressCardSurfaceBorder,
+                shape = shape
+            )
+            .padding(10.dp)
     ) {
         Row(
+            modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
             RingLight(
@@ -285,18 +354,20 @@ private fun RingLightMiniCard(
 
             Spacer(modifier = Modifier.width(12.dp))
 
-            Column {
+            Column(
+                verticalArrangement = Arrangement.Center
+            ) {
                 Text(
                     text = title,
                     style = MaterialTheme.typography.bodySmall,
-                    color = Color.White.copy(alpha = 0.58f)
+                    color = colors.progressMiniCardContentSecondary
                 )
 
                 Text(
                     text = value,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.SemiBold,
-                    color = Color.White
+                    color = colors.progressMiniCardContent
                 )
             }
         }
@@ -307,35 +378,50 @@ private fun RingLightMiniCard(
 private fun RingLight(
     modifier: Modifier = Modifier
 ) {
+    val colors = MemoCraftTheme.colors
+
     Canvas(
         modifier = modifier
     ) {
-        val stroke = 5.dp.toPx()
+        val strokeWidth = 5.dp.toPx()
 
         drawCircle(
-            color = Color(0xFF48DFFF).copy(alpha = 0.16f),
-            radius = size.minDimension / 2.2f
+            color = colors.progressRingLightOuter,
+            radius = size.minDimension / 2.2f,
+            center = center
         )
 
         drawCircle(
             brush = Brush.sweepGradient(
                 colors = listOf(
-                    Color(0xFF44DFFF),
-                    Color(0xFF756BFF),
-                    Color(0xFFD66BFF),
-                    Color(0xFF44DFFF)
-                )
+                    colors.progressRingGlowStart,
+                    colors.progressRingGlowMiddle,
+                    colors.progressRingGlowEnd,
+                    colors.progressRingGlowStart
+                ),
+                center = center
             ),
             radius = size.minDimension / 2.8f,
+            center = center,
             style = Stroke(
-                width = stroke,
+                width = strokeWidth,
                 cap = StrokeCap.Round
             )
         )
 
         drawCircle(
-            color = Color.White.copy(alpha = 0.10f),
-            radius = size.minDimension / 5f
+            color = colors.progressRingLightInner,
+            radius = size.minDimension / 5f,
+            center = center
+        )
+
+        drawCircle(
+            color = colors.progressCardSurfaceBorder,
+            radius = size.minDimension / 5f,
+            center = center,
+            style = Stroke(
+                width = 0.8.dp.toPx()
+            )
         )
     }
 }
@@ -347,18 +433,26 @@ private fun MiniMetricCard(
     lineColor: Color,
     modifier: Modifier = Modifier
 ) {
+    val colors = MemoCraftTheme.colors
+    val shape = RoundedCornerShape(18.dp)
+
     Box(
         modifier = modifier
             .height(82.dp)
-            .clip(RoundedCornerShape(18.dp))
-            .background(Color.White.copy(alpha = 0.075f))
+            .clip(shape)
+            .background(colors.progressMiniCardBackground)
+            .border(
+                width = 1.dp,
+                color = colors.progressCardSurfaceBorder,
+                shape = shape
+            )
             .padding(10.dp)
     ) {
         Column {
             Text(
                 text = title,
                 style = MaterialTheme.typography.labelSmall,
-                color = Color.White.copy(alpha = 0.58f)
+                color = colors.progressMiniCardContentSecondary
             )
 
             Spacer(modifier = Modifier.height(4.dp))
@@ -376,7 +470,7 @@ private fun MiniMetricCard(
                 text = value,
                 style = MaterialTheme.typography.bodyMedium,
                 fontWeight = FontWeight.SemiBold,
-                color = Color.White
+                color = colors.progressMiniCardContent
             )
         }
     }
@@ -385,8 +479,26 @@ private fun MiniMetricCard(
 @Composable
 private fun SparkLine(
     color: Color,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    durationMillis: Int = 1600
 ) {
+    val infiniteTransition = rememberInfiniteTransition(
+        label = "sparkline_transition"
+    )
+
+    val progress = infiniteTransition.animateFloat(
+        initialValue = 0f,
+        targetValue = 1f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(
+                durationMillis = durationMillis,
+                easing = LinearEasing
+            ),
+            repeatMode = RepeatMode.Restart
+        ),
+        label = "sparkline_progress"
+    )
+
     Canvas(
         modifier = modifier
     ) {
@@ -412,36 +524,101 @@ private fun SparkLine(
             }
         }
 
+        val minX = points.first().first
+        val maxX = points.last().first
+        val animatedNormalizedX = minX + ((maxX - minX) * progress.value)
+        val clipRight = size.width * animatedNormalizedX
+
+        // خط کم‌رنگ پس‌زمینه
         drawPath(
             path = path,
-            color = color.copy(alpha = 0.30f),
+            color = color.copy(alpha = 0.12f),
             style = Stroke(
                 width = 5.dp.toPx(),
                 cap = StrokeCap.Round
             )
         )
 
-        drawPath(
-            path = path,
-            color = color,
-            style = Stroke(
-                width = 2.2.dp.toPx(),
-                cap = StrokeCap.Round
+        // خط اصلی که به صورت متحرک از چپ به راست ظاهر می‌شود
+        clipRect(
+            left = 0f,
+            top = 0f,
+            right = clipRight,
+            bottom = size.height
+        ) {
+            drawPath(
+                path = path,
+                color = color.copy(alpha = 0.26f),
+                style = Stroke(
+                    width = 5.dp.toPx(),
+                    cap = StrokeCap.Round
+                )
             )
+
+            drawPath(
+                path = path,
+                color = color,
+                style = Stroke(
+                    width = 2.2.dp.toPx(),
+                    cap = StrokeCap.Round
+                )
+            )
+        }
+
+        // محاسبه موقعیت نقطه‌ی متحرک روی خط
+        val currentXNormalized = animatedNormalizedX.coerceIn(minX, maxX)
+
+        val segmentIndex = points
+            .windowed(2)
+            .indexOfFirst { segment ->
+                currentXNormalized >= segment[0].first &&
+                        currentXNormalized <= segment[1].first
+            }
+            .coerceAtLeast(0)
+
+        val startPoint = points[segmentIndex]
+        val endPoint = points[(segmentIndex + 1).coerceAtMost(points.lastIndex)]
+
+        val segmentProgress = if (endPoint.first != startPoint.first) {
+            ((currentXNormalized - startPoint.first) / (endPoint.first - startPoint.first))
+                .coerceIn(0f, 1f)
+        } else {
+            0f
+        }
+
+        val dotX = size.width * currentXNormalized
+        val dotY = size.height * (
+                startPoint.second + ((endPoint.second - startPoint.second) * segmentProgress)
+                )
+
+        // Glow نقطه‌ی متحرک
+        drawCircle(
+            color = color.copy(alpha = 0.24f),
+            radius = 6.dp.toPx(),
+            center = Offset(dotX, dotY)
+        )
+
+        drawCircle(
+            color = color,
+            radius = 2.6.dp.toPx(),
+            center = Offset(dotX, dotY)
         )
     }
 }
+
 
 @Preview(
     name = "ProgressCard - Light",
     showBackground = true,
     backgroundColor = 0xFFF8F8FF,
     widthDp = 430,
-    heightDp = 310
+    heightDp = 330
 )
 @Composable
 private fun ProgressCardLightPreview() {
-    MemoCraftAppTheme(darkTheme = false) {
+    MemoCraftAppTheme(
+        darkTheme = false
+    ) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -458,11 +635,13 @@ private fun ProgressCardLightPreview() {
     showBackground = true,
     backgroundColor = 0xFF0F1226,
     widthDp = 430,
-    heightDp = 310
+    heightDp = 330
 )
 @Composable
 private fun ProgressCardDarkPreview() {
-    MemoCraftAppTheme(darkTheme = true) {
+    MemoCraftAppTheme(
+        darkTheme = true
+    ) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()

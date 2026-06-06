@@ -171,39 +171,6 @@ val AiInsightCardTitleDark = Color(0xFFF5EFFF)
 val AiInsightCardDescriptionDark = Color(0xFFD1C4E9)
 val AiInsightCardEmojiDark = Color(0xFFC4B5FD)
 
-// Progress Card - Light
-val ProgressCardGradientStartLight = Color(0xFF7C3AED)
-val ProgressCardGradientEndLight = Color(0xFF2563EB)
-
-val ProgressCardContentLight = Color(0xFFFFFFFF)
-val ProgressCardContentSecondaryLight = Color(0xCCFFFFFF)
-
-val ProgressRingTrackLight = Color(0x40FFFFFF)
-val ProgressRingProgressStartLight = Color(0xFFFFFFFF)
-val ProgressRingProgressMiddleLight = Color(0xFFE0E7FF)
-val ProgressRingProgressEndLight = Color(0xFFFFFFFF)
-
-val ProgressCompletedDotLight = Color(0xFF22C55E)
-val ProgressInProgressDotLight = Color(0xFFFACC15)
-val ProgressPendingDotLight = Color(0xFFFF6B6B)
-
-
-// Progress Card - Dark
-val ProgressCardGradientStartDark = Color(0xFF4C1D95)
-val ProgressCardGradientEndDark = Color(0xFF1E3A8A)
-
-val ProgressCardContentDark = Color(0xFFFFFFFF)
-val ProgressCardContentSecondaryDark = Color(0xCCFFFFFF)
-
-val ProgressRingTrackDark = Color(0x33FFFFFF)
-val ProgressRingProgressStartDark = Color(0xFFFFFFFF)
-val ProgressRingProgressMiddleDark = Color(0xFFC4B5FD)
-val ProgressRingProgressEndDark = Color(0xFFFFFFFF)
-
-val ProgressCompletedDotDark = Color(0xFF4ADE80)
-val ProgressInProgressDotDark = Color(0xFFFDE047)
-val ProgressPendingDotDark = Color(0xFFFB7185)
-
 // Section Header - Light
 val SectionHeaderTitleLight = Color(0xFF111827)
 val SectionHeaderActionLight = Color(0xFF7C3AED)
@@ -252,3 +219,82 @@ val TaskProgressBorderDark = Color(0xFFC4B5FD)
 val TaskProgressContentDark = Color(0xFFC4B5FD)
 
 val TaskUncheckedBorderDark = Color(0xFF374151)
+/* ===========================================================
+ * Progress Card - Light
+ * =========================================================== */
+
+val ProgressCardBackgroundLight = Color(0xFFFFFFFF)
+val ProgressCardBackgroundSecondaryLight = Color(0xFFF4F7FF)
+
+val ProgressCardBadgeLight = Color(0xFF5B7CFF)
+
+val ProgressCardSurfaceLight = Color(0xFFF8FAFF)
+val ProgressCardSurfaceBorderLight = Color(0xFFE4EAF8)
+
+val ProgressCardContentLight = Color(0xFF1E1F3A)
+val ProgressCardContentSecondaryLight = Color(0xFF6F7285)
+
+val ProgressRingTrackLight = Color(0xFFE8ECF7)
+
+val ProgressRingProgressStartLight = Color(0xFFC084FC)
+val ProgressRingProgressMiddleLight = Color(0xFF7C83FF)
+val ProgressRingProgressEndLight = Color(0xFF66D9FF)
+
+val ProgressRingGlowStartLight = Color(0xFF66D9FF)
+val ProgressRingGlowMiddleLight = Color(0xFF7C83FF)
+val ProgressRingGlowEndLight = Color(0xFFC084FC)
+
+val ProgressRingCenterFillLight = Color(0xFFFFFFFF)
+val ProgressRingHighlightLight = Color(0xFFB8C4FF)
+
+val ProgressMiniCardBackgroundLight = Color(0xFFF7F9FC)
+val ProgressMiniCardContentLight = Color(0xFF1E1F3A)
+val ProgressMiniCardContentSecondaryLight = Color(0xFF6F7285)
+
+val ProgressRingLightOuterLight = Color(0xFFE7F6FF)
+val ProgressRingLightInnerLight = Color(0xFFFDFDFF)
+
+val ProgressSparkBlueLight = Color(0xFF3B82F6)
+val ProgressSparkPurpleLight = Color(0xFF8B5CF6)
+val ProgressSparkOrangeLight = Color(0xFFF59E0B)
+
+
+/* ===========================================================
+ * Progress Card - Dark
+ * =========================================================== */
+
+val ProgressCardBackgroundDark = Color(0xFF182238)
+val ProgressCardBackgroundSecondaryDark = Color(0xFF34134D)
+
+val ProgressCardBadgeDark = Color(0xFF5CE1FF)
+
+val ProgressCardSurfaceDark = Color(0x14FFFFFF)
+val ProgressCardSurfaceBorderDark = Color(0x1FFFFFFF)
+
+val ProgressCardContentDark = Color(0xFFFFFFFF)
+val ProgressCardContentSecondaryDark = Color(0xCCFFFFFF)
+
+val ProgressRingTrackDark = Color(0x33FFFFFF)
+
+val ProgressRingProgressStartDark = Color(0xFFE9DDFF)
+val ProgressRingProgressMiddleDark = Color(0xFFA46CFF)
+val ProgressRingProgressEndDark = Color(0xFF45D6FF)
+
+val ProgressRingGlowStartDark = Color(0xFF42D9FF)
+val ProgressRingGlowMiddleDark = Color(0xFF576DFF)
+val ProgressRingGlowEndDark = Color(0xFFB260FF)
+
+val ProgressRingCenterFillDark = Color(0x10FFFFFF)
+val ProgressRingHighlightDark = Color(0x99FFFFFF)
+
+val ProgressMiniCardBackgroundDark = Color(0x13FFFFFF)
+val ProgressMiniCardContentDark = Color(0xFFFFFFFF)
+val ProgressMiniCardContentSecondaryDark = Color(0x94FFFFFF)
+
+val ProgressRingLightOuterDark = Color(0x2948DFFF)
+val ProgressRingLightInnerDark = Color(0x1AFFFFFF)
+
+val ProgressSparkBlueDark = Color(0xFF45D6FF)
+val ProgressSparkPurpleDark = Color(0xFFA46CFF)
+val ProgressSparkOrangeDark = Color(0xFFFFB36A)
+

@@ -101,21 +101,6 @@ private val LightMemoCraftColors = MemoCraftThemeColors(
     accentColor = AccentLight,
     accentContainer = AccentContainerLight,
     accentContent = AccentContentLight,
-
-    // Progress Card
-    progressCardGradientStart = ProgressCardGradientStartLight,
-    progressCardGradientEnd = ProgressCardGradientEndLight,
-    progressCardContent = ProgressCardContentLight,
-    progressCardContentSecondary = ProgressCardContentSecondaryLight,
-
-    progressRingTrack = ProgressRingTrackLight,
-    progressRingProgressStart = ProgressRingProgressStartLight,
-    progressRingProgressMiddle = ProgressRingProgressMiddleLight,
-    progressRingProgressEnd = ProgressRingProgressEndLight,
-
-    progressCompletedDot = ProgressCompletedDotLight,
-    progressInProgressDot = ProgressInProgressDotLight,
-    progressPendingDot = ProgressPendingDotLight,
     // Section Header
     sectionHeaderTitleColor = SectionHeaderTitleLight,
     sectionHeaderActionColor = SectionHeaderActionLight,
@@ -137,6 +122,33 @@ private val LightMemoCraftColors = MemoCraftThemeColors(
     taskProgressContent = TaskProgressContentLight,
 
     taskUncheckedBorder = TaskUncheckedBorderLight,
+
+    // Progress Card V2
+    progressCardBackground = ProgressCardBackgroundLight,
+    progressCardBackgroundSecondary = ProgressCardBackgroundSecondaryLight,
+    progressCardBadge = ProgressCardBadgeLight,
+
+    progressCardSurface = ProgressCardSurfaceLight,
+    progressCardSurfaceBorder = ProgressCardSurfaceBorderLight,
+
+    progressRingGlowStart = ProgressRingGlowStartLight,
+    progressRingGlowMiddle = ProgressRingGlowMiddleLight,
+    progressRingGlowEnd = ProgressRingGlowEndLight,
+
+    progressRingCenterFill = ProgressRingCenterFillLight,
+    progressRingHighlight = ProgressRingHighlightLight,
+
+    progressMiniCardBackground = ProgressMiniCardBackgroundLight,
+    progressMiniCardContent = ProgressMiniCardContentLight,
+    progressMiniCardContentSecondary = ProgressMiniCardContentSecondaryLight,
+
+    progressRingLightOuter = ProgressRingLightOuterLight,
+    progressRingLightInner = ProgressRingLightInnerLight,
+
+    progressSparkBlue = ProgressSparkBlueLight,
+    progressSparkPurple = ProgressSparkPurpleLight,
+    progressSparkOrange = ProgressSparkOrangeLight,
+
 
     )
 
@@ -188,20 +200,6 @@ private val DarkMemoCraftColors = MemoCraftThemeColors(
     accentColor = AccentDark,
     accentContainer = AccentContainerDark,
     accentContent = AccentContentDark,
-    // Progress Card
-    progressCardGradientStart = ProgressCardGradientStartDark,
-    progressCardGradientEnd = ProgressCardGradientEndDark,
-    progressCardContent = ProgressCardContentDark,
-    progressCardContentSecondary = ProgressCardContentSecondaryDark,
-
-    progressRingTrack = ProgressRingTrackDark,
-    progressRingProgressStart = ProgressRingProgressStartDark,
-    progressRingProgressMiddle = ProgressRingProgressMiddleDark,
-    progressRingProgressEnd = ProgressRingProgressEndDark,
-
-    progressCompletedDot = ProgressCompletedDotDark,
-    progressInProgressDot = ProgressInProgressDotDark,
-    progressPendingDot = ProgressPendingDotDark,
     // Section Header
     sectionHeaderTitleColor = SectionHeaderTitleDark,
     sectionHeaderActionColor = SectionHeaderActionDark,
@@ -224,6 +222,31 @@ private val DarkMemoCraftColors = MemoCraftThemeColors(
     taskProgressContent = TaskProgressContentDark,
 
     taskUncheckedBorder = TaskUncheckedBorderDark,
+    // Progress Card V2
+    progressCardBackground = ProgressCardBackgroundDark,
+    progressCardBackgroundSecondary = ProgressCardBackgroundSecondaryDark,
+    progressCardBadge = ProgressCardBadgeDark,
+
+    progressCardSurface = ProgressCardSurfaceDark,
+    progressCardSurfaceBorder = ProgressCardSurfaceBorderDark,
+
+    progressRingGlowStart = ProgressRingGlowStartDark,
+    progressRingGlowMiddle = ProgressRingGlowMiddleDark,
+    progressRingGlowEnd = ProgressRingGlowEndDark,
+
+    progressRingCenterFill = ProgressRingCenterFillDark,
+    progressRingHighlight = ProgressRingHighlightDark,
+
+    progressMiniCardBackground = ProgressMiniCardBackgroundDark,
+    progressMiniCardContent = ProgressMiniCardContentDark,
+    progressMiniCardContentSecondary = ProgressMiniCardContentSecondaryDark,
+
+    progressRingLightOuter = ProgressRingLightOuterDark,
+    progressRingLightInner = ProgressRingLightInnerDark,
+
+    progressSparkBlue = ProgressSparkBlueDark,
+    progressSparkPurple = ProgressSparkPurpleDark,
+    progressSparkOrange = ProgressSparkOrangeDark,
 
 
     )

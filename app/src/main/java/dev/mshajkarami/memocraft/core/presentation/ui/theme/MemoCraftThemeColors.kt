@@ -56,21 +56,6 @@ data class MemoCraftThemeColors(
     val accentContainer: Color,
     val accentContent: Color,
 
-    // Progress Card
-    val progressCardGradientStart: Color,
-    val progressCardGradientEnd: Color,
-    val progressCardContent: Color,
-    val progressCardContentSecondary: Color,
-
-    val progressRingTrack: Color,
-    val progressRingProgressStart: Color,
-    val progressRingProgressMiddle: Color,
-    val progressRingProgressEnd: Color,
-
-    val progressCompletedDot: Color,
-    val progressInProgressDot: Color,
-    val progressPendingDot: Color,
-
     // Section Header
     val sectionHeaderTitleColor: Color,
     val sectionHeaderActionColor: Color,
@@ -93,6 +78,33 @@ data class MemoCraftThemeColors(
     val taskProgressContent: Color,
 
     val taskUncheckedBorder: Color,
+
+    // Progress Card V2
+    val progressCardBackground: Color,
+    val progressCardBackgroundSecondary: Color,
+    val progressCardBadge: Color,
+
+    val progressCardSurface: Color,
+    val progressCardSurfaceBorder: Color,
+
+    val progressRingGlowStart: Color,
+    val progressRingGlowMiddle: Color,
+    val progressRingGlowEnd: Color,
+
+    val progressRingCenterFill: Color,
+    val progressRingHighlight: Color,
+
+    val progressMiniCardBackground: Color,
+    val progressMiniCardContent: Color,
+    val progressMiniCardContentSecondary: Color,
+
+    val progressRingLightOuter: Color,
+    val progressRingLightInner: Color,
+
+    val progressSparkBlue: Color,
+    val progressSparkPurple: Color,
+    val progressSparkOrange: Color,
+
 
     )
 internal val LocalMemoCraftThemeColors = staticCompositionLocalOf<MemoCraftThemeColors> {
