@@ -16,14 +16,14 @@ import androidx.compose.ui.unit.dp
 import dev.mshajkarami.memocraft.core.presentation.ui.theme.MemoCraftAppTheme
 import dev.mshajkarami.memocraft.core.presentation.ui.theme.MemoCraftTheme
 import dev.mshajkarami.memocraft.feature.home.presentation.ui.components.AiInsightCard
-import dev.mshajkarami.memocraft.feature.home.presentation.ui.components.CompactDashboardTaskCard
 import dev.mshajkarami.memocraft.feature.home.presentation.ui.components.GreetingSection
 import dev.mshajkarami.memocraft.feature.home.presentation.ui.components.HomeTopBar
 import dev.mshajkarami.memocraft.feature.home.presentation.ui.components.SectionHeader
-import dev.mshajkarami.memocraft.feature.home.presentation.ui.components.TaskCardUiModel
-import dev.mshajkarami.memocraft.feature.home.presentation.ui.components.TaskPriority
-import dev.mshajkarami.memocraft.feature.home.presentation.ui.components.TaskStatus
 import dev.mshajkarami.memocraft.feature.home.presentation.ui.components.progress.ProgressCard
+import dev.mshajkarami.memocraft.feature.task.presentation.component.card.CompactDashboardTaskCard
+import dev.mshajkarami.memocraft.feature.task.presentation.model.TaskCardUiModel
+import dev.mshajkarami.memocraft.feature.task.presentation.model.TaskPriority
+import dev.mshajkarami.memocraft.feature.task.presentation.model.TaskStatus
 import dev.mshajkarami.memocraft.navigation.BottomNavBar
 
 @Composable

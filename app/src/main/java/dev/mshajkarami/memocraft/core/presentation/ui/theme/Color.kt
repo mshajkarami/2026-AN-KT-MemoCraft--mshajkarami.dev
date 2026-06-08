@@ -159,27 +159,42 @@ val ProfileBackgroundDark = TopBarAvatarBackgroundDark
 val ProfileBorderDark = TopBarAvatarBorderDark
 val ProfileIconDark = TopBarAvatarContentDark
 
-// AI Insight Card - Light
+/* ===========================================================
+ * AI Insight Card - Light
+ * =========================================================== */
+
 val AiInsightCardContainerLight = Color(0xFFF3E8FF)
 val AiInsightCardTitleLight = Color(0xFF4C1D95)
 val AiInsightCardDescriptionLight = Color(0xFF6B7280)
 val AiInsightCardEmojiLight = Color(0xFF7C3AED)
 
-// AI Insight Card - Dark
+/* ===========================================================
+ * AI Insight Card - Dark
+ * =========================================================== */
+
 val AiInsightCardContainerDark = Color(0xFF2E1065)
 val AiInsightCardTitleDark = Color(0xFFF5EFFF)
 val AiInsightCardDescriptionDark = Color(0xFFD1C4E9)
 val AiInsightCardEmojiDark = Color(0xFFC4B5FD)
 
-// Section Header - Light
+/* ===========================================================
+ * Section Header - Light
+ * =========================================================== */
+
 val SectionHeaderTitleLight = Color(0xFF111827)
 val SectionHeaderActionLight = Color(0xFF7C3AED)
 
-// Section Header - Dark
+/* ===========================================================
+ * Section Header - Dark
+ * =========================================================== */
+
 val SectionHeaderTitleDark = Color(0xFFF9FAFB)
 val SectionHeaderActionDark = Color(0xFFC4B5FD)
 
-// Task Card - Light
+/* ===========================================================
+ * Task Card - Light
+ * =========================================================== */
+
 val TaskCardContainerLight = Color(0xFFFFFFFF)
 val TaskCardTitleLight = Color(0xFF111827)
 val TaskCardSubtitleLight = Color(0xFF6B7280)
@@ -189,7 +204,6 @@ val TaskCardTimeHighlightedLight = Color(0xFFDC2626)
 
 val TaskPriorityUrgentContentLight = Color(0xFFDC2626)
 val TaskPriorityHighContentLight = Color(0xFFD97706)
-val TaskPriorityNormalContentLight = Color(0xFF2563EB)
 
 val TaskCompletedContainerLight = Color(0xFF22C55E)
 val TaskCompletedContentLight = Color(0xFFFFFFFF)
@@ -199,8 +213,10 @@ val TaskProgressContentLight = Color(0xFF7C3AED)
 
 val TaskUncheckedBorderLight = Color(0xFFE5E7EB)
 
+/* ===========================================================
+ * Task Card - Dark
+ * =========================================================== */
 
-// Task Card - Dark
 val TaskCardContainerDark = Color(0xFF1F2937)
 val TaskCardTitleDark = Color(0xFFF9FAFB)
 val TaskCardSubtitleDark = Color(0xFF9CA3AF)
@@ -210,7 +226,6 @@ val TaskCardTimeHighlightedDark = Color(0xFFFCA5A5)
 
 val TaskPriorityUrgentContentDark = Color(0xFFFCA5A5)
 val TaskPriorityHighContentDark = Color(0xFFFCD34D)
-val TaskPriorityNormalContentDark = Color(0xFF93C5FD)
 
 val TaskCompletedContainerDark = Color(0xFF4ADE80)
 val TaskCompletedContentDark = Color(0xFF052E16)
@@ -219,45 +234,45 @@ val TaskProgressBorderDark = Color(0xFFC4B5FD)
 val TaskProgressContentDark = Color(0xFFC4B5FD)
 
 val TaskUncheckedBorderDark = Color(0xFF374151)
+
 /* ===========================================================
  * Progress Card - Light
  * =========================================================== */
 
 val ProgressCardBackgroundLight = Color(0xFFFFFFFF)
-val ProgressCardBackgroundSecondaryLight = Color(0xFFF4F7FF)
+val ProgressCardBackgroundSecondaryLight = Color(0xFFF1F5FF)
 
 val ProgressCardBadgeLight = Color(0xFF5B7CFF)
 
 val ProgressCardSurfaceLight = Color(0xFFF8FAFF)
-val ProgressCardSurfaceBorderLight = Color(0xFFE4EAF8)
+val ProgressCardSurfaceBorderLight = Color(0xFFD6DEF3)
 
 val ProgressCardContentLight = Color(0xFF1E1F3A)
 val ProgressCardContentSecondaryLight = Color(0xFF6F7285)
 
-val ProgressRingTrackLight = Color(0xFFE8ECF7)
+val ProgressRingTrackLight = Color(0xFFE1E8F5)
 
 val ProgressRingProgressStartLight = Color(0xFFC084FC)
 val ProgressRingProgressMiddleLight = Color(0xFF7C83FF)
 val ProgressRingProgressEndLight = Color(0xFF66D9FF)
 
-val ProgressRingGlowStartLight = Color(0xFF66D9FF)
-val ProgressRingGlowMiddleLight = Color(0xFF7C83FF)
-val ProgressRingGlowEndLight = Color(0xFFC084FC)
+val ProgressRingGlowStartLight = Color(0xFF38BDF8)
+val ProgressRingGlowMiddleLight = Color(0xFF6366F1)
+val ProgressRingGlowEndLight = Color(0xFFA855F7)
 
 val ProgressRingCenterFillLight = Color(0xFFFFFFFF)
-val ProgressRingHighlightLight = Color(0xFFB8C4FF)
+val ProgressRingHighlightLight = Color(0xFF93A4FF)
 
 val ProgressMiniCardBackgroundLight = Color(0xFFF7F9FC)
 val ProgressMiniCardContentLight = Color(0xFF1E1F3A)
 val ProgressMiniCardContentSecondaryLight = Color(0xFF6F7285)
 
-val ProgressRingLightOuterLight = Color(0xFFE7F6FF)
+val ProgressRingLightOuterLight = Color(0xFFDDEBFF)
 val ProgressRingLightInnerLight = Color(0xFFFDFDFF)
 
-val ProgressSparkBlueLight = Color(0xFF3B82F6)
-val ProgressSparkPurpleLight = Color(0xFF8B5CF6)
-val ProgressSparkOrangeLight = Color(0xFFF59E0B)
-
+val ProgressSparkBlueLight = Color(0xFF2563EB)
+val ProgressSparkPurpleLight = Color(0xFF7C3AED)
+val ProgressSparkOrangeLight = Color(0xFFD97706)
 
 /* ===========================================================
  * Progress Card - Dark
@@ -298,3 +313,64 @@ val ProgressSparkBlueDark = Color(0xFF45D6FF)
 val ProgressSparkPurpleDark = Color(0xFFA46CFF)
 val ProgressSparkOrangeDark = Color(0xFFFFB36A)
 
+/* ===========================================================
+ * Compact Task Card - Light
+ * =========================================================== */
+
+val CompactTaskCardShadowAmbientLight = Color(0x1864748B)
+val CompactTaskCardShadowSpotLight = Color(0x2464748B)
+val CompactTaskCardGlassOverlayLight = Color(0xFFEAF0FF)
+val CompactTaskCardInnerBorderLight = Color(0x99C8D2EA)
+
+val TaskStatusPendingContainerLight = Color(0x24F59E0B)
+val TaskStatusPendingContentLight = Color(0xFFD97706)
+
+val TaskStatusInProgressContainerLight = Color(0x243B82F6)
+val TaskStatusInProgressContentLight = Color(0xFF2563EB)
+
+val TaskStatusCompletedContainerLight = Color(0x247C83FF)
+val TaskStatusCompletedContentLight = Color(0xFF4F46E5)
+
+val TaskPriorityLowContainerLight = Color(0x243B82F6)
+val TaskPriorityLowContentLight = Color(0xFF2563EB)
+
+val TaskPriorityNormalContainerLight = Color(0x248B5CF6)
+val TaskPriorityNormalContentLight = Color(0xFF7C3AED)
+
+val TaskPriorityUrgentContainerLight = Color(0x24FF5A7A)
+val TaskPriorityUrgentContentAltLight = Color(0xFFE11D48)
+
+val TaskAvatarTextLight = Color(0xFFFFFFFF)
+val TaskCompletionBadgeBackgroundLight = Color(0xEFFFFFFF)
+val TaskCompletionBadgeIconLight = ProgressMiniCardContentLight
+
+/* ===========================================================
+ * Compact Task Card - Dark
+ * =========================================================== */
+
+val CompactTaskCardShadowAmbientDark = Color(0x2E576DFF)
+val CompactTaskCardShadowSpotDark = Color(0x24B260FF)
+val CompactTaskCardGlassOverlayDark = Color(0x14FFFFFF)
+val CompactTaskCardInnerBorderDark = Color(0x1AFFFFFF)
+
+val TaskStatusPendingContainerDark = Color(0x29FFB36A)
+val TaskStatusPendingContentDark = ProgressSparkOrangeDark
+
+val TaskStatusInProgressContainerDark = Color(0x2945D6FF)
+val TaskStatusInProgressContentDark = ProgressSparkBlueDark
+
+val TaskStatusCompletedContainerDark = Color(0x29576DFF)
+val TaskStatusCompletedContentDark = ProgressRingGlowMiddleDark
+
+val TaskPriorityLowContainerDark = Color(0x2945D6FF)
+val TaskPriorityLowContentDark = ProgressSparkBlueDark
+
+val TaskPriorityNormalContainerDark = Color(0x29A46CFF)
+val TaskPriorityNormalContentDark = ProgressSparkPurpleDark
+
+val TaskPriorityUrgentContainerDark = Color(0x29FF6B8A)
+val TaskPriorityUrgentContentAltDark = Color(0xFFFF8AA1)
+
+val TaskAvatarTextDark = Color(0xFFFFFFFF)
+val TaskCompletionBadgeBackgroundDark = Color(0x14FFFFFF)
+val TaskCompletionBadgeIconDark = ProgressMiniCardContentDark

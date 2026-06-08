@@ -113,7 +113,6 @@ private val LightMemoCraftColors = MemoCraftThemeColors(
 
     taskPriorityUrgentContent = TaskPriorityUrgentContentLight,
     taskPriorityHighContent = TaskPriorityHighContentLight,
-    taskPriorityNormalContent = TaskPriorityNormalContentLight,
 
     taskCompletedContainer = TaskCompletedContainerLight,
     taskCompletedContent = TaskCompletedContentLight,
@@ -149,6 +148,32 @@ private val LightMemoCraftColors = MemoCraftThemeColors(
     progressSparkPurple = ProgressSparkPurpleLight,
     progressSparkOrange = ProgressSparkOrangeLight,
 
+    compactTaskCardShadowAmbient = CompactTaskCardShadowAmbientLight,
+    compactTaskCardShadowSpot = CompactTaskCardShadowSpotLight,
+    compactTaskCardGlassOverlay = CompactTaskCardGlassOverlayLight,
+    compactTaskCardInnerBorder = CompactTaskCardInnerBorderLight,
+
+    taskStatusPendingContainer = TaskStatusPendingContainerLight,
+    taskStatusPendingContent = TaskStatusPendingContentLight,
+
+    taskStatusInProgressContainer = TaskStatusInProgressContainerLight,
+    taskStatusInProgressContent = TaskStatusInProgressContentLight,
+
+    taskStatusCompletedContainer = TaskStatusCompletedContainerLight,
+    taskStatusCompletedContent = TaskStatusCompletedContentLight,
+
+    taskPriorityLowContainer = TaskPriorityLowContainerLight,
+    taskPriorityLowContent = TaskPriorityLowContentLight,
+
+    taskPriorityNormalContainer = TaskPriorityNormalContainerLight,
+    taskPriorityNormalContent = TaskPriorityNormalContentLight,
+
+    taskPriorityUrgentContainer = TaskPriorityUrgentContainerLight,
+    taskPriorityUrgentContentAlt = TaskPriorityUrgentContentAltLight,
+
+    taskAvatarText = TaskAvatarTextLight,
+    taskCompletionBadgeBackground = TaskCompletionBadgeBackgroundLight,
+    taskCompletionBadgeIcon = TaskCompletionBadgeIconLight,
 
     )
 
@@ -213,7 +238,6 @@ private val DarkMemoCraftColors = MemoCraftThemeColors(
 
     taskPriorityUrgentContent = TaskPriorityUrgentContentDark,
     taskPriorityHighContent = TaskPriorityHighContentDark,
-    taskPriorityNormalContent = TaskPriorityNormalContentDark,
 
     taskCompletedContainer = TaskCompletedContainerDark,
     taskCompletedContent = TaskCompletedContentDark,
@@ -247,6 +271,34 @@ private val DarkMemoCraftColors = MemoCraftThemeColors(
     progressSparkBlue = ProgressSparkBlueDark,
     progressSparkPurple = ProgressSparkPurpleDark,
     progressSparkOrange = ProgressSparkOrangeDark,
+
+    compactTaskCardShadowAmbient = CompactTaskCardShadowAmbientDark,
+    compactTaskCardShadowSpot = CompactTaskCardShadowSpotDark,
+    compactTaskCardGlassOverlay = CompactTaskCardGlassOverlayDark,
+    compactTaskCardInnerBorder = CompactTaskCardInnerBorderDark,
+
+    taskStatusPendingContainer = TaskStatusPendingContainerDark,
+    taskStatusPendingContent = TaskStatusPendingContentDark,
+
+    taskStatusInProgressContainer = TaskStatusInProgressContainerDark,
+    taskStatusInProgressContent = TaskStatusInProgressContentDark,
+
+    taskStatusCompletedContainer = TaskStatusCompletedContainerDark,
+    taskStatusCompletedContent = TaskStatusCompletedContentDark,
+
+    taskPriorityLowContainer = TaskPriorityLowContainerDark,
+    taskPriorityLowContent = TaskPriorityLowContentDark,
+
+    taskPriorityNormalContainer = TaskPriorityNormalContainerDark,
+    taskPriorityNormalContent = TaskPriorityNormalContentDark,
+
+    taskPriorityUrgentContainer = TaskPriorityUrgentContainerDark,
+    taskPriorityUrgentContentAlt = TaskPriorityUrgentContentAltDark,
+
+    taskAvatarText = TaskAvatarTextDark,
+    taskCompletionBadgeBackground = TaskCompletionBadgeBackgroundDark,
+    taskCompletionBadgeIcon = TaskCompletionBadgeIconDark,
+
 
 
     )

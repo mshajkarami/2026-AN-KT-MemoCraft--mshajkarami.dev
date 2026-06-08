@@ -105,6 +105,34 @@ data class MemoCraftThemeColors(
     val progressSparkPurple: Color,
     val progressSparkOrange: Color,
 
+    // Compact Dashboard Task Card
+    val compactTaskCardShadowAmbient: Color,
+    val compactTaskCardShadowSpot: Color,
+    val compactTaskCardGlassOverlay: Color,
+    val compactTaskCardInnerBorder: Color,
+
+    val taskStatusPendingContainer: Color,
+    val taskStatusPendingContent: Color,
+
+    val taskStatusInProgressContainer: Color,
+    val taskStatusInProgressContent: Color,
+
+    val taskStatusCompletedContainer: Color,
+    val taskStatusCompletedContent: Color,
+
+    val taskPriorityLowContainer: Color,
+    val taskPriorityLowContent: Color,
+
+    val taskPriorityNormalContainer: Color,
+
+    val taskPriorityUrgentContainer: Color,
+    val taskPriorityUrgentContentAlt: Color,
+
+    val taskAvatarText: Color,
+    val taskCompletionBadgeBackground: Color,
+    val taskCompletionBadgeIcon: Color,
+
+
 
     )
 internal val LocalMemoCraftThemeColors = staticCompositionLocalOf<MemoCraftThemeColors> {
