@@ -8,6 +8,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import dev.mshajkarami.memocraft.features.home.presentation.ui.HomeScreen
+import dev.mshajkarami.memocraft.features.planner.presentation.ui.PlannerScreen
+import dev.mshajkarami.memocraft.features.profile.presentation.ui.ProfileScreen
 import dev.mshajkarami.memocraft.features.tasks.presentation.ui.TasksScreen
 
 @Composable
@@ -51,11 +53,23 @@ fun AppNavHost(
             }
 
             composable(PlannerDestination.route) {
-                PlaceholderScreen(title = "Planner Screen")
+                PlannerScreen(
+                    onNavigateToTasks = navigator::navigateToTasks,
+                    onNavigateToAi = navigator::navigateToAi,
+                    onNavigateToPlanner = navigator::navigateToPlanner,
+                    onNavigateToProfile = navigator::navigateToProfile,
+                    onNavigateToHome = navigator::navigateToHome
+                )
             }
 
             composable(ProfileDestination.route) {
-                PlaceholderScreen(title = "Profile Screen")
+                ProfileScreen(
+                    onNavigateToTasks = navigator::navigateToTasks,
+                    onNavigateToAi = navigator::navigateToAi,
+                    onNavigateToPlanner = navigator::navigateToPlanner,
+                    onNavigateToProfile = navigator::navigateToProfile,
+                    onNavigateToHome = navigator::navigateToHome
+                )
             }
         }
     }

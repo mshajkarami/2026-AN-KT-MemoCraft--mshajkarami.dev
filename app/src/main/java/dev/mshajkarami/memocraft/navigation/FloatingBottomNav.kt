@@ -197,14 +197,14 @@ private fun AiCenterButton(
     }
 
     Column(
-        modifier = Modifier.offset(y = (-28).dp),
+        modifier = Modifier.offset(y = (-20).dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Surface(
             modifier = Modifier
-                .size(66.dp)
+                .size(52.dp)
                 .shadow(
-                    elevation = 18.dp,
+                    elevation = 10.dp,
                     shape = CircleShape,
                     clip = false
                 ),
@@ -213,14 +213,12 @@ private fun AiCenterButton(
             contentColor = MaterialTheme.colorScheme.onPrimary,
             onClick = onClick
         ) {
-            Box(
-                contentAlignment = Alignment.Center
-            ) {
+            Box(contentAlignment = Alignment.Center) {
                 Icon(
                     imageVector = Icons.Outlined.AutoAwesome,
                     contentDescription = "AI",
                     tint = MaterialTheme.colorScheme.onPrimary,
-                    modifier = Modifier.size(28.dp)
+                    modifier = Modifier.size(20.dp)
                 )
             }
         }
@@ -230,11 +228,13 @@ private fun AiCenterButton(
         Text(
             text = "AI",
             color = textColor,
-            fontSize = 11.sp,
+            fontSize = 10.sp,
             fontWeight = if (selected) FontWeight.SemiBold else FontWeight.Normal
         )
     }
+
 }
+
 
 
 private fun bottomBarWithCenterNotchShape(): Shape {
@@ -248,8 +248,9 @@ private fun bottomBarWithCenterNotchShape(): Shape {
 
             with(density) {
                 val cornerRadius = 26.dp.toPx()
-                val notchRadius = 38.dp.toPx()
-                val notchDepth = 34.dp.toPx()
+                val notchRadius = 36.dp.toPx()
+                val notchDepth = 38.dp.toPx()
+                val notchShoulder = 16.dp.toPx()
                 val centerX = size.width / 2f
 
                 path.moveTo(0f, size.height)
@@ -260,23 +261,23 @@ private fun bottomBarWithCenterNotchShape(): Shape {
                     cornerRadius, 0f
                 )
 
-                path.lineTo(centerX - notchRadius - 18.dp.toPx(), 0f)
+                path.lineTo(centerX - notchRadius - notchShoulder, 0f)
 
                 path.cubicTo(
                     centerX - notchRadius,
                     0f,
-                    centerX - notchRadius + 6.dp.toPx(),
+                    centerX - notchRadius + 4.dp.toPx(),
                     notchDepth,
                     centerX,
                     notchDepth
                 )
 
                 path.cubicTo(
-                    centerX + notchRadius - 6.dp.toPx(),
+                    centerX + notchRadius - 4.dp.toPx(),
                     notchDepth,
                     centerX + notchRadius,
                     0f,
-                    centerX + notchRadius + 18.dp.toPx(),
+                    centerX + notchRadius + notchShoulder,
                     0f
                 )
 
