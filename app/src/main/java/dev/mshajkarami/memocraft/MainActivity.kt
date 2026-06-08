@@ -5,7 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import dev.mshajkarami.memocraft.core.presentation.ui.theme.MemoCraftAppTheme
-import dev.mshajkarami.memocraft.feature.home.presentation.ui.HomeScreen
+import dev.mshajkarami.memocraft.features.home.presentation.ui.HomeScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -13,7 +13,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             MemoCraftAppTheme {
-                HomeScreen()
+                MemoCraftApp()
             }
         }
     }

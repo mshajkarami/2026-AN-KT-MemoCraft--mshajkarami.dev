@@ -1,9 +1,11 @@
 package dev.mshajkarami.memocraft.navigation
 
-enum class BottomNavItem {
-    Home,
-    Tasks,
-    Ai,
-    Planner,
-    Profile
+enum class BottomNavItem(
+    val route: String
+) {
+    Home(HomeDestination.route),
+    Tasks(TasksDestination.route),
+    Ai(AiDestination.route),
+    Planner(PlannerDestination.route),
+    Profile(ProfileDestination.route)
 }
