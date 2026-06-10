@@ -61,11 +61,6 @@ import java.util.UUID
 @Composable
 fun AiScreen(
     modifier: Modifier = Modifier,
-    onNavigateToHome: () -> Unit = {},
-    onNavigateToTasks: () -> Unit = {},
-    onNavigateToAi: () -> Unit = {},
-    onNavigateToPlanner: () -> Unit = {},
-    onNavigateToProfile: () -> Unit = {},
     onAddDetectedTaskClick: (DetectedTaskUiModel) -> Unit = {}
 ) {
     val colors = MemoCraftTheme.colors
@@ -84,16 +79,6 @@ fun AiScreen(
     Scaffold(
         modifier = modifier,
         containerColor = colors.bottomNavContainer,
-        bottomBar = {
-            BottomNavBar(
-                selectedItem = BottomNavItem.Ai,
-                onHomeClick = onNavigateToHome,
-                onTasksClick = onNavigateToTasks,
-                onAiClick = onNavigateToAi,
-                onPlannerClick = onNavigateToPlanner,
-                onProfileClick = onNavigateToProfile
-            )
-        }
     ) { innerPadding ->
         AiScreenContent(
             messages = messages,

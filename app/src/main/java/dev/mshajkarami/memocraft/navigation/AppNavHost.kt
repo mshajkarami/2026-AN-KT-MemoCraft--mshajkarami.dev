@@ -38,13 +38,7 @@ fun AppNavHost(
             }
 
             composable(AiDestination.route) {
-                AiScreen(
-                    onNavigateToTasks = navigator::navigateToTasks,
-                    onNavigateToAi = navigator::navigateToAi,
-                    onNavigateToPlanner = navigator::navigateToPlanner,
-                    onNavigateToProfile = navigator::navigateToProfile,
-                    onNavigateToHome = navigator::navigateToHome
-                )
+                AiScreen()
             }
 
             composable(PlannerDestination.route) {
@@ -56,11 +50,4 @@ fun AppNavHost(
             }
         }
     }
-}
-
-@Composable
-private fun PlaceholderScreen(
-    title: String
-) {
-    Text(text = title)
 }

@@ -25,6 +25,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
@@ -51,103 +52,93 @@ fun BottomNavBar(
     val unselectedColor = colors.bottomNavUnselectedContent.copy(alpha = 0.72f)
     val containerColor = colors.bottomNavContainer
 
-    Box(
-        modifier = modifier
-            .fillMaxWidth()
-            .navigationBarsPadding()
-            .padding(
-                start = 24.dp,
-                end = 24.dp,
-                top = 14.dp,
-                bottom = 28.dp
-            ),
-        contentAlignment = Alignment.BottomCenter
+    Surface(
+        modifier = modifier.fillMaxWidth(),
+        color = containerColor,
+        shadowElevation = 12.dp
     ) {
-        Surface(
+        Row(
             modifier = Modifier
                 .fillMaxWidth()
+                .navigationBarsPadding()
                 .height(76.dp)
-                .shadow(
-                    elevation = 18.dp,
-                    shape = RoundedCornerShape(38.dp),
-                    clip = false
-                ),
-            color = containerColor,
-            shape = RoundedCornerShape(38.dp)
+                .padding(horizontal = 18.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 28.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
+            BottomNavItemButton(
+                label = "Home",
+                selected = selectedItem == BottomNavItem.Home,
+                selectedColor = selectedColor,
+                unselectedColor = unselectedColor,
+                onClick = onHomeClick
             ) {
-                BottomNavIconButton(
-                    selected = selectedItem == BottomNavItem.Home,
-                    selectedColor = selectedColor,
-                    unselectedColor = unselectedColor,
-                    onClick = onHomeClick
-                ) {
-                    Icon(
-                        imageVector = Icons.Outlined.Home,
-                        contentDescription = "Home",
-                        modifier = Modifier.size(26.dp)
-                    )
-                }
-
-                BottomNavIconButton(
-                    selected = selectedItem == BottomNavItem.Tasks,
-                    selectedColor = selectedColor,
-                    unselectedColor = unselectedColor,
-                    onClick = onTasksClick
-                ) {
-                    Icon(
-                        imageVector = Icons.Outlined.TaskAlt,
-                        contentDescription = "Tasks",
-                        modifier = Modifier.size(25.dp)
-                    )
-                }
-
-                CenterNavIconButton(
-                    selected = selectedItem == BottomNavItem.Ai,
-                    selectedColor = selectedColor,
-                    unselectedColor = unselectedColor,
-                    indicatorColor = colors.bottomNavSelectedIndicator,
-                    onClick = onAiClick
+                Icon(
+                    imageVector = Icons.Outlined.Home,
+                    contentDescription = "Home",
+                    modifier = Modifier.size(24.dp)
                 )
+            }
 
-                BottomNavIconButton(
-                    selected = selectedItem == BottomNavItem.Planner,
-                    selectedColor = selectedColor,
-                    unselectedColor = unselectedColor,
-                    onClick = onPlannerClick
-                ) {
-                    Icon(
-                        imageVector = Icons.Outlined.NotificationsNone,
-                        contentDescription = "Planner",
-                        modifier = Modifier.size(26.dp)
-                    )
-                }
+            BottomNavItemButton(
+                label = "Tasks",
+                selected = selectedItem == BottomNavItem.Tasks,
+                selectedColor = selectedColor,
+                unselectedColor = unselectedColor,
+                onClick = onTasksClick
+            ) {
+                Icon(
+                    imageVector = Icons.Outlined.TaskAlt,
+                    contentDescription = "Tasks",
+                    modifier = Modifier.size(24.dp)
+                )
+            }
 
-                BottomNavIconButton(
-                    selected = selectedItem == BottomNavItem.Profile,
-                    selectedColor = selectedColor,
-                    unselectedColor = unselectedColor,
-                    onClick = onProfileClick
-                ) {
-                    Icon(
-                        imageVector = Icons.Outlined.PersonOutline,
-                        contentDescription = "Profile",
-                        modifier = Modifier.size(27.dp)
-                    )
-                }
+            CenterNavItemButton(
+                label = "AI",
+                selected = selectedItem == BottomNavItem.Ai,
+                selectedColor = selectedColor,
+                unselectedColor = unselectedColor,
+                indicatorColor = colors.bottomNavSelectedIndicator,
+                onClick = onAiClick
+            )
+
+
+            BottomNavItemButton(
+                label = "Planner",
+                selected = selectedItem == BottomNavItem.Planner,
+                selectedColor = selectedColor,
+                unselectedColor = unselectedColor,
+                onClick = onPlannerClick
+            ) {
+                Icon(
+                    imageVector = Icons.Outlined.NotificationsNone,
+                    contentDescription = "Planner",
+                    modifier = Modifier.size(24.dp)
+                )
+            }
+
+            BottomNavItemButton(
+                label = "Profile",
+                selected = selectedItem == BottomNavItem.Profile,
+                selectedColor = selectedColor,
+                unselectedColor = unselectedColor,
+                onClick = onProfileClick
+            ) {
+                Icon(
+                    imageVector = Icons.Outlined.PersonOutline,
+                    contentDescription = "Profile",
+                    modifier = Modifier.size(24.dp)
+                )
             }
         }
     }
 }
 
+
 @Composable
-private fun BottomNavIconButton(
+private fun BottomNavItemButton(
+    label: String,
     selected: Boolean,
     selectedColor: Color,
     unselectedColor: Color,
@@ -156,78 +147,74 @@ private fun BottomNavIconButton(
 ) {
     val contentColor = if (selected) selectedColor else unselectedColor
 
-    Box(
-        modifier = Modifier.size(width = 48.dp, height = 56.dp),
-        contentAlignment = Alignment.TopCenter
+    IconButton(
+        modifier = Modifier.size(width = 58.dp, height = 60.dp),
+        onClick = onClick
     ) {
-        IconButton(
-            modifier = Modifier
-                .size(42.dp)
-                .align(Alignment.TopCenter),
-            onClick = onClick
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
         ) {
             CompositionLocalProvider(LocalContentColor provides contentColor) {
                 icon()
             }
-        }
 
-        if (selected) {
-            Box(
-                modifier = Modifier
-                    .align(Alignment.BottomCenter)
-                    .padding(bottom = 2.dp)
-                    .size(5.dp)
-                    .background(selectedColor, CircleShape)
+            Text(
+                text = label,
+                color = contentColor,
+                style = MaterialTheme.typography.labelSmall
             )
         }
     }
 }
 
-
-
 @Composable
-private fun CenterNavIconButton(
+private fun CenterNavItemButton(
+    label: String,
     selected: Boolean,
     selectedColor: Color,
     unselectedColor: Color,
     indicatorColor: Color,
     onClick: () -> Unit
 ) {
-    Box(
-        modifier = Modifier.size(width = 72.dp, height = 78.dp),
-        contentAlignment = Alignment.TopCenter
+    val labelColor = if (selected) selectedColor else unselectedColor
+
+    Column(
+        modifier = Modifier.size(width = 72.dp, height = 86.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Top
     ) {
         Surface(
             modifier = Modifier
-                .size(58.dp)
-                .align(Alignment.TopCenter),
+                .size(54.dp)
+                .shadow(
+                    elevation = 10.dp,
+                    shape = CircleShape,
+                    clip = false
+                ),
             shape = CircleShape,
-            color = indicatorColor.copy(alpha = 0.72f),
-            contentColor = selectedColor,
+            color = indicatorColor,
+            contentColor = Color.White,
             onClick = onClick
         ) {
             Box(contentAlignment = Alignment.Center) {
                 Icon(
                     imageVector = Icons.Outlined.AutoAwesome,
-                    contentDescription = "AI",
+                    contentDescription = label,
                     tint = Color.White,
                     modifier = Modifier.size(24.dp)
                 )
             }
         }
 
-        if (selected) {
-            Box(
-                modifier = Modifier
-                    .align(Alignment.BottomCenter)
-                    .padding(bottom = 1.dp)
-                    .size(5.dp)
-                    .background(selectedColor, CircleShape)
-            )
-        }
+        Text(
+            text = label,
+            color = labelColor,
+            style = MaterialTheme.typography.labelSmall,
+            modifier = Modifier.padding(top = 2.dp)
+        )
     }
 }
-
 
 
 @Preview(

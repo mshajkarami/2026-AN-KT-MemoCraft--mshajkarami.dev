@@ -42,26 +42,29 @@ fun MainScreen(
         else -> BottomNavItem.Home
     }
 
-    Box(modifier = modifier.fillMaxSize()) {
+    Scaffold(
+        modifier = modifier.fillMaxSize(),
+        bottomBar = {
+            BottomNavBar(
+                selectedItem = currentBottomNavItem,
+                onHomeClick = navigator::navigateToHome,
+                onTasksClick = navigator::navigateToTasks,
+                onAiClick = navigator::navigateToAi,
+                onPlannerClick = navigator::navigateToPlanner,
+                onProfileClick = navigator::navigateToProfile
+            )
+        }
+    ) { innerPadding ->
         AppNavHost(
             navController = navController,
             navigator = navigator,
-            modifier = Modifier.fillMaxSize()
-        )
-
-        BottomNavBar(
-            selectedItem = currentBottomNavItem,
-            onHomeClick = navigator::navigateToHome,
-            onTasksClick = navigator::navigateToTasks,
-            onAiClick = navigator::navigateToAi,
-            onPlannerClick = navigator::navigateToPlanner,
-            onProfileClick = navigator::navigateToProfile,
             modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .padding(horizontal = 20.dp, vertical = 16.dp)
+                .fillMaxSize()
+                .padding(bottom = innerPadding.calculateBottomPadding())
         )
     }
 }
+
 
 private fun NavDestination?.isInHierarchy(route: String): Boolean {
     return this?.hierarchy?.any { it.route == route } == true

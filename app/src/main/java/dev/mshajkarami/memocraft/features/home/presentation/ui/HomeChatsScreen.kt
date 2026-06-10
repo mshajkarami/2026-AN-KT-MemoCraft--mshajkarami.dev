@@ -45,11 +45,6 @@ fun HomeScreen(
                 onSearchClick = {},
                 hasNotification = false
             )
-        },
-        bottomBar = {
-            BottomNavBar(
-                selectedItem = BottomNavItem.Home
-            )
         }
     ) { innerPadding ->
         HomeScreenContent(
