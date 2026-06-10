@@ -42,17 +42,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import dev.mshajkarami.memocraft.core.presentation.ui.theme.MemoCraftAppTheme
 import dev.mshajkarami.memocraft.core.presentation.ui.theme.MemoCraftTheme
+import dev.mshajkarami.memocraft.features.planner.presentation.component.PlannerTopBar
 import dev.mshajkarami.memocraft.navigation.BottomNavBar
 import dev.mshajkarami.memocraft.navigation.BottomNavItem
 
 @Composable
 fun PlannerScreen(
-    modifier: Modifier = Modifier,
-    onNavigateToHome: () -> Unit = {},
-    onNavigateToTasks: () -> Unit = {},
-    onNavigateToAi: () -> Unit = {},
-    onNavigateToPlanner: () -> Unit = {},
-    onNavigateToProfile: () -> Unit = {}
+    modifier: Modifier = Modifier
 ) {
     val colors = MemoCraftTheme.colors
     val weekDays = remember { plannerWeekMockData() }
@@ -63,15 +59,8 @@ fun PlannerScreen(
     Scaffold(
         modifier = modifier,
         containerColor = colors.bottomNavContainer,
-        bottomBar = {
-            BottomNavBar(
-                selectedItem = BottomNavItem.Planner,
-                onHomeClick = onNavigateToHome,
-                onTasksClick = onNavigateToTasks,
-                onAiClick = onNavigateToAi,
-                onPlannerClick = onNavigateToPlanner,
-                onProfileClick = onNavigateToProfile
-            )
+        topBar = {
+            PlannerTopBar()
         },
         floatingActionButton = {
             FloatingActionButton(
@@ -100,6 +89,7 @@ fun PlannerScreen(
     }
 }
 
+
 @Composable
 private fun PlannerScreenContent(
     selectedDay: PlannerDayUiModel,
@@ -123,10 +113,6 @@ private fun PlannerScreenContent(
         verticalArrangement = Arrangement.spacedBy(20.dp)
     ) {
         item {
-            PlannerHeader()
-        }
-
-        item {
             WeeklyCalendarSection(
                 days = weekDays,
                 onDaySelected = onDaySelected
@@ -148,48 +134,6 @@ private fun PlannerScreenContent(
                     PlannerTimelineCard(item = item)
                 }
             }
-        }
-    }
-}
-
-@Composable
-private fun PlannerHeader() {
-    val colors = MemoCraftTheme.colors
-
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.Top
-    ) {
-        Column {
-            Text(
-                text = "Planner",
-                style = MaterialTheme.typography.headlineSmall,
-                color = MaterialTheme.colorScheme.onBackground,
-                fontWeight = FontWeight.Bold
-            )
-
-            Spacer(modifier = Modifier.height(4.dp))
-
-            Text(
-                text = "Organize your day with clarity",
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.65f)
-            )
-        }
-
-        Box(
-            modifier = Modifier
-                .size(46.dp)
-                .clip(RoundedCornerShape(14.dp))
-                .background(MaterialTheme.colorScheme.surfaceVariant),
-            contentAlignment = Alignment.Center
-        ) {
-            Icon(
-                imageVector = Icons.Rounded.CalendarMonth,
-                contentDescription = "Calendar",
-                tint = MaterialTheme.colorScheme.primary
-            )
         }
     }
 }

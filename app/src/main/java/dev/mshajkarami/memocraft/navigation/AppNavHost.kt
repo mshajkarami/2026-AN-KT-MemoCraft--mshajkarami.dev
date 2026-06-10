@@ -30,23 +30,11 @@ fun AppNavHost(
             route = Graph.MAIN
         ) {
             composable(HomeDestination.route) {
-                HomeScreen(
-                    onNavigateToTasks = navigator::navigateToTasks,
-                    onNavigateToAi = navigator::navigateToAi,
-                    onNavigateToPlanner = navigator::navigateToPlanner,
-                    onNavigateToProfile = navigator::navigateToProfile,
-                    onNavigateToHome = navigator::navigateToHome
-                )
+                HomeScreen()
             }
 
             composable(TasksDestination.route) {
-                TasksScreen(
-                    onNavigateToTasks = navigator::navigateToTasks,
-                    onNavigateToAi = navigator::navigateToAi,
-                    onNavigateToPlanner = navigator::navigateToPlanner,
-                    onNavigateToProfile = navigator::navigateToProfile,
-                    onNavigateToHome = navigator::navigateToHome
-                )
+                TasksScreen()
             }
 
             composable(AiDestination.route) {
@@ -60,23 +48,11 @@ fun AppNavHost(
             }
 
             composable(PlannerDestination.route) {
-                PlannerScreen(
-                    onNavigateToTasks = navigator::navigateToTasks,
-                    onNavigateToAi = navigator::navigateToAi,
-                    onNavigateToPlanner = navigator::navigateToPlanner,
-                    onNavigateToProfile = navigator::navigateToProfile,
-                    onNavigateToHome = navigator::navigateToHome
-                )
+                PlannerScreen()
             }
 
             composable(ProfileDestination.route) {
-                ProfileScreen(
-                    onNavigateToTasks = navigator::navigateToTasks,
-                    onNavigateToAi = navigator::navigateToAi,
-                    onNavigateToPlanner = navigator::navigateToPlanner,
-                    onNavigateToProfile = navigator::navigateToProfile,
-                    onNavigateToHome = navigator::navigateToHome
-                )
+                ProfileScreen()
             }
         }
     }

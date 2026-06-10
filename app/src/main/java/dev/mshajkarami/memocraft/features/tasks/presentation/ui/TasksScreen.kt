@@ -31,17 +31,11 @@ import dev.mshajkarami.memocraft.features.tasks.presentation.ui.components.Empty
 import dev.mshajkarami.memocraft.features.tasks.presentation.ui.components.TaskFilterChips
 import dev.mshajkarami.memocraft.features.tasks.presentation.ui.components.TaskSummaryCard
 import dev.mshajkarami.memocraft.features.tasks.presentation.ui.components.TasksTopBar
-import dev.mshajkarami.memocraft.navigation.BottomNavBar
-import dev.mshajkarami.memocraft.navigation.BottomNavItem
+
 
 @Composable
 fun TasksScreen(
-    modifier: Modifier = Modifier,
-    onNavigateToHome: () -> Unit = {},
-    onNavigateToTasks: () -> Unit = {},
-    onNavigateToAi: () -> Unit = {},
-    onNavigateToPlanner: () -> Unit = {},
-    onNavigateToProfile: () -> Unit = {}
+    modifier: Modifier = Modifier
 ) {
     val colors = MemoCraftTheme.colors
     val tasks = remember { taskMockData() }
@@ -63,16 +57,6 @@ fun TasksScreen(
         topBar = {
             TasksTopBar(
                 onSearchClick = {}
-            )
-        },
-        bottomBar = {
-            BottomNavBar(
-                selectedItem = BottomNavItem.Tasks,
-                onHomeClick = onNavigateToHome,
-                onTasksClick = onNavigateToTasks,
-                onAiClick = onNavigateToAi,
-                onPlannerClick = onNavigateToPlanner,
-                onProfileClick = onNavigateToProfile
             )
         },
         floatingActionButton = {
@@ -98,6 +82,7 @@ fun TasksScreen(
         )
     }
 }
+
 @Composable
 private fun TasksScreenContent(
     tasks: List<TaskCardUiModel>,

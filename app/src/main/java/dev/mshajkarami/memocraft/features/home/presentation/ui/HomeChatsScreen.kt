@@ -13,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import dev.mshajkarami.memocraft.core.presentation.ui.theme.MemoCraftAppTheme
 import dev.mshajkarami.memocraft.core.presentation.ui.theme.MemoCraftTheme
@@ -30,12 +31,7 @@ import dev.mshajkarami.memocraft.navigation.BottomNavItem
 
 @Composable
 fun HomeScreen(
-    modifier: Modifier = Modifier,
-    onNavigateToHome: () -> Unit = {},
-    onNavigateToTasks: () -> Unit = {},
-    onNavigateToAi: () -> Unit = {},
-    onNavigateToPlanner: () -> Unit = {},
-    onNavigateToProfile: () -> Unit = {}
+    modifier: Modifier = Modifier
 ) {
     val colors = MemoCraftTheme.colors
     val tasks = remember { homeMockTasks() }
@@ -52,25 +48,24 @@ fun HomeScreen(
         },
         bottomBar = {
             BottomNavBar(
-                selectedItem = BottomNavItem.Home,
-                onHomeClick = onNavigateToHome,
-                onTasksClick = onNavigateToTasks,
-                onAiClick = onNavigateToAi,
-                onPlannerClick = onNavigateToPlanner,
-                onProfileClick = onNavigateToProfile
+                selectedItem = BottomNavItem.Home
             )
         }
     ) { innerPadding ->
         HomeScreenContent(
             tasks = tasks,
-            modifier = Modifier.padding(innerPadding)
+            bottomPadding = innerPadding.calculateBottomPadding(),
+            modifier = Modifier.padding(top = innerPadding.calculateTopPadding())
         )
     }
+
 }
+
 
 @Composable
 private fun HomeScreenContent(
     tasks: List<TaskCardUiModel>,
+    bottomPadding: Dp,
     modifier: Modifier = Modifier
 ) {
     LazyColumn(
@@ -79,7 +74,7 @@ private fun HomeScreenContent(
             start = 20.dp,
             end = 20.dp,
             top = 18.dp,
-            bottom = 24.dp
+            bottom = bottomPadding + 16.dp
         ),
         verticalArrangement = Arrangement.spacedBy(18.dp)
     ) {

@@ -6,17 +6,18 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.AutoAwesome
 import androidx.compose.material.icons.outlined.CalendarToday
 import androidx.compose.material.icons.outlined.Home
+import androidx.compose.material.icons.outlined.NotificationsNone
 import androidx.compose.material.icons.outlined.PersonOutline
 import androidx.compose.material.icons.outlined.TaskAlt
 import androidx.compose.material3.Icon
@@ -24,27 +25,16 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Outline
-import androidx.compose.ui.graphics.Path
-import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Density
-import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import dev.mshajkarami.memocraft.core.presentation.ui.theme.MemoCraftAppTheme
 import dev.mshajkarami.memocraft.core.presentation.ui.theme.MemoCraftTheme
-import dev.mshajkarami.memocraft.navigation.BottomNavItem
 
 @Composable
 fun BottomNavBar(
@@ -56,247 +46,189 @@ fun BottomNavBar(
     onPlannerClick: () -> Unit = {},
     onProfileClick: () -> Unit = {}
 ) {
-    val navShape = remember { bottomBarWithCenterNotchShape() }
     val colors = MemoCraftTheme.colors
+    val selectedColor = colors.bottomNavSelectedContent
+    val unselectedColor = colors.bottomNavUnselectedContent.copy(alpha = 0.72f)
+    val containerColor = colors.bottomNavContainer
 
     Box(
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier
+            .fillMaxWidth()
+            .navigationBarsPadding()
+            .padding(
+                start = 24.dp,
+                end = 24.dp,
+                top = 14.dp,
+                bottom = 28.dp
+            ),
         contentAlignment = Alignment.BottomCenter
     ) {
         Surface(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(84.dp)
+                .height(76.dp)
                 .shadow(
-                    elevation = 16.dp,
-                    shape = navShape,
+                    elevation = 18.dp,
+                    shape = RoundedCornerShape(38.dp),
                     clip = false
                 ),
-            color = colors.bottomNavContainer,
-            shape = navShape
+            color = containerColor,
+            shape = RoundedCornerShape(38.dp)
         ) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 18.dp, vertical = 6.dp),
+                    .padding(horizontal = 28.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                BottomNavItemView(
-                    icon = {
-                        Icon(
-                            imageVector = Icons.Outlined.Home,
-                            contentDescription = "Home"
-                        )
-                    },
-                    text = "Home",
+                BottomNavIconButton(
                     selected = selectedItem == BottomNavItem.Home,
+                    selectedColor = selectedColor,
+                    unselectedColor = unselectedColor,
                     onClick = onHomeClick
-                )
+                ) {
+                    Icon(
+                        imageVector = Icons.Outlined.Home,
+                        contentDescription = "Home",
+                        modifier = Modifier.size(26.dp)
+                    )
+                }
 
-                BottomNavItemView(
-                    icon = {
-                        Icon(
-                            imageVector = Icons.Outlined.TaskAlt,
-                            contentDescription = "Tasks"
-                        )
-                    },
-                    text = "Tasks",
+                BottomNavIconButton(
                     selected = selectedItem == BottomNavItem.Tasks,
+                    selectedColor = selectedColor,
+                    unselectedColor = unselectedColor,
                     onClick = onTasksClick
+                ) {
+                    Icon(
+                        imageVector = Icons.Outlined.TaskAlt,
+                        contentDescription = "Tasks",
+                        modifier = Modifier.size(25.dp)
+                    )
+                }
+
+                CenterNavIconButton(
+                    selected = selectedItem == BottomNavItem.Ai,
+                    selectedColor = selectedColor,
+                    unselectedColor = unselectedColor,
+                    indicatorColor = colors.bottomNavSelectedIndicator,
+                    onClick = onAiClick
                 )
 
-                Spacer(modifier = Modifier.size(86.dp))
-
-                BottomNavItemView(
-                    icon = {
-                        Icon(
-                            imageVector = Icons.Outlined.CalendarToday,
-                            contentDescription = "Planner"
-                        )
-                    },
-                    text = "Planner",
+                BottomNavIconButton(
                     selected = selectedItem == BottomNavItem.Planner,
+                    selectedColor = selectedColor,
+                    unselectedColor = unselectedColor,
                     onClick = onPlannerClick
-                )
+                ) {
+                    Icon(
+                        imageVector = Icons.Outlined.NotificationsNone,
+                        contentDescription = "Planner",
+                        modifier = Modifier.size(26.dp)
+                    )
+                }
 
-                BottomNavItemView(
-                    icon = {
-                        Icon(
-                            imageVector = Icons.Outlined.PersonOutline,
-                            contentDescription = "Profile"
-                        )
-                    },
-                    text = "Profile",
+                BottomNavIconButton(
                     selected = selectedItem == BottomNavItem.Profile,
+                    selectedColor = selectedColor,
+                    unselectedColor = unselectedColor,
                     onClick = onProfileClick
-                )
+                ) {
+                    Icon(
+                        imageVector = Icons.Outlined.PersonOutline,
+                        contentDescription = "Profile",
+                        modifier = Modifier.size(27.dp)
+                    )
+                }
             }
         }
-
-        AiCenterButton(
-            selected = selectedItem == BottomNavItem.Ai,
-            onClick = onAiClick
-        )
     }
 }
 
-
 @Composable
-private fun BottomNavItemView(
-    icon: @Composable () -> Unit,
-    text: String,
+private fun BottomNavIconButton(
     selected: Boolean,
-    onClick: () -> Unit
+    selectedColor: Color,
+    unselectedColor: Color,
+    onClick: () -> Unit,
+    icon: @Composable () -> Unit
 ) {
-    val colors = MemoCraftTheme.colors
+    val contentColor = if (selected) selectedColor else unselectedColor
 
-    val contentColor = if (selected) {
-        colors.bottomNavSelectedContent
-    } else {
-        colors.bottomNavUnselectedContent
-    }
-
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+    Box(
+        modifier = Modifier.size(width = 48.dp, height = 56.dp),
+        contentAlignment = Alignment.TopCenter
     ) {
         IconButton(
-            modifier = Modifier.size(40.dp),
+            modifier = Modifier
+                .size(42.dp)
+                .align(Alignment.TopCenter),
             onClick = onClick
         ) {
-            CompositionLocalProvider(
-                LocalContentColor provides contentColor
-            ) {
+            CompositionLocalProvider(LocalContentColor provides contentColor) {
                 icon()
             }
         }
 
-        Text(
-            text = text,
-            color = contentColor,
-            fontSize = 11.sp,
-            fontWeight = if (selected) FontWeight.SemiBold else FontWeight.Normal
-        )
+        if (selected) {
+            Box(
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .padding(bottom = 2.dp)
+                    .size(5.dp)
+                    .background(selectedColor, CircleShape)
+            )
+        }
     }
 }
 
 
+
 @Composable
-private fun AiCenterButton(
+private fun CenterNavIconButton(
     selected: Boolean,
+    selectedColor: Color,
+    unselectedColor: Color,
+    indicatorColor: Color,
     onClick: () -> Unit
 ) {
-    val colors = MemoCraftTheme.colors
-
-    val mainColor = colors.bottomNavSelectedIndicator
-    val textColor = if (selected) {
-        colors.bottomNavSelectedContent
-    } else {
-        colors.bottomNavUnselectedContent
-    }
-
-    Column(
-        modifier = Modifier.offset(y = (-20).dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+    Box(
+        modifier = Modifier.size(width = 72.dp, height = 78.dp),
+        contentAlignment = Alignment.TopCenter
     ) {
         Surface(
             modifier = Modifier
-                .size(52.dp)
-                .shadow(
-                    elevation = 10.dp,
-                    shape = CircleShape,
-                    clip = false
-                ),
+                .size(58.dp)
+                .align(Alignment.TopCenter),
             shape = CircleShape,
-            color = mainColor,
-            contentColor = MaterialTheme.colorScheme.onPrimary,
+            color = indicatorColor.copy(alpha = 0.72f),
+            contentColor = selectedColor,
             onClick = onClick
         ) {
             Box(contentAlignment = Alignment.Center) {
                 Icon(
                     imageVector = Icons.Outlined.AutoAwesome,
                     contentDescription = "AI",
-                    tint = MaterialTheme.colorScheme.onPrimary,
-                    modifier = Modifier.size(20.dp)
+                    tint = Color.White,
+                    modifier = Modifier.size(24.dp)
                 )
             }
         }
 
-        Spacer(modifier = Modifier.height(2.dp))
-
-        Text(
-            text = "AI",
-            color = textColor,
-            fontSize = 10.sp,
-            fontWeight = if (selected) FontWeight.SemiBold else FontWeight.Normal
-        )
-    }
-
-}
-
-
-
-private fun bottomBarWithCenterNotchShape(): Shape {
-    return object : Shape {
-        override fun createOutline(
-            size: Size,
-            layoutDirection: LayoutDirection,
-            density: Density
-        ): Outline {
-            val path = Path()
-
-            with(density) {
-                val cornerRadius = 26.dp.toPx()
-                val notchRadius = 36.dp.toPx()
-                val notchDepth = 38.dp.toPx()
-                val notchShoulder = 16.dp.toPx()
-                val centerX = size.width / 2f
-
-                path.moveTo(0f, size.height)
-                path.lineTo(0f, cornerRadius)
-
-                path.quadraticBezierTo(
-                    0f, 0f,
-                    cornerRadius, 0f
-                )
-
-                path.lineTo(centerX - notchRadius - notchShoulder, 0f)
-
-                path.cubicTo(
-                    centerX - notchRadius,
-                    0f,
-                    centerX - notchRadius + 4.dp.toPx(),
-                    notchDepth,
-                    centerX,
-                    notchDepth
-                )
-
-                path.cubicTo(
-                    centerX + notchRadius - 4.dp.toPx(),
-                    notchDepth,
-                    centerX + notchRadius,
-                    0f,
-                    centerX + notchRadius + notchShoulder,
-                    0f
-                )
-
-                path.lineTo(size.width - cornerRadius, 0f)
-
-                path.quadraticBezierTo(
-                    size.width, 0f,
-                    size.width, cornerRadius
-                )
-
-                path.lineTo(size.width, size.height)
-                path.lineTo(0f, size.height)
-                path.close()
-            }
-
-            return Outline.Generic(path)
+        if (selected) {
+            Box(
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .padding(bottom = 1.dp)
+                    .size(5.dp)
+                    .background(selectedColor, CircleShape)
+            )
         }
     }
 }
+
+
 
 @Preview(
     name = "Bottom Navigation Bar - Light",
@@ -305,9 +237,7 @@ private fun bottomBarWithCenterNotchShape(): Shape {
 )
 @Composable
 private fun BottomNavBarLightPreview() {
-    MemoCraftAppTheme(
-        darkTheme = false
-    ) {
+    MemoCraftAppTheme(darkTheme = false) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -315,9 +245,7 @@ private fun BottomNavBarLightPreview() {
                 .background(MaterialTheme.colorScheme.background),
             contentAlignment = Alignment.BottomCenter
         ) {
-            BottomNavBar(
-                selectedItem = BottomNavItem.Home
-            )
+            BottomNavBar(selectedItem = BottomNavItem.Ai)
         }
     }
 }
@@ -330,9 +258,7 @@ private fun BottomNavBarLightPreview() {
 )
 @Composable
 private fun BottomNavBarDarkPreview() {
-    MemoCraftAppTheme(
-        darkTheme = true
-    ) {
+    MemoCraftAppTheme(darkTheme = true) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -340,10 +266,7 @@ private fun BottomNavBarDarkPreview() {
                 .background(MaterialTheme.colorScheme.background),
             contentAlignment = Alignment.BottomCenter
         ) {
-            BottomNavBar(
-                selectedItem = BottomNavItem.Ai
-            )
+            BottomNavBar(selectedItem = BottomNavItem.Ai)
         }
     }
 }
-

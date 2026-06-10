@@ -14,9 +14,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -29,7 +27,6 @@ import androidx.compose.material.icons.outlined.Logout
 import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material.icons.outlined.PersonOutline
 import androidx.compose.material.icons.outlined.PrivacyTip
-import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material.icons.outlined.StarOutline
 import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.material3.Card
@@ -37,7 +34,6 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -51,17 +47,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import dev.mshajkarami.memocraft.core.presentation.ui.theme.MemoCraftAppTheme
 import dev.mshajkarami.memocraft.core.presentation.ui.theme.MemoCraftTheme
-import dev.mshajkarami.memocraft.navigation.BottomNavBar
-import dev.mshajkarami.memocraft.navigation.BottomNavItem
 
 @Composable
 fun ProfileScreen(
     modifier: Modifier = Modifier,
-    onNavigateToHome: () -> Unit = {},
-    onNavigateToTasks: () -> Unit = {},
-    onNavigateToAi: () -> Unit = {},
-    onNavigateToPlanner: () -> Unit = {},
-    onNavigateToProfile: () -> Unit = {},
     onEditProfileClick: () -> Unit = {},
     onAccountClick: () -> Unit = {},
     onNotificationsClick: () -> Unit = {},
@@ -73,8 +62,6 @@ fun ProfileScreen(
     onRateAppClick: () -> Unit = {},
     onLogoutClick: () -> Unit = {}
 ) {
-    val colors = MemoCraftTheme.colors
-
     val preferences = remember {
         listOf(
             ProfileMenuItem(
@@ -140,27 +127,12 @@ fun ProfileScreen(
         )
     }
 
-    Scaffold(
-        modifier = modifier,
-        containerColor = colors.bottomNavContainer,
-        bottomBar = {
-            BottomNavBar(
-                selectedItem = BottomNavItem.Profile,
-                onHomeClick = onNavigateToHome,
-                onTasksClick = onNavigateToTasks,
-                onAiClick = onNavigateToAi,
-                onPlannerClick = onNavigateToPlanner,
-                onProfileClick = onNavigateToProfile
-            )
-        }
-    ) { innerPadding ->
-        ProfileScreenContent(
-            preferences = preferences,
-            appSettings = appSettings,
-            onEditProfileClick = onEditProfileClick,
-            modifier = Modifier.padding(innerPadding)
-        )
-    }
+    ProfileScreenContent(
+        preferences = preferences,
+        appSettings = appSettings,
+        onEditProfileClick = onEditProfileClick,
+        modifier = modifier
+    )
 }
 
 @Composable
