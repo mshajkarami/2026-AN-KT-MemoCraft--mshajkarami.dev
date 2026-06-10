@@ -61,7 +61,9 @@ fun TasksScreen(
         modifier = modifier,
         containerColor = colors.bottomNavContainer,
         topBar = {
-            TasksTopBar()
+            TasksTopBar(
+                onSearchClick = {}
+            )
         },
         bottomBar = {
             BottomNavBar(

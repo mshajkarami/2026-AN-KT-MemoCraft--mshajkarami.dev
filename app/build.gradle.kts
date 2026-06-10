@@ -5,7 +5,7 @@ plugins {
 
 android {
     namespace = "dev.mshajkarami.memocraft"
-    compileSdk = 36
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "dev.mshajkarami.memocraft"

@@ -44,7 +44,11 @@ fun HomeScreen(
         modifier = modifier,
         containerColor = colors.bottomNavContainer,
         topBar = {
-            HomeTopBar()
+            HomeTopBar(
+                onNotificationClick = {},
+                onSearchClick = {},
+                hasNotification = false
+            )
         },
         bottomBar = {
             BottomNavBar(

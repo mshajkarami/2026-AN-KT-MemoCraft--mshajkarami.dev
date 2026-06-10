@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
@@ -30,104 +31,44 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import dev.mshajkarami.memocraft.R
+import dev.mshajkarami.memocraft.core.presentation.ui.components.BaseTopBar
 import dev.mshajkarami.memocraft.core.presentation.ui.theme.MemoCraftAppTheme
 import dev.mshajkarami.memocraft.core.presentation.ui.theme.MemoCraftTheme
 
 @Composable
 fun HomeTopBar(
-    modifier: Modifier = Modifier,
-    title: String = "MemoCraft",
-    subtitle: String = "Your smart planner",
-    hasNotification: Boolean = true,
-    onSearchClick: () -> Unit = {},
-    onNotificationClick: () -> Unit = {},
-    onProfileClick: () -> Unit = {}
+    onSearchClick: () -> Unit,
+    onNotificationClick: () -> Unit,
+    hasNotification: Boolean
 ) {
-    val colors = MemoCraftTheme.colors
-
-    Surface(
-        modifier = modifier.fillMaxWidth(),
-        color = colors.topBarBackground,
-        shadowElevation = 2.dp
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .statusBarsPadding()
-                .background(colors.topBarBackground)
-                .padding(horizontal = 16.dp, vertical = 8.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_logo),
-                    contentDescription = "MemoCraft Logo",
-                    tint = Color.Unspecified,
-                    modifier = Modifier.size(40.dp)
-                )
-
-                Spacer(modifier = Modifier.size(8.dp))
-
-                Column(
-                    verticalArrangement = Arrangement.Center
-                ) {
-                    Text(
-                        text = title,
-                        style = MaterialTheme.typography.titleMedium.copy(
-                            fontWeight = FontWeight.SemiBold
-                        ),
-                        color = colors.topBarTitleColor,
-                        maxLines = 1
-                    )
-
-                    Spacer(modifier = Modifier.height(1.dp))
-
-                    Text(
-                        text = subtitle,
-                        style = MaterialTheme.typography.labelSmall,
-                        color = colors.topBarSubtitleColor,
-                        maxLines = 1
-                    )
-                }
+    BaseTopBar(
+        actions = {
+            IconButton(onClick = onSearchClick) {
+                Icon(Icons.Outlined.Search, "Search", tint = MemoCraftTheme.colors.topBarActionIconColor)
             }
+            NotificationAction(
+                hasNotification = hasNotification,
+                onClick = onNotificationClick
+            )
+        }
+    )
+}
 
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(0.dp)
-            ) {
-                IconButton(onClick = onSearchClick) {
-                    Icon(
-                        imageVector = Icons.Outlined.Search,
-                        contentDescription = "Search",
-                        tint = colors.topBarActionIconColor,
-                        modifier = Modifier.size(22.dp)
-                    )
-                }
-
-                Box {
-                    IconButton(onClick = onNotificationClick) {
-                        Icon(
-                            imageVector = Icons.Outlined.NotificationsNone,
-                            contentDescription = "Notifications",
-                            tint = colors.topBarActionIconColor,
-                            modifier = Modifier.size(22.dp)
-                        )
-                    }
-
-                    if (hasNotification) {
-                        Box(
-                            modifier = Modifier
-                                .size(8.dp)
-                                .clip(CircleShape)
-                                .background(colors.topBarNotificationBadge)
-                                .align(Alignment.TopEnd)
-                        )
-                    }
-                }
-            }
+@Composable
+fun NotificationAction(hasNotification: Boolean, onClick: () -> Unit) {
+    Box {
+        IconButton(onClick = onClick) {
+            Icon(Icons.Outlined.NotificationsNone, "Notifications", tint = MemoCraftTheme.colors.topBarActionIconColor)
+        }
+        if (hasNotification) {
+            Box(
+                modifier = Modifier
+                    .size(8.dp)
+                    .clip(CircleShape)
+                    .background(MemoCraftTheme.colors.topBarNotificationBadge)
+                    .align(Alignment.TopEnd)
+                    .offset(x = (-4).dp, y = 4.dp) // تنظیم دقیق جایگاه نقطه
+            )
         }
     }
 }
@@ -142,7 +83,9 @@ fun HomeTopBar(
 @Composable
 private fun HomeTopBarLightPreview() {
     MemoCraftAppTheme(darkTheme = false) {
-        HomeTopBar()
+        HomeTopBar(
+            onSearchClick = {}, onNotificationClick = {}, hasNotification = true
+        )
     }
 }
 
@@ -156,6 +99,8 @@ private fun HomeTopBarLightPreview() {
 @Composable
 private fun HomeTopBarDarkPreview() {
     MemoCraftAppTheme(darkTheme = true) {
-        HomeTopBar()
+        HomeTopBar(
+            onSearchClick = {}, onNotificationClick = {}, hasNotification = true
+        )
     }
 }

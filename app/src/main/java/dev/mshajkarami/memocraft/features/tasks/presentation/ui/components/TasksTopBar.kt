@@ -17,44 +17,25 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import dev.mshajkarami.memocraft.core.presentation.ui.theme.MemoCraftTheme
 import androidx.compose.ui.unit.dp
+import dev.mshajkarami.memocraft.core.presentation.ui.components.BaseTopBar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TasksTopBar() {
-    val colors = MemoCraftTheme.colors
-
-    TopAppBar(
-        title = {
-            Text(
-                text = "Tasks",
-                color = colors.topBarTitleColor
-            )
-        },
+fun TasksTopBar(
+    onSearchClick: () -> Unit
+) {
+    BaseTopBar(
+        title = "Tasks",
+        subtitle = "Manage your daily work", // یا null اگر نمیخواهید
         actions = {
-            Row {
-                IconButton(onClick = { /* TODO */ }) {
-                    Icon(
-                        imageVector = Icons.Outlined.Search,
-                        contentDescription = "Search tasks",
-                        tint = colors.topBarActionIconColor
-                    )
-                }
-                IconButton(onClick = { /* TODO */ }) {
-                    Icon(
-                        imageVector = Icons.Outlined.NotificationsNone,
-                        contentDescription = "Notifications",
-                        tint = colors.topBarActionIconColor
-                    )
-                }
+            IconButton(onClick = onSearchClick) {
+                Icon(
+                    imageVector = Icons.Outlined.Search,
+                    contentDescription = "Search tasks",
+                    tint = MemoCraftTheme.colors.topBarActionIconColor
+                )
             }
-        },
-        colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = colors.topBarContainerBackground,
-            titleContentColor = colors.topBarTitleColor,
-            actionIconContentColor = colors.topBarActionIconColor
-        ),
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 8.dp)
+            // اینجا دکمه نوتیفیکیشن حذف شده یا می‌تواند متفاوت باشد
+        }
     )
 }
