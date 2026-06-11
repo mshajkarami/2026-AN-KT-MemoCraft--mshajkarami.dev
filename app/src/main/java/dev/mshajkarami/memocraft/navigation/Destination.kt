@@ -25,3 +25,7 @@ data object PlannerDestination : BottomBarDestination {
 data object ProfileDestination : BottomBarDestination {
     override val route: String = "profile"
 }
+
+data object CreateTaskDestination  : BottomBarDestination {
+    override val route: String = "create_task"
+}

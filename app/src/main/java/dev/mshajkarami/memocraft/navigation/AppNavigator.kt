@@ -25,6 +25,8 @@ class AppNavigator(
     fun navigateToPlanner() = navigateToBottomBarDestination(PlannerDestination.route)
 
     fun navigateToProfile() = navigateToBottomBarDestination(ProfileDestination.route)
+    fun navigateToCreateTask() = navigateToBottomBarDestination(CreateTaskDestination.route)
+
 
     fun navigateUp() {
         navController.navigateUp()

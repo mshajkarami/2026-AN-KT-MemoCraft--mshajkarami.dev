@@ -11,7 +11,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -29,9 +32,10 @@ import dev.mshajkarami.memocraft.core.presentation.ui.theme.MemoCraftTheme
 fun BaseTopBar(
     modifier: Modifier = Modifier,
     title: String = "MemoCraft",
-    subtitle: String? = "Your smart planner", // امکان حذف زیرعنوان
+    subtitle: String? = "Your smart planner",
     showLogo: Boolean = true,
-    actions: @Composable RowScope.() -> Unit = {} // اسلاتی برای آیکون‌های سمت راست
+    navigationIcon: (@Composable () -> Unit)? = null,
+    actions: @Composable RowScope.() -> Unit = {}
 ) {
     val colors = MemoCraftTheme.colors
 
@@ -48,9 +52,14 @@ fun BaseTopBar(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // بخش سمت چپ: لوگو و متون
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                if (showLogo) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.weight(1f)
+            ) {
+                if (navigationIcon != null) {
+                    navigationIcon()
+                    Spacer(modifier = Modifier.width(8.dp))
+                } else if (showLogo) {
                     Icon(
                         painter = painterResource(id = R.drawable.ic_logo),
                         contentDescription = "Logo",
@@ -82,11 +91,38 @@ fun BaseTopBar(
                 }
             }
 
-            // بخش سمت راست: اکشن‌ها
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 content = actions
             )
         }
     }
+}
+
+@Composable
+fun BaseBackTopBar(
+    title: String,
+    modifier: Modifier = Modifier,
+    subtitle: String? = null,
+    onBackClick: () -> Unit,
+    actions: @Composable RowScope.() -> Unit = {}
+) {
+    val colors = MemoCraftTheme.colors
+
+    BaseTopBar(
+        modifier = modifier,
+        title = title,
+        subtitle = subtitle,
+        showLogo = false,
+        navigationIcon = {
+            IconButton(onClick = onBackClick) {
+                Icon(
+                    imageVector = Icons.Rounded.ArrowBack,
+                    contentDescription = "Back",
+                    tint = colors.topBarActionIconColor
+                )
+            }
+        },
+        actions = actions
+    )
 }

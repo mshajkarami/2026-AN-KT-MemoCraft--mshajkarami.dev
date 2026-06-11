@@ -35,6 +35,7 @@ import dev.mshajkarami.memocraft.features.tasks.presentation.ui.components.Tasks
 
 @Composable
 fun TasksScreen(
+    onCreateTaskClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val colors = MemoCraftTheme.colors
@@ -61,7 +62,7 @@ fun TasksScreen(
         },
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { /* TODO: Navigate to create task */ },
+                onClick = onCreateTaskClick,
                 containerColor = androidx.compose.material3.MaterialTheme.colorScheme.primary,
                 contentColor = androidx.compose.material3.MaterialTheme.colorScheme.onPrimary
             ) {
@@ -197,7 +198,9 @@ private fun taskMockData(): List<TaskCardUiModel> {
 @Composable
 private fun TasksScreenLightPreview() {
     MemoCraftAppTheme(darkTheme = false) {
-        TasksScreen()
+        TasksScreen(
+            {}
+        )
     }
 }
 
@@ -211,6 +214,8 @@ private fun TasksScreenLightPreview() {
 @Composable
 private fun TasksScreenDarkPreview() {
     MemoCraftAppTheme(darkTheme = true) {
-        TasksScreen()
+        TasksScreen(
+            {}
+        )
     }
 }

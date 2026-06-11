@@ -26,7 +26,7 @@ fun TasksTopBar(
 ) {
     BaseTopBar(
         title = "Tasks",
-        subtitle = "Manage your daily work", // یا null اگر نمیخواهید
+        subtitle = "Manage your daily work",
         actions = {
             IconButton(onClick = onSearchClick) {
                 Icon(
@@ -35,7 +35,6 @@ fun TasksTopBar(
                     tint = MemoCraftTheme.colors.topBarActionIconColor
                 )
             }
-            // اینجا دکمه نوتیفیکیشن حذف شده یا می‌تواند متفاوت باشد
         }
     )
 }
