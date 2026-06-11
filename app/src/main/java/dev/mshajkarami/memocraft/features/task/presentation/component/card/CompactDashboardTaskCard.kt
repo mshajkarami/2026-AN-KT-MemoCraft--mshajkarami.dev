@@ -105,19 +105,19 @@ fun CompactDashboardTaskCard(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(6.dp)
                 ) {
-                    ->
                     TaskPriorityChip(priority = task.priority)
                     TaskStatusChip(status = task.status)
+
+                    task.timeLabel?.takeIf { it.isNotBlank() }?.let { timeLabel ->
+                        Text(
+                            text = timeLabel,
+                            style = MaterialTheme.typography.labelSmall,
+                            color = colors.progressMiniCardContent.copy(alpha = 0.72f),
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
                 }
-            }
-
-            if (!task.assigneeInitials.isNullOrBlank()) {
-                Spacer(modifier = Modifier.width(10.dp))
-
-                TaskAvatar(
-                    initials = task.assigneeInitials,
-                    modifier = Modifier.size(36.dp)
-                )
             }
         }
     }

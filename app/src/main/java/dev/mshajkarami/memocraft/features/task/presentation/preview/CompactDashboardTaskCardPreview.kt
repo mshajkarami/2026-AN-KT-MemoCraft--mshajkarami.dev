@@ -39,8 +39,7 @@ private fun CompactDashboardTaskCardLightPreview() {
                     title = "Develop New API Endpoints",
                     progress = 65,
                     priority = TaskPriority.Urgent,
-                    status = TaskStatus.InProgress,
-                    assigneeInitials = "MS"
+                    status = TaskStatus.InProgress
                 )
             )
         }
@@ -69,8 +68,7 @@ private fun CompactDashboardTaskCardDarkPreview() {
                     title = "Develop New API Endpoints",
                     progress = 65,
                     priority = TaskPriority.Urgent,
-                    status = TaskStatus.InProgress,
-                    assigneeInitials = "MS"
+                    status = TaskStatus.InProgress
                 )
             )
         }

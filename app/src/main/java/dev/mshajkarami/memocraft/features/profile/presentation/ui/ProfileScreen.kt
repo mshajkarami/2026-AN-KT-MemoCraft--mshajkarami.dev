@@ -47,6 +47,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import dev.mshajkarami.memocraft.core.presentation.ui.theme.MemoCraftAppTheme
 import dev.mshajkarami.memocraft.core.presentation.ui.theme.MemoCraftTheme
+import dev.mshajkarami.memocraft.features.profile.presentation.ui.component.ProfileTopBar
 
 @Composable
 fun ProfileScreen(
@@ -144,52 +145,55 @@ private fun ProfileScreenContent(
 ) {
     val colors = MemoCraftTheme.colors
 
-    LazyColumn(
+    Column(
         modifier = modifier
             .fillMaxSize()
-            .background(colors.bottomNavContainer),
-        contentPadding = PaddingValues(
-            start = 20.dp,
-            end = 20.dp,
-            top = 20.dp,
-            bottom = 110.dp
-        ),
-        verticalArrangement = Arrangement.spacedBy(18.dp)
+            .background(colors.bottomNavContainer)
     ) {
-        item {
-            ProfileHeader(
-                onEditProfileClick = onEditProfileClick
-            )
-        }
+        ProfileTopBar(
+            onEditProfileClick = onEditProfileClick
+        )
 
-        item {
-            ProfileInfoCard()
-        }
+        LazyColumn(
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = PaddingValues(
+                start = 20.dp,
+                end = 20.dp,
+                top = 20.dp,
+                bottom = 110.dp
+            ),
+            verticalArrangement = Arrangement.spacedBy(18.dp)
+        ) {
+            item {
+                ProfileInfoCard()
+            }
 
-        item {
-            ProfileStatsRow()
-        }
+            item {
+                ProfileStatsRow()
+            }
 
-        item {
-            SectionTitle(title = "Preferences")
-        }
+            item {
+                SectionTitle(title = "Preferences")
+            }
 
-        item {
-            SettingsGroupCard(items = preferences)
-        }
+            item {
+                SettingsGroupCard(items = preferences)
+            }
 
-        item {
-            SectionTitle(title = "General Settings")
-        }
+            item {
+                SectionTitle(title = "General Settings")
+            }
 
-        item {
-            SettingsGroupCard(items = appSettings)
-        }
+            item {
+                SettingsGroupCard(items = appSettings)
+            }
 
-        item {
-            AppVersionFooter(version = "MemoCraft v1.0.0")
+            item {
+                AppVersionFooter(version = "MemoCraft v1.0.0")
+            }
         }
     }
+
 }
 
 @Composable

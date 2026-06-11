@@ -124,7 +124,6 @@ private fun homeMockTasks(): List<TaskCardUiModel> {
             progress = 100,
             priority = TaskPriority.Normal,
             status = TaskStatus.Completed,
-            assigneeInitials = "MS",
             isCompleted = true
         ),
         TaskCardUiModel(
@@ -133,7 +132,6 @@ private fun homeMockTasks(): List<TaskCardUiModel> {
             progress = 50,
             priority = TaskPriority.Urgent,
             status = TaskStatus.InProgress,
-            assigneeInitials = "BK",
             isCompleted = false
         ),
         TaskCardUiModel(
@@ -142,7 +140,6 @@ private fun homeMockTasks(): List<TaskCardUiModel> {
             progress = 20,
             priority = TaskPriority.Low,
             status = TaskStatus.Pending,
-            assigneeInitials = "TM",
             isCompleted = false
         )
     )

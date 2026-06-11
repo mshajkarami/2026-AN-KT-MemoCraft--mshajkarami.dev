@@ -158,7 +158,6 @@ private fun taskMockData(): List<TaskCardUiModel> {
             progress = 80,
             priority = TaskPriority.Normal,
             status = TaskStatus.InProgress,
-            assigneeInitials = "MS",
             isCompleted = false
         ),
         TaskCardUiModel(
@@ -167,7 +166,6 @@ private fun taskMockData(): List<TaskCardUiModel> {
             progress = 30,
             priority = TaskPriority.Urgent,
             status = TaskStatus.Pending,
-            assigneeInitials = "AL",
             isCompleted = false
         ),
         TaskCardUiModel(
@@ -176,7 +174,6 @@ private fun taskMockData(): List<TaskCardUiModel> {
             progress = 100,
             priority = TaskPriority.Low,
             status = TaskStatus.Completed,
-            assigneeInitials = "BK",
             isCompleted = true
         ),
         TaskCardUiModel(
@@ -185,7 +182,6 @@ private fun taskMockData(): List<TaskCardUiModel> {
             progress = 60,
             priority = TaskPriority.Normal,
             status = TaskStatus.InProgress,
-            assigneeInitials = "TM",
             isCompleted = false
         )
     )
