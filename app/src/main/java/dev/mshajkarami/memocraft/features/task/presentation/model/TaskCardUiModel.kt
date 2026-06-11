@@ -1,6 +1,8 @@
 package dev.mshajkarami.memocraft.features.task.presentation.model
 
 import androidx.compose.runtime.Immutable
+import dev.mshajkarami.memocraft.features.task.domain.model.TaskPriority
+import dev.mshajkarami.memocraft.features.task.domain.model.TaskStatus
 
 @Immutable
 data class TaskCardUiModel(

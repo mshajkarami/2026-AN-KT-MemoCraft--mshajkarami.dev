@@ -46,8 +46,8 @@ import dev.mshajkarami.memocraft.features.task.presentation.component.card.Compa
 import dev.mshajkarami.memocraft.features.task.presentation.component.card.rememberTaskCardBrushes
 import dev.mshajkarami.memocraft.features.task.presentation.model.SubTaskUiModel
 import dev.mshajkarami.memocraft.features.task.presentation.model.TaskCardUiModel
-import dev.mshajkarami.memocraft.features.task.presentation.model.TaskPriority
-import dev.mshajkarami.memocraft.features.task.presentation.model.TaskStatus
+import dev.mshajkarami.memocraft.features.task.domain.model.TaskPriority
+import dev.mshajkarami.memocraft.features.task.domain.model.TaskStatus
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

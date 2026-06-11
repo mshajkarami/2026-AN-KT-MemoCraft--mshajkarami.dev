@@ -24,10 +24,8 @@ import dev.mshajkarami.memocraft.features.home.presentation.ui.components.Sectio
 import dev.mshajkarami.memocraft.features.home.presentation.ui.components.progress.ProgressCard
 import dev.mshajkarami.memocraft.features.task.presentation.component.card.CompactDashboardTaskCard
 import dev.mshajkarami.memocraft.features.task.presentation.model.TaskCardUiModel
-import dev.mshajkarami.memocraft.features.task.presentation.model.TaskPriority
-import dev.mshajkarami.memocraft.features.task.presentation.model.TaskStatus
-import dev.mshajkarami.memocraft.navigation.BottomNavBar
-import dev.mshajkarami.memocraft.navigation.BottomNavItem
+import dev.mshajkarami.memocraft.features.task.domain.model.TaskPriority
+import dev.mshajkarami.memocraft.features.task.domain.model.TaskStatus
 
 @Composable
 fun HomeScreen(

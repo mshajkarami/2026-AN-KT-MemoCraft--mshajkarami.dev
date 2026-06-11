@@ -25,8 +25,8 @@ import dev.mshajkarami.memocraft.core.presentation.ui.theme.MemoCraftTheme
 import dev.mshajkarami.memocraft.features.home.presentation.ui.components.SectionHeader
 import dev.mshajkarami.memocraft.features.task.presentation.component.card.CompactDashboardTaskCard
 import dev.mshajkarami.memocraft.features.task.presentation.model.TaskCardUiModel
-import dev.mshajkarami.memocraft.features.task.presentation.model.TaskPriority
-import dev.mshajkarami.memocraft.features.task.presentation.model.TaskStatus
+import dev.mshajkarami.memocraft.features.task.domain.model.TaskPriority
+import dev.mshajkarami.memocraft.features.task.domain.model.TaskStatus
 import dev.mshajkarami.memocraft.features.tasks.presentation.ui.components.EmptyTasksState
 import dev.mshajkarami.memocraft.features.tasks.presentation.ui.components.TaskFilterChips
 import dev.mshajkarami.memocraft.features.tasks.presentation.ui.components.TaskSummaryCard

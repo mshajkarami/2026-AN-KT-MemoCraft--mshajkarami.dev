@@ -13,8 +13,8 @@ import androidx.compose.ui.unit.dp
 import dev.mshajkarami.memocraft.core.presentation.ui.theme.MemoCraftAppTheme
 import dev.mshajkarami.memocraft.features.task.presentation.component.card.CompactDashboardTaskCard
 import dev.mshajkarami.memocraft.features.task.presentation.model.TaskCardUiModel
-import dev.mshajkarami.memocraft.features.task.presentation.model.TaskPriority
-import dev.mshajkarami.memocraft.features.task.presentation.model.TaskStatus
+import dev.mshajkarami.memocraft.features.task.domain.model.TaskPriority
+import dev.mshajkarami.memocraft.features.task.domain.model.TaskStatus
 
 
 @Preview(
