@@ -14,6 +14,8 @@ import dev.mshajkarami.memocraft.features.task.domain.model.TaskPriority
 import dev.mshajkarami.memocraft.features.task.domain.usecase.CreateTaskUseCase
 import dev.mshajkarami.memocraft.features.task.presentation.model.SubTaskUiModel
 import kotlinx.coroutines.launch
+import java.time.LocalDate
+import java.time.format.DateTimeParseException
 import javax.inject.Inject
 
 @HiltViewModel
@@ -24,6 +26,10 @@ class CreateTaskViewModel @Inject constructor(
     companion object {
         private const val MAX_ESTIMATED_HOURS = 999
     }
+
+    var dueDateInput by mutableStateOf("")
+        private set
+
 
     var taskTitle by mutableStateOf("")
         private set
@@ -81,6 +87,11 @@ class CreateTaskViewModel @Inject constructor(
         newSubTaskTitle = value
     }
 
+    fun onDueDateChange(value: String) {
+        dueDateInput = value
+    }
+
+
     fun addSubTask() {
         val trimmedTitle = newSubTaskTitle.trim()
         if (trimmedTitle.isEmpty()) return
@@ -114,6 +125,19 @@ class CreateTaskViewModel @Inject constructor(
 
         val trimmedTitle = taskTitle.trim()
         val trimmedDescription = taskDescription.trim()
+        val trimmedDueDate = dueDateInput.trim()
+
+        val dueDate = if (trimmedDueDate.isEmpty()) {
+            null
+        } else {
+            try {
+                LocalDate.parse(trimmedDueDate)
+            } catch (exception: DateTimeParseException) {
+                errorMessage = "Due date format must be yyyy-MM-dd."
+                return
+            }
+        }
+
 
         if (trimmedTitle.isEmpty()) {
             errorMessage = "Task title cannot be empty."
@@ -123,6 +147,12 @@ class CreateTaskViewModel @Inject constructor(
 
         if (trimmedDescription.isEmpty()) {
             errorMessage = "Task description cannot be empty."
+            Log.d("CreateTask", "Description is empty")
+            return
+        }
+
+        if (trimmedDueDate.isEmpty()){
+            errorMessage = "Task DueDate cannot be empty."
             Log.d("CreateTask", "Description is empty")
             return
         }
@@ -141,6 +171,7 @@ class CreateTaskViewModel @Inject constructor(
                         title = trimmedTitle,
                         description = trimmedDescription,
                         estimatedDurationHours = estimatedHours,
+                        dueDate = dueDate,
                         priority = selectedPriority,
                         subTasks = subTasks.map {
                             SubTask(

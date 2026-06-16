@@ -14,9 +14,15 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Check
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerDialog
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -136,84 +142,112 @@ internal fun ProgressSection(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EstimatedTimeSection(
-    estimatedDurationHoursInput: String,
-    onEstimatedDurationHoursChange: (String) -> Unit
+fun DueDateSection(
+    dueDateInput: String,
+    onDueDateChange: (String) -> Unit,
+    modifier: Modifier = Modifier
 ) {
-    val colors = MemoCraftTheme.colors
+    var showDatePicker by remember { mutableStateOf(false) }
+    val datePickerState = rememberDatePickerState()
 
-    var isExpanded by remember(estimatedDurationHoursInput) {
-        mutableStateOf(estimatedDurationHoursInput.isNotBlank())
-    }
-
-    Column(
-        verticalArrangement = Arrangement.spacedBy(8.dp)
+    TaskInputContainer(
+        label = "Due Date",
+        modifier = modifier
     ) {
-        Row(
+        Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .clip(RoundedCornerShape(14.dp))
-                .background(colors.bottomNavContainer.copy(alpha = 0.5f))
-                .border(
-                    width = 1.dp,
-                    color = colors.compactTaskCardInnerBorder,
-                    shape = RoundedCornerShape(14.dp)
-                )
-                .clickable { isExpanded = !isExpanded }
-                .padding(horizontal = 14.dp, vertical = 12.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
+                .clickable { showDatePicker = true }
         ) {
-            Column(
-                verticalArrangement = Arrangement.spacedBy(2.dp)
-            ) {
-                Text(
-                    text = "Estimated Time",
-                    style = MaterialTheme.typography.labelLarge,
-                    color = colors.progressMiniCardContent,
-                    fontWeight = FontWeight.Bold
-                )
-
-                Text(
-                    text = estimatedDurationHoursInput
-                        .takeIf { it.isNotBlank() }
-                        ?.let { "$it hours" }
-                        ?: "Add estimated task duration",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = colors.progressMiniCardContent.copy(alpha = 0.55f)
-                )
-            }
-
-            Text(
-                text = if (isExpanded) "Hide" else "Add",
-                style = MaterialTheme.typography.labelMedium,
-                color = MaterialTheme.colorScheme.primary,
-                fontWeight = FontWeight.Bold
+            TransparentTextField(
+                value = dueDateInput,
+                onValueChange = {},
+                placeholder = "22 Feb",
+                modifier = Modifier.fillMaxWidth(),
+                singleLine = true,
+                readOnly = true,
+                enabled = false
             )
         }
+    }
 
-        if (isExpanded) {
-            TaskInputContainer(label = "Hours") {
-                TransparentTextField(
-                    value = estimatedDurationHoursInput,
-                    onValueChange = onEstimatedDurationHoursChange,
-                    placeholder = "e.g. 10",
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Number
-                    ),
-                    singleLine = true,
-                    suffix = {
-                        Text(
-                            text = "h",
-                            color = colors.progressMiniCardContent.copy(alpha = 0.7f)
-                        )
+    if (showDatePicker) {
+        DatePickerDialog(
+            onDismissRequest = {
+                showDatePicker = false
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        datePickerState.selectedDateMillis?.let { selectedMillis ->
+                            onDueDateChange(formatDueDate(selectedMillis))
+                        }
+
+                        showDatePicker = false
                     }
-                )
+                ) {
+                    Text(text = "OK")
+                }
+            },
+            dismissButton = {
+                TextButton(
+                    onClick = {
+                        showDatePicker = false
+                    }
+                ) {
+                    Text(text = "Cancel")
+                }
             }
+        ) {
+            DatePicker(
+                state = datePickerState
+            )
         }
     }
 }
+
+
+private fun formatDueDate(millis: Long): String {
+    val formatter = java.text.SimpleDateFormat("dd MMM", java.util.Locale.ENGLISH)
+    formatter.timeZone = java.util.TimeZone.getTimeZone("UTC")
+    return formatter.format(java.util.Date(millis))
+}
+
+@Composable
+fun EstimatedTimeSection(
+    estimatedDurationHoursInput: String,
+    onEstimatedDurationHoursChange: (String) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val colors = MemoCraftTheme.colors
+
+    TaskInputContainer(
+        label = "Estimated Time",
+        modifier = modifier
+    ) {
+        TransparentTextField(
+            value = estimatedDurationHoursInput,
+            onValueChange = { value ->
+                onEstimatedDurationHoursChange(value.filter { it.isDigit() })
+            },
+            placeholder = "10",
+            modifier = Modifier.fillMaxWidth(),
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Number
+            ),
+            singleLine = true,
+            suffix = {
+                Text(
+                    text = "h",
+                    color = colors.progressMiniCardContent.copy(alpha = 0.7f)
+                )
+            }
+        )
+    }
+}
+
 
 @Composable
 fun SubTaskSection(

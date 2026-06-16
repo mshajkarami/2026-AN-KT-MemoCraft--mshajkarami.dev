@@ -5,6 +5,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -33,7 +34,8 @@ import dev.mshajkarami.memocraft.features.task.presentation.component.card.remem
 @Composable
 fun SaveTaskButton(
     enabled: Boolean,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val containerColor = if (enabled) {
         MaterialTheme.colorScheme.primary
@@ -48,7 +50,7 @@ fun SaveTaskButton(
     }
 
     Box(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .height(56.dp)
             .clip(RoundedCornerShape(16.dp))
@@ -79,13 +81,15 @@ fun SaveTaskButton(
 @Composable
 fun TaskInputContainer(
     label: String,
+    modifier: Modifier = Modifier,
     content: @Composable () -> Unit
 ) {
     val colors = MemoCraftTheme.colors
     val brushes = rememberTaskCardBrushes()
     val shape = RoundedCornerShape(20.dp)
 
-    androidx.compose.foundation.layout.Column(
+    Column(
+        modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         Text(
@@ -106,7 +110,11 @@ fun TaskInputContainer(
                 )
                 .clip(shape)
                 .background(brushes.backgroundBrush)
-                .border(1.dp, brushes.borderBrush, shape)
+                .border(
+                    width = 1.dp,
+                    brush = brushes.borderBrush,
+                    shape = shape
+                )
         ) {
             Box(
                 modifier = Modifier
@@ -138,12 +146,13 @@ fun TaskInputContainer(
 @Composable
 fun PrioritySelector(
     selectedPriority: TaskPriority,
-    onPrioritySelected: (TaskPriority) -> Unit
+    onPrioritySelected: (TaskPriority) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val colors = MemoCraftTheme.colors
 
     Row(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         TaskPriority.entries.forEach { priority ->
@@ -168,7 +177,11 @@ fun PrioritySelector(
                     .background(containerColor)
                     .border(
                         width = 1.dp,
-                        color = if (isSelected) Color.Transparent else colors.compactTaskCardInnerBorder,
+                        color = if (isSelected) {
+                            Color.Transparent
+                        } else {
+                            colors.compactTaskCardInnerBorder
+                        },
                         shape = RoundedCornerShape(12.dp)
                     )
                     .clickable { onPrioritySelected(priority) }
@@ -179,7 +192,11 @@ fun PrioritySelector(
                     text = priority.name,
                     style = MaterialTheme.typography.labelLarge,
                     color = contentColor,
-                    fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium
+                    fontWeight = if (isSelected) {
+                        FontWeight.Bold
+                    } else {
+                        FontWeight.Medium
+                    }
                 )
             }
         }
@@ -193,7 +210,11 @@ internal fun TransparentTextField(
     placeholder: String,
     modifier: Modifier = Modifier,
     singleLine: Boolean = true,
+    readOnly: Boolean = false,
+    enabled: Boolean = true,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    leadingIcon: @Composable (() -> Unit)? = null,
+    trailingIcon: @Composable (() -> Unit)? = null,
     suffix: @Composable (() -> Unit)? = null
 ) {
     val colors = MemoCraftTheme.colors
@@ -208,17 +229,34 @@ internal fun TransparentTextField(
             )
         },
         modifier = modifier.fillMaxWidth(),
+        enabled = enabled,
+        readOnly = readOnly,
         colors = TextFieldDefaults.colors(
             focusedContainerColor = Color.Transparent,
             unfocusedContainerColor = Color.Transparent,
+            disabledContainerColor = Color.Transparent,
+            errorContainerColor = Color.Transparent,
+
             focusedIndicatorColor = Color.Transparent,
             unfocusedIndicatorColor = Color.Transparent,
+            disabledIndicatorColor = Color.Transparent,
+            errorIndicatorColor = Color.Transparent,
+
             focusedTextColor = colors.progressMiniCardContent,
             unfocusedTextColor = colors.progressMiniCardContent,
+            disabledTextColor = colors.progressMiniCardContent,
+
+            focusedPlaceholderColor = colors.progressMiniCardContent.copy(alpha = 0.5f),
+            unfocusedPlaceholderColor = colors.progressMiniCardContent.copy(alpha = 0.5f),
+            disabledPlaceholderColor = colors.progressMiniCardContent.copy(alpha = 0.5f),
+
             cursorColor = MaterialTheme.colorScheme.primary
         ),
         keyboardOptions = keyboardOptions,
         singleLine = singleLine,
+        leadingIcon = leadingIcon,
+        trailingIcon = trailingIcon,
         suffix = suffix
     )
 }
+

@@ -2,6 +2,7 @@ package dev.mshajkarami.memocraft.features.task.presentation.ui
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -10,7 +11,6 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -30,13 +30,13 @@ import dev.mshajkarami.memocraft.features.task.domain.model.TaskStatus
 import dev.mshajkarami.memocraft.features.task.presentation.model.SubTaskUiModel
 import dev.mshajkarami.memocraft.features.task.presentation.model.TaskCardUiModel
 
-
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreateTaskScreen(
     onBackClick: () -> Unit,
     taskTitle: String,
     onTaskTitleChange: (String) -> Unit,
+    dueDateInput: String,
+    onDueDateChange: (String) -> Unit,
     estimatedDurationHoursInput: String,
     onEstimatedDurationHoursChange: (String) -> Unit,
     selectedPriority: TaskPriority,
@@ -71,11 +71,13 @@ fun CreateTaskScreen(
         priority = selectedPriority,
         status = TaskStatus.Pending,
         isCompleted = progress == 100 && subTasks.isNotEmpty(),
-        timeLabel = estimatedDurationHoursInput
-            .takeIf { it.isNotBlank() }
-            ?.let { "$it h" }
-            ?: "Just now"
+        timeLabel = listOfNotNull(
+            dueDateInput.takeIf { it.isNotBlank() },
+            estimatedDurationHoursInput.takeIf { it.isNotBlank() }?.let { "$it h" }
+        ).joinToString(" • ").ifBlank { "Just now" }
+
     )
+
 
     Scaffold(
         modifier = modifier.fillMaxSize(),
@@ -104,10 +106,23 @@ fun CreateTaskScreen(
                 )
             }
 
-            EstimatedTimeSection(
-                estimatedDurationHoursInput = estimatedDurationHoursInput,
-                onEstimatedDurationHoursChange = onEstimatedDurationHoursChange
-            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                DueDateSection(
+                    dueDateInput = dueDateInput,
+                    onDueDateChange = onDueDateChange,
+                    modifier = Modifier.weight(1f)
+                )
+
+                EstimatedTimeSection(
+                    estimatedDurationHoursInput = estimatedDurationHoursInput,
+                    onEstimatedDurationHoursChange = onEstimatedDurationHoursChange,
+                    modifier = Modifier.weight(1f)
+                )
+            }
+
 
             PrioritySection(
                 selectedPriority = selectedPriority,
@@ -159,7 +174,7 @@ fun CreateTaskScreen(
     showBackground = true,
     backgroundColor = 0xFFF8F8FF,
     widthDp = 430,
-    heightDp = 932
+    heightDp = 1250
 )
 @Composable
 private fun CreateTaskScreenLightPreview() {
@@ -173,7 +188,7 @@ private fun CreateTaskScreenLightPreview() {
     showBackground = true,
     backgroundColor = 0xFF0F1226,
     widthDp = 430,
-    heightDp = 932
+    heightDp = 1250
 )
 @Composable
 private fun CreateTaskScreenDarkPreview() {
@@ -185,6 +200,7 @@ private fun CreateTaskScreenDarkPreview() {
 @Composable
 private fun CreateTaskScreenPreviewContent() {
     var taskTitle by remember { mutableStateOf("Design MemoCraft task flow") }
+    var dueDateInput by remember { mutableStateOf("22 Feb") }
     var estimatedDurationHoursInput by remember { mutableStateOf("10") }
     var selectedPriority by remember { mutableStateOf(TaskPriority.Urgent) }
     var newSubTaskTitle by remember { mutableStateOf("") }
@@ -206,6 +222,8 @@ private fun CreateTaskScreenPreviewContent() {
         onBackClick = {},
         taskTitle = taskTitle,
         onTaskTitleChange = { taskTitle = it },
+        dueDateInput = dueDateInput,
+        onDueDateChange = { dueDateInput = it },
         estimatedDurationHoursInput = estimatedDurationHoursInput,
         onEstimatedDurationHoursChange = { estimatedDurationHoursInput = it },
         selectedPriority = selectedPriority,
@@ -214,17 +232,27 @@ private fun CreateTaskScreenPreviewContent() {
         newSubTaskTitle = newSubTaskTitle,
         onNewSubTaskTitleChange = { newSubTaskTitle = it },
         onAddSubTask = {
-            val trimmed = newSubTaskTitle.trim()
-            if (trimmed.isNotEmpty()) {
-                subTasks.add(SubTaskUiModel(title = trimmed, isCompleted = false))
+            val trimmedTitle = newSubTaskTitle.trim()
+
+            if (trimmedTitle.isNotEmpty()) {
+                subTasks.add(
+                    SubTaskUiModel(
+                        title = trimmedTitle,
+                        isCompleted = false
+                    )
+                )
                 newSubTaskTitle = ""
             }
         },
         onSubTaskCheckedChange = { index, checked ->
-            subTasks[index] = subTasks[index].copy(isCompleted = checked)
+            subTasks.getOrNull(index)?.let { subTask ->
+                subTasks[index] = subTask.copy(isCompleted = checked)
+            }
         },
         onRemoveSubTask = { index ->
-            subTasks.removeAt(index)
+            if (index in subTasks.indices) {
+                subTasks.removeAt(index)
+            }
         },
         taskDescription = taskDescription,
         onTaskDescriptionChange = { taskDescription = it },
