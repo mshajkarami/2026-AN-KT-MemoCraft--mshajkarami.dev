@@ -12,6 +12,7 @@ data class Task(
     val dueDate: LocalDate? = null,
     val startAt: LocalDateTime? = null,
     val endAt: LocalDateTime? = null,
+    val estimatedDurationHours: Int? = null,
     val priority: TaskPriority = TaskPriority.Normal,
     val status: TaskStatus = TaskStatus.Pending,
     val subTasks: List<SubTask> = emptyList(),

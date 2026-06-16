@@ -9,48 +9,40 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.mshajkarami.memocraft.core.presentation.ui.theme.MemoCraftAppTheme
 import dev.mshajkarami.memocraft.core.presentation.ui.theme.MemoCraftTheme
 import dev.mshajkarami.memocraft.features.home.presentation.ui.components.SectionHeader
-import dev.mshajkarami.memocraft.features.task.presentation.component.card.CompactDashboardTaskCard
-import dev.mshajkarami.memocraft.features.task.presentation.model.TaskCardUiModel
 import dev.mshajkarami.memocraft.features.task.domain.model.TaskPriority
 import dev.mshajkarami.memocraft.features.task.domain.model.TaskStatus
+import dev.mshajkarami.memocraft.features.task.presentation.component.card.CompactDashboardTaskCard
+import dev.mshajkarami.memocraft.features.task.presentation.model.TaskCardUiModel
 import dev.mshajkarami.memocraft.features.tasks.presentation.ui.components.EmptyTasksState
 import dev.mshajkarami.memocraft.features.tasks.presentation.ui.components.TaskFilterChips
 import dev.mshajkarami.memocraft.features.tasks.presentation.ui.components.TaskSummaryCard
 import dev.mshajkarami.memocraft.features.tasks.presentation.ui.components.TasksTopBar
-
+import dev.mshajkarami.memocraft.features.tasks.presentation.viewmodel.TasksUiState
+import dev.mshajkarami.memocraft.features.tasks.presentation.viewmodel.TasksViewModel
 
 @Composable
 fun TasksScreen(
+    uiState: TasksUiState,
     onCreateTaskClick: () -> Unit,
+    onFilterSelected: (TaskFilter) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val colors = MemoCraftTheme.colors
-    val tasks = remember { taskMockData() }
-
-    var selectedFilter by remember { mutableStateOf(TaskFilter.All) }
-
-    val filteredTasks = remember(tasks, selectedFilter) {
-        when (selectedFilter) {
-            TaskFilter.All -> tasks
-            TaskFilter.InProgress -> tasks.filter { it.status == TaskStatus.InProgress }
-            TaskFilter.Pending -> tasks.filter { it.status == TaskStatus.Pending }
-            TaskFilter.Completed -> tasks.filter { it.status == TaskStatus.Completed }
-        }
-    }
 
     Scaffold(
         modifier = modifier,
@@ -63,8 +55,8 @@ fun TasksScreen(
         floatingActionButton = {
             FloatingActionButton(
                 onClick = onCreateTaskClick,
-                containerColor = androidx.compose.material3.MaterialTheme.colorScheme.primary,
-                contentColor = androidx.compose.material3.MaterialTheme.colorScheme.onPrimary
+                containerColor = MaterialTheme.colorScheme.primary,
+                contentColor = MaterialTheme.colorScheme.onPrimary
             ) {
                 Icon(
                     imageVector = Icons.Rounded.Add,
@@ -75,10 +67,12 @@ fun TasksScreen(
         }
     ) { innerPadding ->
         TasksScreenContent(
-            tasks = filteredTasks,
-            allTasks = tasks,
-            selectedFilter = selectedFilter,
-            onFilterSelected = { selectedFilter = it },
+            tasks = uiState.filteredTasks,
+            allTasks = uiState.allTasks,
+            selectedFilter = uiState.selectedFilter,
+            isLoading = uiState.isLoading,
+            errorMessage = uiState.errorMessage,
+            onFilterSelected = onFilterSelected,
             modifier = Modifier.padding(innerPadding)
         )
     }
@@ -89,6 +83,8 @@ private fun TasksScreenContent(
     tasks: List<TaskCardUiModel>,
     allTasks: List<TaskCardUiModel>,
     selectedFilter: TaskFilter,
+    isLoading: Boolean,
+    errorMessage: String?,
     onFilterSelected: (TaskFilter) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -125,20 +121,39 @@ private fun TasksScreenContent(
             )
         }
 
-        if (tasks.isEmpty()) {
-            item {
-                EmptyTasksState()
-            }
-        } else {
-            itemsIndexed(
-                items = tasks,
-                key = { index, task ->
-                    "${task.title}_${task.subtitle}_${index}"
+        when {
+            isLoading -> {
+                item {
+                    CircularProgressIndicator()
                 }
-            ) { _, task ->
-                CompactDashboardTaskCard(
-                    task = task
-                )
+            }
+
+            errorMessage != null -> {
+                item {
+                    Text(
+                        text = errorMessage,
+                        color = MaterialTheme.colorScheme.error
+                    )
+                }
+            }
+
+            tasks.isEmpty() -> {
+                item {
+                    EmptyTasksState()
+                }
+            }
+
+            else -> {
+                itemsIndexed(
+                    items = tasks,
+                    key = { index, task ->
+                        "${task.title}_${task.subtitle}_${index}"
+                    }
+                ) { _, task ->
+                    CompactDashboardTaskCard(
+                        task = task
+                    )
+                }
             }
         }
     }
@@ -151,7 +166,47 @@ enum class TaskFilter {
     Completed
 }
 
-private fun taskMockData(): List<TaskCardUiModel> {
+@Preview(
+    name = "Tasks Screen - Light",
+    showBackground = true,
+    backgroundColor = 0xFFF8F8FF,
+    widthDp = 430,
+    heightDp = 932
+)
+@Composable
+private fun TasksScreenLightPreview() {
+    MemoCraftAppTheme(darkTheme = false) {
+        TasksScreen(
+            uiState = TasksUiState(
+                allTasks = previewTaskData()
+            ),
+            onCreateTaskClick = {},
+            onFilterSelected = {}
+        )
+    }
+}
+
+@Preview(
+    name = "Tasks Screen - Dark",
+    showBackground = true,
+    backgroundColor = 0xFF0F1226,
+    widthDp = 430,
+    heightDp = 932
+)
+@Composable
+private fun TasksScreenDarkPreview() {
+    MemoCraftAppTheme(darkTheme = true) {
+        TasksScreen(
+            uiState = TasksUiState(
+                allTasks = previewTaskData()
+            ),
+            onCreateTaskClick = {},
+            onFilterSelected = {}
+        )
+    }
+}
+
+private fun previewTaskData(): List<TaskCardUiModel> {
     return listOf(
         TaskCardUiModel(
             title = "Design System Update",
@@ -176,46 +231,6 @@ private fun taskMockData(): List<TaskCardUiModel> {
             priority = TaskPriority.Low,
             status = TaskStatus.Completed,
             isCompleted = true
-        ),
-        TaskCardUiModel(
-            title = "Prepare Sprint Demo",
-            subtitle = "Collect updates for presentation",
-            progress = 60,
-            priority = TaskPriority.Normal,
-            status = TaskStatus.InProgress,
-            isCompleted = false
         )
     )
-}
-
-@Preview(
-    name = "Tasks Screen - Light",
-    showBackground = true,
-    backgroundColor = 0xFFF8F8FF,
-    widthDp = 430,
-    heightDp = 932
-)
-@Composable
-private fun TasksScreenLightPreview() {
-    MemoCraftAppTheme(darkTheme = false) {
-        TasksScreen(
-            {}
-        )
-    }
-}
-
-@Preview(
-    name = "Tasks Screen - Dark",
-    showBackground = true,
-    backgroundColor = 0xFF0F1226,
-    widthDp = 430,
-    heightDp = 932
-)
-@Composable
-private fun TasksScreenDarkPreview() {
-    MemoCraftAppTheme(darkTheme = true) {
-        TasksScreen(
-            {}
-        )
-    }
 }

@@ -16,6 +16,7 @@ data class TaskEntity(
     val dueDate: LocalDate?,
     val startAt: LocalDateTime?,
     val endAt: LocalDateTime?,
+    val estimatedDurationHours: Int?,
     val priority: TaskPriority,
     val status: TaskStatus,
     val createdAt: LocalDateTime,

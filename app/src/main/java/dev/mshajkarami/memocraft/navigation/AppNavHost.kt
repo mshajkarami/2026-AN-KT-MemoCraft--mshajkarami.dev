@@ -1,6 +1,6 @@
 package dev.mshajkarami.memocraft.navigation
 
-import androidx.compose.material3.Text
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
@@ -11,8 +11,8 @@ import dev.mshajkarami.memocraft.features.ai.presentation.ui.AiScreen
 import dev.mshajkarami.memocraft.features.home.presentation.ui.HomeScreen
 import dev.mshajkarami.memocraft.features.planner.presentation.ui.PlannerScreen
 import dev.mshajkarami.memocraft.features.profile.presentation.ui.ProfileScreen
-import dev.mshajkarami.memocraft.features.task.presentation.ui.CreateTaskScreen
-import dev.mshajkarami.memocraft.features.tasks.presentation.ui.TasksScreen
+import dev.mshajkarami.memocraft.features.task.presentation.CreateTaskScreenRoute
+import dev.mshajkarami.memocraft.features.tasks.presentation.TasksScreenRoute
 
 @Composable
 fun AppNavHost(
@@ -35,7 +35,7 @@ fun AppNavHost(
             }
 
             composable(TasksDestination.route) {
-                TasksScreen(
+                TasksScreenRoute(
                     onCreateTaskClick = navigator::navigateToCreateTask
                 )
             }
@@ -52,10 +52,24 @@ fun AppNavHost(
                 ProfileScreen()
             }
             composable(CreateTaskDestination.route) {
-                CreateTaskScreen(
-                    onBackClick = navigator::navigateToTasks
+                CreateTaskScreenRoute(
+                    onBackClick = {
+                        navController.popBackStack()
+                    },
+                    onTaskSaved = {
+                        Log.d("CreateTask", "onTaskSaved called")
+                        navController.navigate(TasksDestination.route) {
+                            popUpTo(CreateTaskDestination.route) {
+                                inclusive = true
+                            }
+                            launchSingleTop = true
+                        }
+                    }
                 )
             }
+
+
+
         }
     }
 }
