@@ -74,9 +74,13 @@ fun CreateTaskScreen(
         timeLabel = listOfNotNull(
             dueDateInput.takeIf { it.isNotBlank() },
             estimatedDurationHoursInput.takeIf { it.isNotBlank() }?.let { "$it h" }
-        ).joinToString(" • ").ifBlank { "Just now" }
-
+        ).joinToString(" • ").ifBlank { "Just now" },
+        // در صفحه ایجاد تسک، چون هنوز ID تولید نشده، از یک مقدار ثابت یا خالی استفاده می‌کنیم
+        id = "preview_id",
+        // subtitle معمولاً خلاصه یا بخشی از دیسکریپشن است
+        subtitle = taskDescription.take(50).ifBlank { "No description added yet" }
     )
+
 
 
     Scaffold(

@@ -29,6 +29,34 @@ class HomeViewModel @Inject constructor(
         observeTasks()
     }
 
+    fun onSearchClick() {
+        _uiState.value = _uiState.value.copy(
+            isSearchActive = true
+        )
+    }
+
+    fun onSearchClose() {
+        _uiState.value = _uiState.value.copy(
+            searchQuery = "",
+            isSearchActive = false
+        )
+    }
+
+    fun onSearchQueryChange(query: String) {
+        _uiState.value = _uiState.value.copy(
+            searchQuery = query
+        )
+    }
+
+    fun onSearchSubmit() {
+        val query = _uiState.value.searchQuery.trim()
+
+        if (query.isBlank()) return
+
+        // فعلاً فقط query را نگه می‌داریم.
+        // بعداً اینجا می‌توانی سرچ واقعی، navigation یا analytics اضافه کنی.
+    }
+
     private fun observeTasks() {
         viewModelScope.launch {
             observeTasksUseCase()
@@ -50,7 +78,7 @@ class HomeViewModel @Inject constructor(
 
                     val overallProgress = calculateOverallProgress(tasks)
 
-                    _uiState.value = HomeUiState(
+                    _uiState.value = _uiState.value.copy(
                         isLoading = false,
                         upcomingTasks = upcomingTaskItems,
                         totalTasks = totalTasks,
@@ -61,11 +89,9 @@ class HomeViewModel @Inject constructor(
                         focusTimeText = calculateFocusTime(tasks),
                         errorMessage = null
                     )
-
                 }
         }
     }
-
     private fun calculateOverallProgress(tasks: List<Task>): Int {
         if (tasks.isEmpty()) return 0
 
@@ -80,8 +106,7 @@ class HomeViewModel @Inject constructor(
         }
 
         return progressValues.average().toInt()
-    }
-}
+    }}
 
 private val taskDateFormatter = DateTimeFormatter.ofPattern("dd MMM yyyy", Locale.ENGLISH)
 

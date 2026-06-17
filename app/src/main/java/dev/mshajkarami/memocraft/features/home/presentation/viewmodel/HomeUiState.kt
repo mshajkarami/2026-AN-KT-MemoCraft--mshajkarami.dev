@@ -11,5 +11,9 @@ data class HomeUiState(
     val inProgressTasks: Int = 0,
     val overallProgress: Int = 0,
     val focusTimeText: String = "0h 0m",
-    val errorMessage: String? = null
+    val errorMessage: String? = null,
+
+    val searchQuery: String = "",
+    val isSearchActive: Boolean = false
 )
+

@@ -16,9 +16,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.mshajkarami.memocraft.core.presentation.ui.theme.MemoCraftAppTheme
@@ -35,11 +36,17 @@ import dev.mshajkarami.memocraft.features.tasks.presentation.ui.components.Tasks
 import dev.mshajkarami.memocraft.features.tasks.presentation.viewmodel.TasksUiState
 import dev.mshajkarami.memocraft.features.tasks.presentation.viewmodel.TasksViewModel
 
+
+
 @Composable
 fun TasksScreen(
     uiState: TasksUiState,
     onCreateTaskClick: () -> Unit,
     onFilterSelected: (TaskFilter) -> Unit,
+    onSearchQueryChange: (String) -> Unit,
+    onSearchClick: () -> Unit,
+    onSearchClose: () -> Unit,
+    onSearchSubmit: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val colors = MemoCraftTheme.colors
@@ -49,7 +56,12 @@ fun TasksScreen(
         containerColor = colors.bottomNavContainer,
         topBar = {
             TasksTopBar(
-                onSearchClick = {}
+                searchQuery = uiState.searchQuery,
+                isSearchActive = uiState.isSearchActive,
+                onSearchQueryChange = onSearchQueryChange,
+                onSearchClick = onSearchClick,
+                onSearchClose = onSearchClose,
+                onSearchSubmit = onSearchSubmit
             )
         },
         floatingActionButton = {
@@ -70,6 +82,8 @@ fun TasksScreen(
             tasks = uiState.filteredTasks,
             allTasks = uiState.allTasks,
             selectedFilter = uiState.selectedFilter,
+            searchQuery = uiState.searchQuery,
+            isSearchActive = uiState.isSearchActive,
             isLoading = uiState.isLoading,
             errorMessage = uiState.errorMessage,
             onFilterSelected = onFilterSelected,
@@ -83,6 +97,8 @@ private fun TasksScreenContent(
     tasks: List<TaskCardUiModel>,
     allTasks: List<TaskCardUiModel>,
     selectedFilter: TaskFilter,
+    searchQuery: String,
+    isSearchActive: Boolean,
     isLoading: Boolean,
     errorMessage: String?,
     onFilterSelected: (TaskFilter) -> Unit,
@@ -116,7 +132,11 @@ private fun TasksScreenContent(
 
         item {
             SectionHeader(
-                title = "Your Tasks",
+                title = if (searchQuery.isBlank()) {
+                    "Your Tasks"
+                } else {
+                    "Search Results"
+                },
                 action = "${tasks.size} items"
             )
         }
@@ -132,7 +152,16 @@ private fun TasksScreenContent(
                 item {
                     Text(
                         text = errorMessage,
-                        color = MaterialTheme.colorScheme.error
+                        color = MaterialTheme.colorScheme.error,
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                }
+            }
+
+            tasks.isEmpty() && isSearchActive && searchQuery.isNotBlank() -> {
+                item {
+                    EmptySearchResultState(
+                        query = searchQuery
                     )
                 }
             }
@@ -147,7 +176,7 @@ private fun TasksScreenContent(
                 itemsIndexed(
                     items = tasks,
                     key = { index, task ->
-                        "${task.title}_${task.subtitle}_${index}"
+                        "${task.title}_${task.subtitle}_${task.status}_${task.priority}_$index"
                     }
                 ) { _, task ->
                     CompactDashboardTaskCard(
@@ -157,6 +186,19 @@ private fun TasksScreenContent(
             }
         }
     }
+}
+
+@Composable
+private fun EmptySearchResultState(
+    query: String,
+    modifier: Modifier = Modifier
+) {
+    Text(
+        text = "No tasks found for \"$query\"",
+        modifier = modifier,
+        color =  MaterialTheme.colorScheme.onSurfaceVariant,
+        style = MaterialTheme.typography.bodyMedium
+    )
 }
 
 enum class TaskFilter {
@@ -181,7 +223,11 @@ private fun TasksScreenLightPreview() {
                 allTasks = previewTaskData()
             ),
             onCreateTaskClick = {},
-            onFilterSelected = {}
+            onFilterSelected = {},
+            onSearchQueryChange = {},
+            onSearchClick = {},
+            onSearchClose = {},
+            onSearchSubmit = {}
         )
     }
 }
@@ -201,7 +247,63 @@ private fun TasksScreenDarkPreview() {
                 allTasks = previewTaskData()
             ),
             onCreateTaskClick = {},
-            onFilterSelected = {}
+            onFilterSelected = {},
+            onSearchQueryChange = {},
+            onSearchClick = {},
+            onSearchClose = {},
+            onSearchSubmit = {}
+        )
+    }
+}
+
+@Preview(
+    name = "Tasks Screen - Search Active",
+    showBackground = true,
+    backgroundColor = 0xFFF8F8FF,
+    widthDp = 430,
+    heightDp = 932
+)
+@Composable
+private fun TasksScreenSearchActivePreview() {
+    MemoCraftAppTheme(darkTheme = false) {
+        TasksScreen(
+            uiState = TasksUiState(
+                allTasks = previewTaskData(),
+                searchQuery = "Login",
+                isSearchActive = true
+            ),
+            onCreateTaskClick = {},
+            onFilterSelected = {},
+            onSearchQueryChange = {},
+            onSearchClick = {},
+            onSearchClose = {},
+            onSearchSubmit = {}
+        )
+    }
+}
+
+@Preview(
+    name = "Tasks Screen - Empty Search Result",
+    showBackground = true,
+    backgroundColor = 0xFFF8F8FF,
+    widthDp = 430,
+    heightDp = 932
+)
+@Composable
+private fun TasksScreenEmptySearchPreview() {
+    MemoCraftAppTheme(darkTheme = false) {
+        TasksScreen(
+            uiState = TasksUiState(
+                allTasks = previewTaskData(),
+                searchQuery = "Unknown task",
+                isSearchActive = true
+            ),
+            onCreateTaskClick = {},
+            onFilterSelected = {},
+            onSearchQueryChange = {},
+            onSearchClick = {},
+            onSearchClose = {},
+            onSearchSubmit = {}
         )
     }
 }

@@ -31,6 +31,11 @@ import dev.mshajkarami.memocraft.features.task.presentation.model.TaskCardUiMode
 fun HomeScreen(
     uiState: HomeUiState,
     onSeeAllTasksClick: () -> Unit,
+    onTaskClick: (String) -> Unit,
+    onSearchQueryChange: (String) -> Unit,
+    onSearchClick: () -> Unit,
+    onSearchClose: () -> Unit,
+    onSearchSubmit: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val colors = MemoCraftTheme.colors
@@ -40,13 +45,19 @@ fun HomeScreen(
         containerColor = colors.bottomNavContainer,
         topBar = {
             HomeTopBar(
-                onSearchClick = {}
+                searchQuery = uiState.searchQuery,
+                isSearchActive = uiState.isSearchActive,
+                onSearchQueryChange = onSearchQueryChange,
+                onSearchClick = onSearchClick,
+                onSearchClose = onSearchClose,
+                onSearchSubmit = onSearchSubmit
             )
         }
     ) { innerPadding ->
         HomeScreenContent(
             uiState = uiState,
             onSeeAllTasksClick = onSeeAllTasksClick,
+            onTaskClick = onTaskClick,
             bottomPadding = innerPadding.calculateBottomPadding(),
             modifier = Modifier.padding(
                 top = innerPadding.calculateTopPadding()
@@ -55,10 +66,12 @@ fun HomeScreen(
     }
 }
 
+
 @Composable
 private fun HomeScreenContent(
     uiState: HomeUiState,
     onSeeAllTasksClick: () -> Unit,
+    onTaskClick: (String) -> Unit,
     bottomPadding: Dp,
     modifier: Modifier = Modifier
 ) {
@@ -97,12 +110,11 @@ private fun HomeScreenContent(
 
         itemsIndexed(
             items = uiState.upcomingTasks,
-            key = { index, task ->
-                "${task.title}_${task.subtitle}_${index}"
-            }
+            key = { _, task -> task.id } // استفاده از ID برای Key (بهینه‌تر)
         ) { _, task ->
             CompactDashboardTaskCard(
-                task = task
+                task = task,
+                onTaskClick = onTaskClick // اتصال نهایی
             )
         }
 
@@ -138,6 +150,7 @@ private fun homePreviewUiState(): HomeUiState {
 
         upcomingTasks = listOf(
             TaskCardUiModel(
+                id = "1",
                 title = "Project Proposal",
                 subtitle = "Design the proposal deck",
                 progress = 100,
@@ -147,6 +160,7 @@ private fun homePreviewUiState(): HomeUiState {
                 timeLabel = "22 Feb 2026 • 10 h"
             ),
             TaskCardUiModel(
+                id = "2",
                 title = "Backend API Review",
                 subtitle = "Review endpoints & docs",
                 progress = 50,
@@ -156,6 +170,7 @@ private fun homePreviewUiState(): HomeUiState {
                 timeLabel = "24 Feb 2026 • 4 h"
             ),
             TaskCardUiModel(
+                id = "3",
                 title = "Team Standup",
                 subtitle = "Daily sync with team",
                 progress = 20,
@@ -182,7 +197,12 @@ private fun HomeScreenLightPreview() {
     ) {
         HomeScreen(
             uiState = homePreviewUiState(),
-            onSeeAllTasksClick = {}
+            onSeeAllTasksClick = {},
+            onSearchQueryChange = {},
+            onSearchClick = {},
+            onSearchClose = {  },
+            onSearchSubmit = {},
+            onTaskClick = {}
         )
     }
 }
@@ -201,7 +221,12 @@ private fun HomeScreenDarkPreview() {
     ) {
         HomeScreen(
             uiState = homePreviewUiState(),
-            onSeeAllTasksClick = {}
+            onSeeAllTasksClick = {},
+            onSearchQueryChange = {},
+            onSearchClick = {},
+            onSearchClose = {  },
+            onSearchSubmit = {},
+            onTaskClick = {}
         )
     }
 }

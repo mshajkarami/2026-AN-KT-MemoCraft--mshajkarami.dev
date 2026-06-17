@@ -37,6 +37,36 @@ class TasksViewModel @Inject constructor(
         }
     }
 
+    fun onSearchClick() {
+        _uiState.update { state ->
+            state.copy(isSearchActive = true)
+        }
+    }
+
+    fun onSearchClose() {
+        _uiState.update { state ->
+            state.copy(
+                searchQuery = "",
+                isSearchActive = false
+            )
+        }
+    }
+
+    fun onSearchQueryChange(query: String) {
+        _uiState.update { state ->
+            state.copy(searchQuery = query)
+        }
+    }
+
+    fun onSearchSubmit() {
+        val query = _uiState.value.searchQuery.trim()
+
+        if (query.isBlank()) return
+
+        // در ساختار فعلی سرچ به صورت realtime با onSearchQueryChange انجام می‌شود.
+        // اینجا بعداً می‌توانی analytics، بستن کیبورد یا ذخیره recent searches اضافه کنی.
+    }
+
     private fun observeTasks() {
         viewModelScope.launch {
             observeTasksUseCase()
@@ -49,7 +79,9 @@ class TasksViewModel @Inject constructor(
                     }
                 }
                 .collectLatest { tasks ->
-                    val taskItems = tasks.map { it.toTaskCardUiModel() }
+                    val taskItems = tasks
+                        .sortedByDescending { it.createdAt }
+                        .map { it.toTaskCardUiModel() }
 
                     _uiState.update { state ->
                         state.copy(
@@ -67,14 +99,33 @@ data class TasksUiState(
     val isLoading: Boolean = false,
     val allTasks: List<TaskCardUiModel> = emptyList(),
     val selectedFilter: TaskFilter = TaskFilter.All,
-    val errorMessage: String? = null
+    val errorMessage: String? = null,
+
+    val searchQuery: String = "",
+    val isSearchActive: Boolean = false
 ) {
     val filteredTasks: List<TaskCardUiModel>
-        get() = when (selectedFilter) {
-            TaskFilter.All -> allTasks
-            TaskFilter.InProgress -> allTasks.filter { it.status == TaskStatus.InProgress }
-            TaskFilter.Pending -> allTasks.filter { it.status == TaskStatus.Pending }
-            TaskFilter.Completed -> allTasks.filter { it.status == TaskStatus.Completed }
+        get() {
+            val filterAppliedTasks = when (selectedFilter) {
+                TaskFilter.All -> allTasks
+                TaskFilter.InProgress -> allTasks.filter { it.status == TaskStatus.InProgress }
+                TaskFilter.Pending -> allTasks.filter { it.status == TaskStatus.Pending }
+                TaskFilter.Completed -> allTasks.filter { it.status == TaskStatus.Completed }
+            }
+
+            val normalizedQuery = searchQuery.trim()
+
+            if (normalizedQuery.isBlank()) {
+                return filterAppliedTasks
+            }
+
+            return filterAppliedTasks.filter { task ->
+                task.title.contains(normalizedQuery, ignoreCase = true) ||
+                        task.subtitle.orEmpty().contains(normalizedQuery, ignoreCase = true) ||
+                        task.status.name.contains(normalizedQuery, ignoreCase = true) ||
+                        task.priority.name.contains(normalizedQuery, ignoreCase = true) ||
+                        task.timeLabel.orEmpty().contains(normalizedQuery, ignoreCase = true)
+            }
         }
 }
 
@@ -82,6 +133,7 @@ private val taskDateFormatter = DateTimeFormatter.ofPattern("dd MMM yyyy", Local
 
 private fun Task.toTaskCardUiModel(): TaskCardUiModel {
     val completedSubTasks = subTasks.count { it.isCompleted }
+
     val progress = when {
         subTasks.isNotEmpty() -> ((completedSubTasks * 100f) / subTasks.size).toInt()
         status == TaskStatus.Completed -> 100

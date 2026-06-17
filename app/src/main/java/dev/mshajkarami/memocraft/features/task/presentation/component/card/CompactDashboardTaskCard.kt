@@ -3,6 +3,7 @@ package dev.mshajkarami.memocraft.features.task.presentation.component.card
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -32,6 +33,7 @@ import dev.mshajkarami.memocraft.features.task.presentation.model.TaskCardUiMode
 @Composable
 fun CompactDashboardTaskCard(
     task: TaskCardUiModel,
+    onTaskClick: (String) -> Unit, // تغییر به (String) -> Unit برای دریافت ID
     modifier: Modifier = Modifier
 ) {
     val colors = MemoCraftTheme.colors
@@ -48,7 +50,9 @@ fun CompactDashboardTaskCard(
                 ambientColor = colors.compactTaskCardShadowAmbient,
                 spotColor = colors.compactTaskCardShadowSpot
             )
+            // clickable باید قبل از clip باشد تا ripple درست رندر شود
             .clip(shape)
+            .clickable { onTaskClick(task.id) }
             .background(brushes.backgroundBrush)
             .border(
                 width = 1.dp,
@@ -56,6 +60,7 @@ fun CompactDashboardTaskCard(
                 shape = shape
             )
     ) {
+        // ... (بقیه کدهای داخلی Box که تغییر نیافته‌اند)
         Box(
             modifier = Modifier
                 .matchParentSize()

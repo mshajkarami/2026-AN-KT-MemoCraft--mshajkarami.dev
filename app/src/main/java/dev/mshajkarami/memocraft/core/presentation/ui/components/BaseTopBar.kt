@@ -35,7 +35,8 @@ fun BaseTopBar(
     subtitle: String? = "Your smart planner",
     showLogo: Boolean = true,
     navigationIcon: (@Composable () -> Unit)? = null,
-    actions: @Composable RowScope.() -> Unit = {}
+    actions: @Composable RowScope.() -> Unit = {},
+    content: (@Composable RowScope.() -> Unit)? = null
 ) {
     val colors = MemoCraftTheme.colors
 
@@ -52,49 +53,53 @@ fun BaseTopBar(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.weight(1f)
-            ) {
-                if (navigationIcon != null) {
-                    navigationIcon()
-                    Spacer(modifier = Modifier.width(8.dp))
-                } else if (showLogo) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.ic_logo),
-                        contentDescription = "Logo",
-                        tint = Color.Unspecified,
-                        modifier = Modifier.size(40.dp)
-                    )
-                    Spacer(modifier = Modifier.width(8.dp))
-                }
+            if (content != null) {
+                content()
+            } else {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.weight(1f)
+                ) {
+                    if (navigationIcon != null) {
+                        navigationIcon()
+                        Spacer(modifier = Modifier.width(8.dp))
+                    } else if (showLogo) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_logo),
+                            contentDescription = "Logo",
+                            tint = Color.Unspecified,
+                            modifier = Modifier.size(40.dp)
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                    }
 
-                Column(verticalArrangement = Arrangement.Center) {
-                    Text(
-                        text = title,
-                        style = MaterialTheme.typography.titleMedium.copy(
-                            fontWeight = FontWeight.SemiBold
-                        ),
-                        color = colors.topBarTitleColor,
-                        maxLines = 1
-                    )
-
-                    if (subtitle != null) {
-                        Spacer(modifier = Modifier.height(1.dp))
+                    Column(verticalArrangement = Arrangement.Center) {
                         Text(
-                            text = subtitle,
-                            style = MaterialTheme.typography.labelSmall,
-                            color = colors.topBarSubtitleColor,
+                            text = title,
+                            style = MaterialTheme.typography.titleMedium.copy(
+                                fontWeight = FontWeight.SemiBold
+                            ),
+                            color = colors.topBarTitleColor,
                             maxLines = 1
                         )
+
+                        if (subtitle != null) {
+                            Spacer(modifier = Modifier.height(1.dp))
+                            Text(
+                                text = subtitle,
+                                style = MaterialTheme.typography.labelSmall,
+                                color = colors.topBarSubtitleColor,
+                                maxLines = 1
+                            )
+                        }
                     }
                 }
-            }
 
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                content = actions
-            )
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    content = actions
+                )
+            }
         }
     }
 }

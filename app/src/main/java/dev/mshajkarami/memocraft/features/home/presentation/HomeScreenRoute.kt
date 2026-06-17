@@ -19,6 +19,10 @@ fun HomeScreenRoute(
     HomeScreen(
         uiState = uiState,
         onSeeAllTasksClick = onSeeAllTasksClick,
+        onSearchQueryChange = viewModel::onSearchQueryChange,
+        onSearchClick = viewModel::onSearchClick,
+        onSearchClose = viewModel::onSearchClose,
+        onSearchSubmit = viewModel::onSearchSubmit,
         modifier = modifier
     )
 }
