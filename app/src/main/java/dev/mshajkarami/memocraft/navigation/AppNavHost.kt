@@ -8,6 +8,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import dev.mshajkarami.memocraft.features.ai.presentation.ui.AiScreen
+import dev.mshajkarami.memocraft.features.home.presentation.HomeScreenRoute
 import dev.mshajkarami.memocraft.features.home.presentation.ui.HomeScreen
 import dev.mshajkarami.memocraft.features.planner.presentation.ui.PlannerScreen
 import dev.mshajkarami.memocraft.features.profile.presentation.ui.ProfileScreen
@@ -31,7 +32,11 @@ fun AppNavHost(
             route = Graph.MAIN
         ) {
             composable(HomeDestination.route) {
-                HomeScreen()
+                HomeScreenRoute(
+                    onSeeAllTasksClick = {
+
+                    }
+                )
             }
 
             composable(TasksDestination.route) {
@@ -67,7 +72,6 @@ fun AppNavHost(
                     }
                 )
             }
-
 
 
         }

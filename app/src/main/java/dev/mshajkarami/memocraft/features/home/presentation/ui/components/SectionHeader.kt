@@ -1,5 +1,6 @@
 package dev.mshajkarami.memocraft.features.home.presentation.ui.components
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -14,12 +15,14 @@ import dev.mshajkarami.memocraft.core.presentation.ui.theme.MemoCraftTheme
 @Composable
 fun SectionHeader(
     title: String,
-    action: String
+    action: String,
+    modifier: Modifier = Modifier,
+    onActionClick: () -> Unit = {}
 ) {
     val colors = MemoCraftTheme.colors
 
     Row(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -35,7 +38,8 @@ fun SectionHeader(
                 text = action,
                 color = colors.sectionHeaderActionColor,
                 fontWeight = FontWeight.SemiBold,
-                fontSize = 15.sp
+                fontSize = 15.sp,
+                modifier = Modifier.clickable(onClick = onActionClick)
             )
         }
     }

@@ -10,7 +10,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
@@ -22,42 +21,44 @@ import dev.mshajkarami.memocraft.features.home.presentation.ui.components.Greeti
 import dev.mshajkarami.memocraft.features.home.presentation.ui.components.HomeTopBar
 import dev.mshajkarami.memocraft.features.home.presentation.ui.components.SectionHeader
 import dev.mshajkarami.memocraft.features.home.presentation.ui.components.progress.ProgressCard
-import dev.mshajkarami.memocraft.features.task.presentation.component.card.CompactDashboardTaskCard
-import dev.mshajkarami.memocraft.features.task.presentation.model.TaskCardUiModel
+import dev.mshajkarami.memocraft.features.home.presentation.viewmodel.HomeUiState
 import dev.mshajkarami.memocraft.features.task.domain.model.TaskPriority
 import dev.mshajkarami.memocraft.features.task.domain.model.TaskStatus
+import dev.mshajkarami.memocraft.features.task.presentation.component.card.CompactDashboardTaskCard
+import dev.mshajkarami.memocraft.features.task.presentation.model.TaskCardUiModel
 
 @Composable
 fun HomeScreen(
+    uiState: HomeUiState,
+    onSeeAllTasksClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val colors = MemoCraftTheme.colors
-    val tasks = remember { homeMockTasks() }
 
     Scaffold(
         modifier = modifier,
         containerColor = colors.bottomNavContainer,
         topBar = {
             HomeTopBar(
-                onNotificationClick = {},
-                onSearchClick = {},
-                hasNotification = false
+                onSearchClick = {}
             )
         }
     ) { innerPadding ->
         HomeScreenContent(
-            tasks = tasks,
+            uiState = uiState,
+            onSeeAllTasksClick = onSeeAllTasksClick,
             bottomPadding = innerPadding.calculateBottomPadding(),
-            modifier = Modifier.padding(top = innerPadding.calculateTopPadding())
+            modifier = Modifier.padding(
+                top = innerPadding.calculateTopPadding()
+            )
         )
     }
-
 }
-
 
 @Composable
 private fun HomeScreenContent(
-    tasks: List<TaskCardUiModel>,
+    uiState: HomeUiState,
+    onSeeAllTasksClick: () -> Unit,
     bottomPadding: Dp,
     modifier: Modifier = Modifier
 ) {
@@ -76,18 +77,26 @@ private fun HomeScreenContent(
         }
 
         item {
-            ProgressCard()
+            ProgressCard(
+                overallProgress = uiState.overallProgress,
+                totalTasks = uiState.totalTasks,
+                completedTasks = uiState.completedTasks,
+                pendingTasks = uiState.pendingTasks,
+                inProgressTasks = uiState.inProgressTasks,
+                focusTimeText = uiState.focusTimeText
+            )
         }
 
         item {
             SectionHeader(
                 title = "Upcoming Tasks",
-                action = "See all"
+                action = "See all",
+                onActionClick = onSeeAllTasksClick
             )
         }
 
         itemsIndexed(
-            items = tasks,
+            items = uiState.upcomingTasks,
             key = { index, task ->
                 "${task.title}_${task.subtitle}_${index}"
             }
@@ -109,36 +118,52 @@ private fun HomeScreenContent(
         }
 
         item {
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(
+                modifier = Modifier.height(12.dp)
+            )
         }
     }
 }
 
-private fun homeMockTasks(): List<TaskCardUiModel> {
-    return listOf(
-        TaskCardUiModel(
-            title = "Project Proposal",
-            subtitle = "Design the proposal deck",
-            progress = 100,
-            priority = TaskPriority.Normal,
-            status = TaskStatus.Completed,
-            isCompleted = true
-        ),
-        TaskCardUiModel(
-            title = "Backend API Review",
-            subtitle = "Review endpoints & docs",
-            progress = 50,
-            priority = TaskPriority.Urgent,
-            status = TaskStatus.InProgress,
-            isCompleted = false
-        ),
-        TaskCardUiModel(
-            title = "Team Standup",
-            subtitle = "Daily sync with team",
-            progress = 20,
-            priority = TaskPriority.Low,
-            status = TaskStatus.Pending,
-            isCompleted = false
+private fun homePreviewUiState(): HomeUiState {
+    return HomeUiState(
+        isLoading = false,
+
+        totalTasks = 17,
+        completedTasks = 8,
+        pendingTasks = 5,
+        inProgressTasks = 4,
+        overallProgress = 72,
+        focusTimeText = "4h 12m",
+
+        upcomingTasks = listOf(
+            TaskCardUiModel(
+                title = "Project Proposal",
+                subtitle = "Design the proposal deck",
+                progress = 100,
+                priority = TaskPriority.Normal,
+                status = TaskStatus.Completed,
+                isCompleted = true,
+                timeLabel = "22 Feb 2026 • 10 h"
+            ),
+            TaskCardUiModel(
+                title = "Backend API Review",
+                subtitle = "Review endpoints & docs",
+                progress = 50,
+                priority = TaskPriority.Urgent,
+                status = TaskStatus.InProgress,
+                isCompleted = false,
+                timeLabel = "24 Feb 2026 • 4 h"
+            ),
+            TaskCardUiModel(
+                title = "Team Standup",
+                subtitle = "Daily sync with team",
+                progress = 20,
+                priority = TaskPriority.Low,
+                status = TaskStatus.Pending,
+                isCompleted = false,
+                timeLabel = "25 Feb 2026 • 2 h"
+            )
         )
     )
 }
@@ -148,12 +173,17 @@ private fun homeMockTasks(): List<TaskCardUiModel> {
     showBackground = true,
     backgroundColor = 0xFFF8F8FF,
     widthDp = 430,
-    heightDp = 932
+    heightDp = 1350
 )
 @Composable
 private fun HomeScreenLightPreview() {
-    MemoCraftAppTheme(darkTheme = false) {
-        HomeScreen()
+    MemoCraftAppTheme(
+        darkTheme = false
+    ) {
+        HomeScreen(
+            uiState = homePreviewUiState(),
+            onSeeAllTasksClick = {}
+        )
     }
 }
 
@@ -162,11 +192,16 @@ private fun HomeScreenLightPreview() {
     showBackground = true,
     backgroundColor = 0xFF0F1226,
     widthDp = 430,
-    heightDp = 932
+    heightDp = 1350
 )
 @Composable
 private fun HomeScreenDarkPreview() {
-    MemoCraftAppTheme(darkTheme = true) {
-        HomeScreen()
+    MemoCraftAppTheme(
+        darkTheme = true
+    ) {
+        HomeScreen(
+            uiState = homePreviewUiState(),
+            onSeeAllTasksClick = {}
+        )
     }
 }

@@ -21,28 +21,28 @@ fun GreetingSection(
     Column {
         Text(
             text = "Good morning,",
-            style = MaterialTheme.typography.titleMedium,
+            style = MaterialTheme.typography.bodyMedium,
             color = colors.topBarStatusColor
         )
 
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(
                 text = "$userName!",
-                style = MaterialTheme.typography.headlineLarge,
+                style = MaterialTheme.typography.headlineSmall,
                 color = colors.topBarTitleColor
             )
 
-            Spacer(modifier = Modifier.width(8.dp))
+            Spacer(modifier = Modifier.width(6.dp))
 
             Text(
                 text = "\uD83D\uDC4B",
-                style = MaterialTheme.typography.headlineSmall
+                style = MaterialTheme.typography.titleLarge
             )
         }
 
         Text(
             text = "Let's make today productive.",
-            style = MaterialTheme.typography.bodyLarge,
+            style = MaterialTheme.typography.bodyMedium,
             color = colors.topBarStatusColor
         )
     }
