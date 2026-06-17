@@ -210,7 +210,7 @@ fun DueDateSection(
 
 
 private fun formatDueDate(millis: Long): String {
-    val formatter = java.text.SimpleDateFormat("dd MMM", java.util.Locale.ENGLISH)
+    val formatter = java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.ENGLISH)
     formatter.timeZone = java.util.TimeZone.getTimeZone("UTC")
     return formatter.format(java.util.Date(millis))
 }

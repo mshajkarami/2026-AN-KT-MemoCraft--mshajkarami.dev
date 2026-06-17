@@ -15,6 +15,8 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.time.format.DateTimeFormatter
+import java.util.Locale
 import javax.inject.Inject
 
 @HiltViewModel
@@ -76,6 +78,8 @@ data class TasksUiState(
         }
 }
 
+private val taskDateFormatter = DateTimeFormatter.ofPattern("dd MMM yyyy", Locale.ENGLISH)
+
 private fun Task.toTaskCardUiModel(): TaskCardUiModel {
     val completedSubTasks = subTasks.count { it.isCompleted }
     val progress = when {
@@ -85,12 +89,18 @@ private fun Task.toTaskCardUiModel(): TaskCardUiModel {
         else -> 0
     }.coerceIn(0, 100)
 
+    val timeLabel = listOfNotNull(
+        dueDate?.format(taskDateFormatter),
+        estimatedDurationHours?.let { "$it h" }
+    ).joinToString(" • ").ifBlank { "Just now" }
+
     return TaskCardUiModel(
         title = title,
         subtitle = description,
         progress = progress,
         priority = priority,
         status = status,
-        isCompleted = status == TaskStatus.Completed
+        isCompleted = status == TaskStatus.Completed,
+        timeLabel = timeLabel
     )
 }
