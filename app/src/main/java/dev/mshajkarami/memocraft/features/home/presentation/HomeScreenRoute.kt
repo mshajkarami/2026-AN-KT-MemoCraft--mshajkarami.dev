@@ -5,6 +5,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavController
 import dev.mshajkarami.memocraft.features.home.presentation.ui.HomeScreen
 import dev.mshajkarami.memocraft.features.home.presentation.viewmodel.HomeViewModel
 
@@ -12,7 +13,8 @@ import dev.mshajkarami.memocraft.features.home.presentation.viewmodel.HomeViewMo
 fun HomeScreenRoute(
     modifier: Modifier = Modifier,
     viewModel: HomeViewModel = hiltViewModel(),
-    onSeeAllTasksClick: () -> Unit
+    onSeeAllTasksClick: () -> Unit,
+    onTaskClick: (String) -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
@@ -23,6 +25,7 @@ fun HomeScreenRoute(
         onSearchClick = viewModel::onSearchClick,
         onSearchClose = viewModel::onSearchClose,
         onSearchSubmit = viewModel::onSearchSubmit,
-        modifier = modifier
+        modifier = modifier,
+        onTaskClick = onTaskClick
     )
 }

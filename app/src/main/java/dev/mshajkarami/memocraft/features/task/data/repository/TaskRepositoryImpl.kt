@@ -25,19 +25,38 @@ class TaskRepositoryImpl @Inject constructor(
             subTask.toEntity(taskId = task.id)
         }
 
-        Log.d("CreateTask", "TaskEntity: $taskEntity")
-        Log.d("CreateTask", "SubTaskEntities: $subTaskEntities")
-
         taskDao.insertTaskWithSubTasks(
             task = taskEntity,
             subTasks = subTaskEntities
         )
 
         val savedTask = taskDao.getTaskById(task.id)
-
         Log.d("CreateTask", "Saved task from DB: $savedTask")
     }
 
+    override suspend fun updateTask(task: Task) {
+        Log.d(
+            "CreateTask",
+            "Repository updateTask: id=${task.id}, title=${task.title}, subTasks=${task.subTasks.size}"
+        )
+
+        val taskEntity = task.toEntity()
+        val subTaskEntities = task.subTasks.map { subTask ->
+            subTask.toEntity(taskId = task.id)
+        }
+
+        taskDao.updateTaskWithSubTasks(
+            task = taskEntity,
+            subTasks = subTaskEntities
+        )
+
+        val updatedTask = taskDao.getTaskById(task.id)
+        Log.d("CreateTask", "Updated task from DB: $updatedTask")
+    }
+
+    override suspend fun getTaskById(taskId: String): Task? {
+        return taskDao.getTaskById(taskId)?.toDomain()
+    }
 
     override fun observeTasks(): Flow<List<Task>> {
         return taskDao.observeTasks()

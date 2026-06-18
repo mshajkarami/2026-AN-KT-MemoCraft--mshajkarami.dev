@@ -31,6 +31,18 @@ interface TaskDao {
     }
 
     @Transaction
+    suspend fun updateTaskWithSubTasks(
+        task: TaskEntity,
+        subTasks: List<SubTaskEntity>
+    ) {
+        insertTask(task)
+        deleteSubTasksByTaskId(task.id)
+        if (subTasks.isNotEmpty()) {
+            insertSubTasks(subTasks)
+        }
+    }
+
+    @Transaction
     @Query("SELECT * FROM tasks ORDER BY createdAt DESC")
     fun observeTasks(): Flow<List<TaskWithSubTasks>>
 
@@ -44,4 +56,7 @@ interface TaskDao {
 
     @Query("DELETE FROM tasks WHERE id = :taskId")
     suspend fun deleteTaskById(taskId: String)
+
+    @Query("DELETE FROM sub_tasks WHERE taskId = :taskId")
+    suspend fun deleteSubTasksByTaskId(taskId: String)
 }

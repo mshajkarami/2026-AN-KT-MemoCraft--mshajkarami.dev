@@ -180,7 +180,8 @@ private fun TasksScreenContent(
                     }
                 ) { _, task ->
                     CompactDashboardTaskCard(
-                        task = task
+                        task = task,
+                        onTaskClick = {}
                     )
                 }
             }
@@ -311,6 +312,7 @@ private fun TasksScreenEmptySearchPreview() {
 private fun previewTaskData(): List<TaskCardUiModel> {
     return listOf(
         TaskCardUiModel(
+            id = "1",
             title = "Design System Update",
             subtitle = "Refine typography and spacing tokens",
             progress = 80,
@@ -319,6 +321,7 @@ private fun previewTaskData(): List<TaskCardUiModel> {
             isCompleted = false
         ),
         TaskCardUiModel(
+            id = "2",
             title = "Fix Login Flow",
             subtitle = "Resolve session persistence issue",
             progress = 30,
@@ -327,6 +330,7 @@ private fun previewTaskData(): List<TaskCardUiModel> {
             isCompleted = false
         ),
         TaskCardUiModel(
+            id = "3",
             title = "Write Unit Tests",
             subtitle = "Cover repository and use case logic",
             progress = 100,

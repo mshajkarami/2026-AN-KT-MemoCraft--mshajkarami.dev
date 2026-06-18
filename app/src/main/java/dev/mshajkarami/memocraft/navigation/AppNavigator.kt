@@ -17,16 +17,22 @@ class AppNavigator(
     }
 
     fun navigateToHome() = navigateToBottomBarDestination(HomeDestination.route)
-
     fun navigateToTasks() = navigateToBottomBarDestination(TasksDestination.route)
-
     fun navigateToAi() = navigateToBottomBarDestination(AiDestination.route)
-
     fun navigateToPlanner() = navigateToBottomBarDestination(PlannerDestination.route)
-
     fun navigateToProfile() = navigateToBottomBarDestination(ProfileDestination.route)
-    fun navigateToCreateTask() = navigateToBottomBarDestination(CreateTaskDestination.route)
 
+    fun navigateToCreateTask() {
+        navController.navigate(CreateTaskDestination.route)
+    }
+
+    fun navigateToEditTask(taskId: String) {
+        navController.navigate(EditTaskDestination.createRoute(taskId))
+    }
+
+    fun navigateBack() {
+        navController.popBackStack()
+    }
 
     fun navigateUp() {
         navController.navigateUp()

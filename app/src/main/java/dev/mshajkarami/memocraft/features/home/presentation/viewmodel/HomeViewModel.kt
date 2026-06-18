@@ -132,6 +132,7 @@ private fun Task.toTaskCardUiModel(): TaskCardUiModel {
     ).joinToString(" • ").takeIf { it.isNotBlank() }
 
     return TaskCardUiModel(
+        id = this.id, // اضافه کردن فیلد ID
         title = title,
         subtitle = description,
         progress = progress,

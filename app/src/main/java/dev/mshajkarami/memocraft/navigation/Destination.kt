@@ -26,6 +26,16 @@ data object ProfileDestination : BottomBarDestination {
     override val route: String = "profile"
 }
 
-data object CreateTaskDestination  : BottomBarDestination {
+data object CreateTaskDestination : Destination {
     override val route: String = "create_task"
+}
+
+data object EditTaskDestination : Destination {
+    const val taskIdArg = "taskId"
+
+    override val route: String = "edit_task_screen/{$taskIdArg}"
+
+    fun createRoute(taskId: String): String {
+        return "edit_task_screen/$taskId"
+    }
 }

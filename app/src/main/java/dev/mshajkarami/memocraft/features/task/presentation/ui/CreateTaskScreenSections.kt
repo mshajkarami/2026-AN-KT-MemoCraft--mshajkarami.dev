@@ -56,7 +56,10 @@ internal fun PreviewSection(task: TaskCardUiModel) {
             modifier = Modifier.padding(start = 4.dp)
         )
 
-        CompactDashboardTaskCard(task = task)
+        CompactDashboardTaskCard(
+            task = task,
+            onTaskClick = {}
+        )
     }
 }
 

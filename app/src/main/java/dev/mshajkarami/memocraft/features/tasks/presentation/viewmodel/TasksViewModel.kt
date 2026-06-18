@@ -147,6 +147,7 @@ private fun Task.toTaskCardUiModel(): TaskCardUiModel {
     ).joinToString(" • ").ifBlank { "Just now" }
 
     return TaskCardUiModel(
+        id = id,
         title = title,
         subtitle = description,
         progress = progress,

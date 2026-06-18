@@ -33,7 +33,7 @@ import dev.mshajkarami.memocraft.features.task.presentation.model.TaskCardUiMode
 @Composable
 fun CompactDashboardTaskCard(
     task: TaskCardUiModel,
-    onTaskClick: (String) -> Unit, // تغییر به (String) -> Unit برای دریافت ID
+    onTaskClick: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val colors = MemoCraftTheme.colors

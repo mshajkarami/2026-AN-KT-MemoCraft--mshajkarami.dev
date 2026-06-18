@@ -36,11 +36,13 @@ private fun CompactDashboardTaskCardLightPreview() {
         ) {
             CompactDashboardTaskCard(
                 task = TaskCardUiModel(
+                    id = "1",
                     title = "Develop New API Endpoints",
                     progress = 65,
                     priority = TaskPriority.Urgent,
                     status = TaskStatus.InProgress
-                )
+                ),
+                onTaskClick = {}
             )
         }
     }
@@ -65,11 +67,13 @@ private fun CompactDashboardTaskCardDarkPreview() {
         ) {
             CompactDashboardTaskCard(
                 task = TaskCardUiModel(
+                    id = "1",
                     title = "Develop New API Endpoints",
                     progress = 65,
                     priority = TaskPriority.Urgent,
                     status = TaskStatus.InProgress
-                )
+                ),
+                onTaskClick = {}
             )
         }
     }
