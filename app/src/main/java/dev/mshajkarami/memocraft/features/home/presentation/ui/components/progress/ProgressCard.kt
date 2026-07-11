@@ -23,15 +23,13 @@ import dev.mshajkarami.memocraft.core.presentation.ui.theme.MemoCraftTheme
 @Composable
 fun ProgressCard(
     overallProgress: Int,
-    totalTasks: Int,
     completedTasks: Int,
-    pendingTasks: Int,
-    inProgressTasks: Int,
+    totalTasks: Int,
     focusTimeText: String,
     modifier: Modifier = Modifier
 ) {
     val colors = MemoCraftTheme.colors
-    val cardShape = RoundedCornerShape(28.dp)
+    val cardShape = RoundedCornerShape(24.dp)
 
     Box(
         modifier = modifier
@@ -52,95 +50,49 @@ fun ProgressCard(
             )
             .padding(16.dp)
     ) {
-        Column(
-            verticalArrangement = Arrangement.spacedBy(18.dp)
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(20.dp)
         ) {
-            ProgressHeader()
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                NeonProgressRing(
-                    percentage = overallProgress,
-                    modifier = Modifier.size(142.dp)
-                )
-
-                Spacer(modifier = Modifier.width(18.dp))
-
-                Column(
-                    modifier = Modifier.weight(1f),
-                    verticalArrangement = Arrangement.spacedBy(12.dp)
-                ) {
-                    RingLightMiniCard(
-                        title = "Focus Light",
-                        value = focusTimeText,
-                        modifier = Modifier.fillMaxWidth()
-                    )
-
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(10.dp)
-                    ) {
-                        MiniMetricCard(
-                            title = "Done",
-                            value = completedTasks.toString(),
-                            lineColor = colors.progressSparkBlue,
-                            modifier = Modifier.weight(1f)
-                        )
-
-                        MiniMetricCard(
-                            title = "Pending",
-                            value = pendingTasks.toString(),
-                            lineColor = colors.progressSparkPurple,
-                            modifier = Modifier.weight(1f)
-                        )
-                    }
-                }
-            }
+            NeonProgressRing(
+                percentage = overallProgress,
+                modifier = Modifier.size(132.dp)
+            )
 
             Column(
+                modifier = Modifier.weight(1f),
                 verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
+                // نمایش زمان تمرکز
+                RingLightMiniCard(
+                    title = "Focus Time",
+                    value = focusTimeText,
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+                // فقط مهم‌ترین اطلاعات: انجام شده / کل
                 Row(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(10.dp)
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     MiniMetricCard(
-                        title = "Tasks",
-                        value = totalTasks.toString(),
-                        lineColor = colors.progressSparkBlue,
-                        modifier = Modifier.weight(1f)
-                    )
-
-                    MiniMetricCard(
-                        title = "In Progress",
-                        value = inProgressTasks.toString(),
-                        lineColor = colors.progressSparkPurple,
-                        modifier = Modifier.weight(1f)
-                    )
-                }
-
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(10.dp)
-                ) {
-                    MiniMetricCard(
-                        title = "Velocity",
-                        value = "$overallProgress%",
-                        lineColor = colors.progressSparkOrange,
-                        modifier = Modifier.weight(1f)
-                    )
-
-                    MiniMetricCard(
-                        title = "Progress",
+                        title = "Tasks Done",
                         value = "$completedTasks/$totalTasks",
                         lineColor = colors.progressSparkBlue,
                         modifier = Modifier.weight(1f)
                     )
+
+                    // این آیتم می‌تواند Velocity یا هر چیز مهم دیگری باشد،
+                    // اما برای خلوت شدن فقط یک آیتم دیگر کنار تسک‌ها گذاشتیم
+                    MiniMetricCard(
+                        title = "Efficiency",
+                        value = "$overallProgress%",
+                        lineColor = colors.progressSparkOrange,
+                        modifier = Modifier.weight(1f)
+                    )
                 }
             }
-
         }
     }
 }

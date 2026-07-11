@@ -1,11 +1,32 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.kotlin.serialization)
 
     id("com.google.devtools.ksp")
     id("com.google.dagger.hilt.android")
 }
+val localProperties = Properties().apply {
+    val localPropertiesFile = rootProject.file("local.properties")
+
+    if (localPropertiesFile.exists()) {
+        localPropertiesFile.inputStream().use(::load)
+    }
+}
+
+val gapGptApiKey = localProperties.getProperty(
+    "GAPGPT_API_KEY",
+    ""
+)
+
+val gapGptBaseUrl = localProperties.getProperty(
+    "GAPGPT_BASE_URL",
+    "https://api.gapgpt.app/v1/"
+)
+
 
 android {
     namespace = "dev.mshajkarami.memocraft"
@@ -21,7 +42,20 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField(
+            "String",
+            "GAPGPT_API_KEY",
+            "\"${gapGptApiKey.escapeForBuildConfig()}\""
+        )
+
+        buildConfigField(
+            "String",
+            "GAPGPT_BASE_URL",
+            "\"${gapGptBaseUrl.escapeForBuildConfig()}\""
+        )
     }
+
 
     buildTypes {
         release {
@@ -85,6 +119,7 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.7")
     implementation("androidx.room:room-ktx:2.6.1")
 
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3")
 
     // Dagger Dependency
     val hiltVersion = "2.51"
@@ -113,4 +148,9 @@ dependencies {
     implementation("com.airbnb.android:lottie-compose:6.4.0")
 
 
+}
+
+fun String.escapeForBuildConfig(): String {
+    return replace("\\", "\\\\")
+        .replace("\"", "\\\"")
 }

@@ -94,8 +94,6 @@ private fun HomeScreenContent(
                 overallProgress = uiState.overallProgress,
                 totalTasks = uiState.totalTasks,
                 completedTasks = uiState.completedTasks,
-                pendingTasks = uiState.pendingTasks,
-                inProgressTasks = uiState.inProgressTasks,
                 focusTimeText = uiState.focusTimeText
             )
         }
@@ -110,11 +108,11 @@ private fun HomeScreenContent(
 
         itemsIndexed(
             items = uiState.upcomingTasks,
-            key = { _, task -> task.id } // استفاده از ID برای Key (بهینه‌تر)
+            key = { _, task -> task.id }
         ) { _, task ->
             CompactDashboardTaskCard(
                 task = task,
-                onTaskClick = onTaskClick // اتصال نهایی
+                onTaskClick = onTaskClick
             )
         }
 

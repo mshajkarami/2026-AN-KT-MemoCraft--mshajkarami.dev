@@ -11,18 +11,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import dev.mshajkarami.memocraft.core.presentation.ui.theme.MemoCraftAppTheme
-import dev.mshajkarami.memocraft.features.task.presentation.component.card.CompactDashboardTaskCard
-import dev.mshajkarami.memocraft.features.task.presentation.model.TaskCardUiModel
 import dev.mshajkarami.memocraft.features.task.domain.model.TaskPriority
 import dev.mshajkarami.memocraft.features.task.domain.model.TaskStatus
-
+import dev.mshajkarami.memocraft.features.task.presentation.component.card.CompactDashboardTaskCard
+import dev.mshajkarami.memocraft.features.task.presentation.model.TaskCardUiModel
 
 @Preview(
     name = "Task Card - Light",
     showBackground = true,
     backgroundColor = 0xFFF8F8FF,
     widthDp = 430,
-    heightDp = 160
+    heightDp = 190
 )
 @Composable
 private fun CompactDashboardTaskCardLightPreview() {
@@ -38,9 +37,11 @@ private fun CompactDashboardTaskCardLightPreview() {
                 task = TaskCardUiModel(
                     id = "1",
                     title = "Develop New API Endpoints",
+                    description = "Create and optimize backend endpoints for the new dashboard tasks.",
                     progress = 65,
                     priority = TaskPriority.Urgent,
-                    status = TaskStatus.InProgress
+                    status = TaskStatus.InProgress,
+                    timeLabel = "Today, 4:30 PM"
                 ),
                 onTaskClick = {}
             )
@@ -53,7 +54,7 @@ private fun CompactDashboardTaskCardLightPreview() {
     showBackground = true,
     backgroundColor = 0xFF0F1226,
     widthDp = 430,
-    heightDp = 160
+    heightDp = 190
 )
 @Composable
 private fun CompactDashboardTaskCardDarkPreview() {
@@ -69,9 +70,11 @@ private fun CompactDashboardTaskCardDarkPreview() {
                 task = TaskCardUiModel(
                     id = "1",
                     title = "Develop New API Endpoints",
+                    description = "Create and optimize backend endpoints for the new dashboard tasks.",
                     progress = 65,
                     priority = TaskPriority.Urgent,
-                    status = TaskStatus.InProgress
+                    status = TaskStatus.InProgress,
+                    timeLabel = "Today, 4:30 PM"
                 ),
                 onTaskClick = {}
             )

@@ -119,6 +119,7 @@ private fun calculateFocusTime(tasks: List<Task>): String {
 
 private fun Task.toTaskCardUiModel(): TaskCardUiModel {
     val completedSubTasks = subTasks.count { it.isCompleted }
+
     val progress = when {
         subTasks.isNotEmpty() -> ((completedSubTasks * 100f) / subTasks.size).toInt()
         status == TaskStatus.Completed -> 100
@@ -129,11 +130,12 @@ private fun Task.toTaskCardUiModel(): TaskCardUiModel {
     val timeLabel = listOfNotNull(
         dueDate?.format(taskDateFormatter),
         estimatedDurationHours?.let { "$it h" }
-    ).joinToString(" • ").takeIf { it.isNotBlank() }
+    ).joinToString(" • ").ifBlank { "Just now" }
 
     return TaskCardUiModel(
-        id = this.id, // اضافه کردن فیلد ID
+        id = id,
         title = title,
+        description = description,
         subtitle = description,
         progress = progress,
         priority = priority,
@@ -142,3 +144,4 @@ private fun Task.toTaskCardUiModel(): TaskCardUiModel {
         timeLabel = timeLabel
     )
 }
+

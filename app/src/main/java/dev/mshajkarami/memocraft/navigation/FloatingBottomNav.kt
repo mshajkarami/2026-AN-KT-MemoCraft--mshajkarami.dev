@@ -11,11 +11,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.AutoAwesome
 import androidx.compose.material.icons.outlined.Home
-import androidx.compose.material.icons.outlined.NotificationsNone
 import androidx.compose.material.icons.outlined.PersonOutline
 import androidx.compose.material.icons.outlined.TaskAlt
 import androidx.compose.material3.Icon
@@ -28,7 +26,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -42,10 +39,10 @@ fun BottomNavBar(
     onHomeClick: () -> Unit = {},
     onTasksClick: () -> Unit = {},
     onAiClick: () -> Unit = {},
-    onPlannerClick: () -> Unit = {},
     onProfileClick: () -> Unit = {}
 ) {
     val colors = MemoCraftTheme.colors
+
     val selectedColor = colors.bottomNavSelectedContent
     val unselectedColor = colors.bottomNavUnselectedContent.copy(alpha = 0.72f)
     val containerColor = colors.bottomNavContainer
@@ -61,7 +58,7 @@ fun BottomNavBar(
                 .navigationBarsPadding()
                 .height(76.dp)
                 .padding(horizontal = 18.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
+            horizontalArrangement = Arrangement.SpaceAround,
             verticalAlignment = Alignment.CenterVertically
         ) {
             BottomNavItemButton(
@@ -92,26 +89,16 @@ fun BottomNavBar(
                 )
             }
 
-            CenterNavItemButton(
+            BottomNavItemButton(
                 label = "AI",
                 selected = selectedItem == BottomNavItem.Ai,
                 selectedColor = selectedColor,
                 unselectedColor = unselectedColor,
-                indicatorColor = colors.bottomNavSelectedIndicator,
                 onClick = onAiClick
-            )
-
-
-            BottomNavItemButton(
-                label = "Planner",
-                selected = selectedItem == BottomNavItem.Planner,
-                selectedColor = selectedColor,
-                unselectedColor = unselectedColor,
-                onClick = onPlannerClick
             ) {
                 Icon(
-                    imageVector = Icons.Outlined.NotificationsNone,
-                    contentDescription = "Planner",
+                    imageVector = Icons.Outlined.AutoAwesome,
+                    contentDescription = "AI Assistant",
                     modifier = Modifier.size(24.dp)
                 )
             }
@@ -133,7 +120,6 @@ fun BottomNavBar(
     }
 }
 
-
 @Composable
 private fun BottomNavItemButton(
     label: String,
@@ -143,17 +129,26 @@ private fun BottomNavItemButton(
     onClick: () -> Unit,
     icon: @Composable () -> Unit
 ) {
-    val contentColor = if (selected) selectedColor else unselectedColor
+    val contentColor = if (selected) {
+        selectedColor
+    } else {
+        unselectedColor
+    }
 
     IconButton(
-        modifier = Modifier.size(width = 58.dp, height = 60.dp),
+        modifier = Modifier.size(
+            width = 58.dp,
+            height = 60.dp
+        ),
         onClick = onClick
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            CompositionLocalProvider(LocalContentColor provides contentColor) {
+            CompositionLocalProvider(
+                LocalContentColor provides contentColor
+            ) {
                 icon()
             }
 
@@ -165,55 +160,6 @@ private fun BottomNavItemButton(
         }
     }
 }
-
-@Composable
-private fun CenterNavItemButton(
-    label: String,
-    selected: Boolean,
-    selectedColor: Color,
-    unselectedColor: Color,
-    indicatorColor: Color,
-    onClick: () -> Unit
-) {
-    val labelColor = if (selected) selectedColor else unselectedColor
-
-    Column(
-        modifier = Modifier.size(width = 72.dp, height = 86.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Top
-    ) {
-        Surface(
-            modifier = Modifier
-                .size(54.dp)
-                .shadow(
-                    elevation = 10.dp,
-                    shape = CircleShape,
-                    clip = false
-                ),
-            shape = CircleShape,
-            color = indicatorColor,
-            contentColor = Color.White,
-            onClick = onClick
-        ) {
-            Box(contentAlignment = Alignment.Center) {
-                Icon(
-                    imageVector = Icons.Outlined.AutoAwesome,
-                    contentDescription = label,
-                    tint = Color.White,
-                    modifier = Modifier.size(24.dp)
-                )
-            }
-        }
-
-        Text(
-            text = label,
-            color = labelColor,
-            style = MaterialTheme.typography.labelSmall,
-            modifier = Modifier.padding(top = 2.dp)
-        )
-    }
-}
-
 
 @Preview(
     name = "Bottom Navigation Bar - Light",
@@ -230,7 +176,9 @@ private fun BottomNavBarLightPreview() {
                 .background(MaterialTheme.colorScheme.background),
             contentAlignment = Alignment.BottomCenter
         ) {
-            BottomNavBar(selectedItem = BottomNavItem.Ai)
+            BottomNavBar(
+                selectedItem = BottomNavItem.Ai
+            )
         }
     }
 }
@@ -251,7 +199,9 @@ private fun BottomNavBarDarkPreview() {
                 .background(MaterialTheme.colorScheme.background),
             contentAlignment = Alignment.BottomCenter
         ) {
-            BottomNavBar(selectedItem = BottomNavItem.Ai)
+            BottomNavBar(
+                selectedItem = BottomNavItem.Ai
+            )
         }
     }
 }

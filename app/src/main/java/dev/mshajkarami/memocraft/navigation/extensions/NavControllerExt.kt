@@ -5,7 +5,6 @@ import androidx.navigation.NavDestination.Companion.hierarchy
 import dev.mshajkarami.memocraft.navigation.AiDestination
 import dev.mshajkarami.memocraft.navigation.BottomNavItem
 import dev.mshajkarami.memocraft.navigation.HomeDestination
-import dev.mshajkarami.memocraft.navigation.PlannerDestination
 import dev.mshajkarami.memocraft.navigation.ProfileDestination
 import dev.mshajkarami.memocraft.navigation.TasksDestination
 
@@ -20,7 +19,6 @@ fun NavDestination?.toBottomNavItem(): BottomNavItem? {
         hasRoute(HomeDestination.route) -> BottomNavItem.Home
         hasRoute(TasksDestination.route) -> BottomNavItem.Tasks
         hasRoute(AiDestination.route) -> BottomNavItem.Ai
-        hasRoute(PlannerDestination.route) -> BottomNavItem.Planner
         hasRoute(ProfileDestination.route) -> BottomNavItem.Profile
         else -> null
     }

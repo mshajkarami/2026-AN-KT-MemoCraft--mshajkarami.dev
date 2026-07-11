@@ -1,17 +1,13 @@
 package dev.mshajkarami.memocraft.features.main
 
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hierarchy
-import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import dev.mshajkarami.memocraft.navigation.AiDestination
@@ -20,7 +16,6 @@ import dev.mshajkarami.memocraft.navigation.AppNavigator
 import dev.mshajkarami.memocraft.navigation.BottomNavBar
 import dev.mshajkarami.memocraft.navigation.BottomNavItem
 import dev.mshajkarami.memocraft.navigation.HomeDestination
-import dev.mshajkarami.memocraft.navigation.PlannerDestination
 import dev.mshajkarami.memocraft.navigation.ProfileDestination
 import dev.mshajkarami.memocraft.navigation.TasksDestination
 
@@ -37,7 +32,6 @@ fun MainScreen(
         currentDestination.isInHierarchy(HomeDestination.route) -> BottomNavItem.Home
         currentDestination.isInHierarchy(TasksDestination.route) -> BottomNavItem.Tasks
         currentDestination.isInHierarchy(AiDestination.route) -> BottomNavItem.Ai
-        currentDestination.isInHierarchy(PlannerDestination.route) -> BottomNavItem.Planner
         currentDestination.isInHierarchy(ProfileDestination.route) -> BottomNavItem.Profile
         else -> BottomNavItem.Home
     }
@@ -50,7 +44,6 @@ fun MainScreen(
                 onHomeClick = navigator::navigateToHome,
                 onTasksClick = navigator::navigateToTasks,
                 onAiClick = navigator::navigateToAi,
-                onPlannerClick = navigator::navigateToPlanner,
                 onProfileClick = navigator::navigateToProfile
             )
         }

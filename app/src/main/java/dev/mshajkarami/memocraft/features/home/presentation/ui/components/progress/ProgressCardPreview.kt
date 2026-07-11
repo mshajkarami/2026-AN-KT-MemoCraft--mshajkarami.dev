@@ -16,7 +16,7 @@ import dev.mshajkarami.memocraft.core.presentation.ui.theme.MemoCraftAppTheme
     showBackground = true,
     backgroundColor = 0xFFF8F8FF,
     widthDp = 430,
-    heightDp = 520
+    heightDp = 300
 )
 @Composable
 private fun ProgressCardLightPreview() {
@@ -33,8 +33,6 @@ private fun ProgressCardLightPreview() {
                 overallProgress = 72,
                 totalTasks = 17,
                 completedTasks = 8,
-                pendingTasks = 5,
-                inProgressTasks = 4,
                 focusTimeText = "4h 12m"
             )
         }
@@ -47,7 +45,7 @@ private fun ProgressCardLightPreview() {
     showBackground = true,
     backgroundColor = 0xFF0F1226,
     widthDp = 430,
-    heightDp = 520
+    heightDp = 300
 )
 @Composable
 private fun ProgressCardDarkPreview() {
@@ -64,8 +62,6 @@ private fun ProgressCardDarkPreview() {
                 overallProgress = 72,
                 totalTasks = 17,
                 completedTasks = 8,
-                pendingTasks = 5,
-                inProgressTasks = 4,
                 focusTimeText = "4h 12m"
             )
         }

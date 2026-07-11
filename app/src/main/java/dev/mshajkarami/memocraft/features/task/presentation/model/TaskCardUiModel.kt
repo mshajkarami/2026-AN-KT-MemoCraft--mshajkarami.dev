@@ -8,6 +8,7 @@ import dev.mshajkarami.memocraft.features.task.domain.model.TaskStatus
 data class TaskCardUiModel(
     val id: String,
     val title: String,
+    val description: String? = null,
     val subtitle: String? = null,
     val progress: Int = 0,
     val priority: TaskPriority = TaskPriority.Normal,

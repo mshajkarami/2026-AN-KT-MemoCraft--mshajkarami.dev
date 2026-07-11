@@ -6,6 +6,5 @@ enum class BottomNavItem(
     Home(HomeDestination.route),
     Tasks(TasksDestination.route),
     Ai(AiDestination.route),
-    Planner(PlannerDestination.route),
     Profile(ProfileDestination.route)
 }

@@ -11,7 +11,6 @@ import androidx.navigation.compose.navigation
 import androidx.navigation.navArgument
 import dev.mshajkarami.memocraft.features.ai.presentation.ui.AiScreen
 import dev.mshajkarami.memocraft.features.home.presentation.HomeScreenRoute
-import dev.mshajkarami.memocraft.features.planner.presentation.ui.PlannerScreen
 import dev.mshajkarami.memocraft.features.profile.presentation.ui.ProfileScreen
 import dev.mshajkarami.memocraft.features.task.presentation.CreateTaskScreenRoute
 import dev.mshajkarami.memocraft.features.tasks.presentation.TasksScreenRoute
@@ -46,9 +45,7 @@ fun AppNavHost(
             composable(AiDestination.route) {
                 AiScreen()
             }
-            composable(PlannerDestination.route) {
-                PlannerScreen()
-            }
+
             composable(ProfileDestination.route) {
                 ProfileScreen()
             }

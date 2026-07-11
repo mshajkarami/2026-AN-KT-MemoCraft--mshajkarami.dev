@@ -62,9 +62,6 @@ class TasksViewModel @Inject constructor(
         val query = _uiState.value.searchQuery.trim()
 
         if (query.isBlank()) return
-
-        // در ساختار فعلی سرچ به صورت realtime با onSearchQueryChange انجام می‌شود.
-        // اینجا بعداً می‌توانی analytics، بستن کیبورد یا ذخیره recent searches اضافه کنی.
     }
 
     private fun observeTasks() {
@@ -149,6 +146,7 @@ private fun Task.toTaskCardUiModel(): TaskCardUiModel {
     return TaskCardUiModel(
         id = id,
         title = title,
+        description = description,
         subtitle = description,
         progress = progress,
         priority = priority,

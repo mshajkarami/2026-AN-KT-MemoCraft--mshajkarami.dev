@@ -18,10 +18,6 @@ data object AiDestination : BottomBarDestination {
     override val route: String = "ai"
 }
 
-data object PlannerDestination : BottomBarDestination {
-    override val route: String = "planner"
-}
-
 data object ProfileDestination : BottomBarDestination {
     override val route: String = "profile"
 }
