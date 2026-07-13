@@ -1,8 +1,8 @@
 package dev.mshajkarami.memocraft.features.ai.data.mapper
 
 import com.google.gson.Gson
-import dev.mshajkarami.memocraft.features.ai.data.dto.AiGeneratedTasksResponseDto
-import dev.mshajkarami.memocraft.features.ai.data.dto.GapGptChatResponseDto
+import dev.mshajkarami.memocraft.features.ai.data.remote.dto.AiGeneratedTasksResponseDto
+import dev.mshajkarami.memocraft.features.ai.data.remote.dto.GapGptChatResponseDto
 import dev.mshajkarami.memocraft.features.ai.domain.exception.AiTaskException
 import dev.mshajkarami.memocraft.features.ai.domain.model.AiChatResult
 import dev.mshajkarami.memocraft.features.ai.domain.toTask

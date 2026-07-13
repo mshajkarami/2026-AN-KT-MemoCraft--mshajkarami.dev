@@ -1,0 +1,133 @@
+package dev.mshajkarami.memocraft.core.designsystem.component
+
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.width
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.ArrowBack
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import dev.mshajkarami.memocraft.R
+import dev.mshajkarami.memocraft.core.designsystem.theme.MemoCraftTheme
+
+@Composable
+fun BaseTopBar(
+    modifier: Modifier = Modifier,
+    title: String = "MemoCraft",
+    subtitle: String? = "Your smart planner",
+    showLogo: Boolean = true,
+    navigationIcon: (@Composable () -> Unit)? = null,
+    actions: @Composable RowScope.() -> Unit = {},
+    content: (@Composable RowScope.() -> Unit)? = null
+) {
+    val colors = MemoCraftTheme.colors
+
+    Surface(
+        modifier = modifier.fillMaxWidth(),
+        color = colors.topBarBackground,
+        shadowElevation = 2.dp
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .statusBarsPadding()
+                .padding(horizontal = 16.dp, vertical = 8.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            if (content != null) {
+                content()
+            } else {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.weight(1f)
+                ) {
+                    if (navigationIcon != null) {
+                        navigationIcon()
+                        Spacer(modifier = Modifier.width(8.dp))
+                    } else if (showLogo) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_logo),
+                            contentDescription = "Logo",
+                            tint = Color.Unspecified,
+                            modifier = Modifier.size(40.dp)
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                    }
+
+                    Column(verticalArrangement = Arrangement.Center) {
+                        Text(
+                            text = title,
+                            style = MaterialTheme.typography.titleMedium.copy(
+                                fontWeight = FontWeight.SemiBold
+                            ),
+                            color = colors.topBarTitleColor,
+                            maxLines = 1
+                        )
+
+                        if (subtitle != null) {
+                            Spacer(modifier = Modifier.height(1.dp))
+                            Text(
+                                text = subtitle,
+                                style = MaterialTheme.typography.labelSmall,
+                                color = colors.topBarSubtitleColor,
+                                maxLines = 1
+                            )
+                        }
+                    }
+                }
+
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    content = actions
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun BaseBackTopBar(
+    title: String,
+    modifier: Modifier = Modifier,
+    subtitle: String? = null,
+    onBackClick: () -> Unit,
+    actions: @Composable RowScope.() -> Unit = {}
+) {
+    val colors = MemoCraftTheme.colors
+
+    BaseTopBar(
+        modifier = modifier,
+        title = title,
+        subtitle = subtitle,
+        showLogo = false,
+        navigationIcon = {
+            IconButton(onClick = onBackClick) {
+                Icon(
+                    imageVector = Icons.Rounded.ArrowBack,
+                    contentDescription = "Back",
+                    tint = colors.topBarActionIconColor
+                )
+            }
+        },
+        actions = actions
+    )
+}

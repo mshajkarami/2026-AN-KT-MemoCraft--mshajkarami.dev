@@ -1,7 +1,7 @@
 package dev.mshajkarami.memocraft.features.ai.domain
 
-import dev.mshajkarami.memocraft.features.ai.data.dto.AiGeneratedSubTaskDto
-import dev.mshajkarami.memocraft.features.ai.data.dto.AiGeneratedTaskDto
+import dev.mshajkarami.memocraft.features.ai.data.remote.dto.AiGeneratedSubTaskDto
+import dev.mshajkarami.memocraft.features.ai.data.remote.dto.AiGeneratedTaskDto
 import dev.mshajkarami.memocraft.features.task.domain.model.SubTask
 import dev.mshajkarami.memocraft.features.task.domain.model.Task
 import dev.mshajkarami.memocraft.features.task.domain.model.TaskPriority

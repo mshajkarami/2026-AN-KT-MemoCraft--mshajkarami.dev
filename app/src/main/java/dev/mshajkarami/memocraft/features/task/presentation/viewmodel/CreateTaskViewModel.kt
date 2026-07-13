@@ -16,7 +16,7 @@ import dev.mshajkarami.memocraft.features.task.domain.usecase.CreateTaskUseCase
 import dev.mshajkarami.memocraft.features.task.domain.usecase.GetTaskByIdUseCase
 import dev.mshajkarami.memocraft.features.task.domain.usecase.UpdateTaskUseCase
 import dev.mshajkarami.memocraft.features.task.presentation.model.SubTaskUiModel
-import dev.mshajkarami.memocraft.navigation.EditTaskDestination
+import dev.mshajkarami.memocraft.app.navigation.EditTaskDestination
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.LocalDateTime

@@ -22,8 +22,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import dev.mshajkarami.memocraft.core.presentation.ui.theme.MemoCraftAppTheme
-import dev.mshajkarami.memocraft.core.presentation.ui.theme.MemoCraftTheme
+import dev.mshajkarami.memocraft.core.designsystem.theme.MemoCraftAppTheme
+import dev.mshajkarami.memocraft.core.designsystem.theme.MemoCraftTheme
 import dev.mshajkarami.memocraft.features.task.domain.model.TaskPriority
 import dev.mshajkarami.memocraft.features.task.domain.model.TaskStatus
 import dev.mshajkarami.memocraft.features.task.presentation.model.SubTaskUiModel

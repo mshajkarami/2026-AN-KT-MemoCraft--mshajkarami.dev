@@ -5,7 +5,7 @@ import androidx.compose.material.icons.rounded.Error
 import androidx.compose.material.icons.rounded.Schedule
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import dev.mshajkarami.memocraft.core.presentation.ui.theme.MemoCraftTheme
+import dev.mshajkarami.memocraft.core.designsystem.theme.MemoCraftTheme
 import dev.mshajkarami.memocraft.features.task.domain.model.TaskPriority
 
 @Composable

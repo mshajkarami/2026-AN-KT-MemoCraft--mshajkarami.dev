@@ -2,7 +2,7 @@ package dev.mshajkarami.memocraft.features.task.presentation.component.chip
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import dev.mshajkarami.memocraft.core.presentation.ui.theme.MemoCraftTheme
+import dev.mshajkarami.memocraft.core.designsystem.theme.MemoCraftTheme
 import dev.mshajkarami.memocraft.features.task.domain.model.TaskStatus
 
 @Composable

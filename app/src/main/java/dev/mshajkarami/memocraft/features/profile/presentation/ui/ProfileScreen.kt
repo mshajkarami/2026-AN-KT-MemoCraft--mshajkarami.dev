@@ -45,8 +45,8 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import dev.mshajkarami.memocraft.core.presentation.ui.theme.MemoCraftAppTheme
-import dev.mshajkarami.memocraft.core.presentation.ui.theme.MemoCraftTheme
+import dev.mshajkarami.memocraft.core.designsystem.theme.MemoCraftAppTheme
+import dev.mshajkarami.memocraft.core.designsystem.theme.MemoCraftTheme
 import dev.mshajkarami.memocraft.features.profile.presentation.ui.component.ProfileTopBar
 
 @Composable

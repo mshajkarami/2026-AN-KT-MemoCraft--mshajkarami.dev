@@ -1,9 +1,9 @@
 package dev.mshajkarami.memocraft.features.ai.presentation.mapper
 
 import dev.mshajkarami.memocraft.features.ai.domain.model.AiChatResult
-import dev.mshajkarami.memocraft.features.ai.presentation.ui.AiChatMessageUiModel
-import dev.mshajkarami.memocraft.features.ai.presentation.ui.DetectedTaskPriority
-import dev.mshajkarami.memocraft.features.ai.presentation.ui.DetectedTaskUiModel
+import dev.mshajkarami.memocraft.features.ai.presentation.model.AiChatMessageUiModel
+import dev.mshajkarami.memocraft.features.ai.presentation.model.DetectedTaskPriority
+import dev.mshajkarami.memocraft.features.ai.presentation.model.DetectedTaskUiModel
 import dev.mshajkarami.memocraft.features.task.domain.model.Task
 import dev.mshajkarami.memocraft.features.task.domain.model.TaskPriority
 import java.time.LocalDate

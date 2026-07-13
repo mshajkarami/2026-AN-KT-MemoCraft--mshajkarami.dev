@@ -2,11 +2,11 @@ package dev.mshajkarami.memocraft.features.ai.data.repository
 
 import android.util.Log
 import com.google.gson.Gson
-import dev.mshajkarami.memocraft.features.ai.data.dto.GapGptChatMessageDto
-import dev.mshajkarami.memocraft.features.ai.data.dto.GapGptChatRequestDto
+import dev.mshajkarami.memocraft.features.ai.data.remote.dto.GapGptChatMessageDto
+import dev.mshajkarami.memocraft.features.ai.data.remote.dto.GapGptChatRequestDto
 import dev.mshajkarami.memocraft.features.ai.data.mapper.AiChatResultMapper
 import dev.mshajkarami.memocraft.features.ai.data.prompt.AiTaskPromptBuilder
-import dev.mshajkarami.memocraft.features.ai.data.remote.GapGptApiService
+import dev.mshajkarami.memocraft.features.ai.data.remote.api.GapGptApiService
 import dev.mshajkarami.memocraft.features.ai.domain.exception.AiTaskException
 import dev.mshajkarami.memocraft.features.ai.domain.model.AiChatResult
 import dev.mshajkarami.memocraft.features.ai.domain.repository.AiTaskRepository

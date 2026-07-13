@@ -5,8 +5,8 @@ import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
-import dev.mshajkarami.memocraft.core.presentation.ui.components.BaseTopBar
-import dev.mshajkarami.memocraft.core.presentation.ui.theme.MemoCraftTheme
+import dev.mshajkarami.memocraft.core.designsystem.component.BaseTopBar
+import dev.mshajkarami.memocraft.core.designsystem.theme.MemoCraftTheme
 
 @Composable
 fun ProfileTopBar(

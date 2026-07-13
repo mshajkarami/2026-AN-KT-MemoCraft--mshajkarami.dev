@@ -6,7 +6,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.luminance
 import androidx.compose.material3.MaterialTheme
-import dev.mshajkarami.memocraft.core.presentation.ui.theme.MemoCraftTheme
+import dev.mshajkarami.memocraft.core.designsystem.theme.MemoCraftTheme
 internal data class TaskCardBrushes(
     val backgroundBrush: Brush,
     val borderBrush: Brush,

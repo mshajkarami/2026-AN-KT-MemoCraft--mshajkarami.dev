@@ -10,13 +10,13 @@ import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
-import dev.mshajkarami.memocraft.navigation.AiDestination
-import dev.mshajkarami.memocraft.navigation.AppNavHost
-import dev.mshajkarami.memocraft.navigation.AppNavigator
-import dev.mshajkarami.memocraft.navigation.BottomNavBar
-import dev.mshajkarami.memocraft.navigation.BottomNavItem
-import dev.mshajkarami.memocraft.navigation.ProfileDestination
-import dev.mshajkarami.memocraft.navigation.TasksDestination
+import dev.mshajkarami.memocraft.app.navigation.AiDestination
+import dev.mshajkarami.memocraft.app.navigation.AppNavHost
+import dev.mshajkarami.memocraft.app.navigation.AppNavigator
+import dev.mshajkarami.memocraft.app.navigation.BottomNavBar
+import dev.mshajkarami.memocraft.app.navigation.BottomNavItem
+import dev.mshajkarami.memocraft.app.navigation.ProfileDestination
+import dev.mshajkarami.memocraft.app.navigation.TasksDestination
 
 @Composable
 fun MainScreen(
