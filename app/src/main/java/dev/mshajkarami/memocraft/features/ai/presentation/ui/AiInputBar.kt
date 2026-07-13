@@ -13,6 +13,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Send
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButtonDefaults
@@ -22,7 +23,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -31,10 +32,25 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 internal fun AiInputBar(
+    isLoading: Boolean,
     onSendClick: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    var message by remember { mutableStateOf("") }
+    var message by rememberSaveable { mutableStateOf("") }
+
+    val canSend = message.isNotBlank() && !isLoading
+
+    val buttonContainerColor = when {
+        isLoading -> MaterialTheme.colorScheme.primary
+        message.isBlank() -> MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f)
+        else -> MaterialTheme.colorScheme.primary
+    }
+
+    val buttonContentColor = when {
+        isLoading -> MaterialTheme.colorScheme.onPrimary
+        message.isBlank() -> MaterialTheme.colorScheme.onSurface.copy(alpha = 0.35f)
+        else -> MaterialTheme.colorScheme.onPrimary
+    }
 
     Surface(
         modifier = modifier,
@@ -71,6 +87,7 @@ internal fun AiInputBar(
                     value = message,
                     onValueChange = { message = it },
                     modifier = Modifier.fillMaxWidth(),
+                    enabled = !isLoading,
                     textStyle = MaterialTheme.typography.bodyMedium.copy(
                         color = MaterialTheme.colorScheme.onSurface
                     ),
@@ -84,31 +101,35 @@ internal fun AiInputBar(
             FilledIconButton(
                 onClick = {
                     val text = message.trim()
-                    if (text.isNotEmpty()) {
+
+                    if (text.isNotEmpty() && !isLoading) {
                         onSendClick(text)
                         message = ""
                     }
                 },
+                enabled = canSend,
                 modifier = Modifier.size(44.dp),
                 shape = CircleShape,
                 colors = IconButtonDefaults.filledIconButtonColors(
-                    containerColor = if (message.isBlank()) {
-                        MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f)
-                    } else {
-                        MaterialTheme.colorScheme.primary
-                    },
-                    contentColor = if (message.isBlank()) {
-                        MaterialTheme.colorScheme.onSurface.copy(alpha = 0.35f)
-                    } else {
-                        MaterialTheme.colorScheme.onPrimary
-                    }
+                    containerColor = buttonContainerColor,
+                    contentColor = buttonContentColor,
+                    disabledContainerColor = buttonContainerColor,
+                    disabledContentColor = buttonContentColor
                 )
             ) {
-                Icon(
-                    imageVector = Icons.Rounded.Send,
-                    contentDescription = "Send",
-                    modifier = Modifier.size(20.dp)
-                )
+                if (isLoading) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(20.dp),
+                        color = MaterialTheme.colorScheme.onPrimary,
+                        strokeWidth = 2.dp
+                    )
+                } else {
+                    Icon(
+                        imageVector = Icons.Rounded.Send,
+                        contentDescription = "Send",
+                        modifier = Modifier.size(20.dp)
+                    )
+                }
             }
         }
     }

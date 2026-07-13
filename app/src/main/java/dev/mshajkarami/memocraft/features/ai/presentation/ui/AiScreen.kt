@@ -7,9 +7,7 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.ime
-import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.union
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -26,6 +24,18 @@ import dev.mshajkarami.memocraft.core.presentation.ui.theme.MemoCraftTheme
 import dev.mshajkarami.memocraft.features.ai.presentation.AiTaskViewModel
 import dev.mshajkarami.memocraft.features.task.presentation.component.card.AiThinkingCard
 
+private object AiScreenSpacing {
+    val ScreenHorizontalPadding = 24.dp
+
+    val ContentTopPadding = 12.dp
+    val ContentBottomPadding = 14.dp
+
+    val MessageSpacing = 14.dp
+
+    val InputTopPadding = 8.dp
+    val InputBottomPadding = 6.dp
+}
+
 @Composable
 fun AiScreen(
     modifier: Modifier = Modifier,
@@ -38,15 +48,13 @@ fun AiScreen(
     Scaffold(
         modifier = modifier.fillMaxSize(),
         containerColor = colors.bottomNavContainer,
-
         contentWindowInsets = WindowInsets(0, 0, 0, 0),
-
         topBar = {
             AiTopBar()
         },
-
         bottomBar = {
             AiInputSection(
+                isLoading = uiState.isGeneratingResponse,
                 onSendMessage = viewModel::onSendMessage
             )
         }
@@ -68,24 +76,24 @@ fun AiScreen(
 
 @Composable
 private fun AiInputSection(
+    isLoading: Boolean,
     onSendMessage: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val colors = MemoCraftTheme.colors
 
-    val bottomInsets = WindowInsets.ime.union(WindowInsets.navigationBars)
-
     AiInputBar(
+        isLoading = isLoading,
         onSendClick = onSendMessage,
         modifier = modifier
             .fillMaxWidth()
             .background(colors.bottomNavContainer)
-            .windowInsetsPadding(bottomInsets)
+            .windowInsetsPadding(WindowInsets.ime)
             .padding(
-                start = 20.dp,
-                end = 20.dp,
-                top = 8.dp,
-                bottom = 4.dp
+                start = AiScreenSpacing.ScreenHorizontalPadding,
+                end = AiScreenSpacing.ScreenHorizontalPadding,
+                top = AiScreenSpacing.InputTopPadding,
+                bottom = AiScreenSpacing.InputBottomPadding
             )
     )
 }
@@ -101,9 +109,7 @@ private fun AiScreenContent(
     val listState = rememberLazyListState()
 
     LaunchedEffect(messages.size, isGeneratingResponse) {
-        val totalItemsCount =
-            1 + messages.size + if (isGeneratingResponse) 1 else 0
-
+        val totalItemsCount = 1 + messages.size + if (isGeneratingResponse) 1 else 0
         val targetIndex = (totalItemsCount - 1).coerceAtLeast(0)
 
         if (totalItemsCount > 0) {
@@ -117,12 +123,12 @@ private fun AiScreenContent(
             .background(colors.bottomNavContainer),
         state = listState,
         contentPadding = PaddingValues(
-            start = 20.dp,
-            end = 20.dp,
-            top = 4.dp,
-            bottom = 12.dp
+            start = AiScreenSpacing.ScreenHorizontalPadding,
+            end = AiScreenSpacing.ScreenHorizontalPadding,
+            top = AiScreenSpacing.ContentTopPadding,
+            bottom = AiScreenSpacing.ContentBottomPadding
         ),
-        verticalArrangement = Arrangement.spacedBy(14.dp)
+        verticalArrangement = Arrangement.spacedBy(AiScreenSpacing.MessageSpacing)
     ) {
         item(key = "ai_intro_card") {
             AiIntroCard()

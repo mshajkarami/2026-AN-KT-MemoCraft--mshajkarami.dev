@@ -6,7 +6,9 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.mshajkarami.memocraft.features.ai.domain.model.AiChatResult
 import dev.mshajkarami.memocraft.features.ai.domain.repository.AiTaskRepository
 import dev.mshajkarami.memocraft.features.ai.presentation.mapper.toAiChatMessageUiModel
+import dev.mshajkarami.memocraft.features.ai.presentation.mapper.toDetectedTaskUiModel
 import dev.mshajkarami.memocraft.features.ai.presentation.ui.AiChatMessageUiModel
+import dev.mshajkarami.memocraft.features.ai.presentation.ui.DetectedTaskUiModel
 import dev.mshajkarami.memocraft.features.task.domain.model.Task
 import dev.mshajkarami.memocraft.features.task.domain.repository.TaskRepository
 import kotlinx.coroutines.CancellationException
@@ -16,6 +18,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.time.LocalDateTime
 import java.util.UUID
 import javax.inject.Inject
 
@@ -59,9 +62,11 @@ class AiTaskViewModel @Inject constructor(
                     existingTasks = existingTasks
                 )
 
-                saveDetectedTasks(result)
+                val savedTaskUiModels = saveDetectedTasksAndMapToUi(result)
 
-                val aiMessage = result.toAiChatMessageUiModel()
+                val aiMessage = result.toAiChatMessageUiModel(
+                    detectedTaskUiModels = savedTaskUiModels
+                )
 
                 _uiState.update { currentState ->
                     currentState.copy(
@@ -72,7 +77,6 @@ class AiTaskViewModel @Inject constructor(
                     )
                 }
             } catch (exception: CancellationException) {
-                // لغو Coroutine نباید به‌عنوان خطای معمولی نمایش داده شود.
                 _uiState.update { currentState ->
                     currentState.copy(
                         isLoading = false,
@@ -92,8 +96,29 @@ class AiTaskViewModel @Inject constructor(
             id = UUID.randomUUID().toString(),
             content = prompt,
             isFromUser = true,
+            createdAt = LocalDateTime.now(),
             detectedTasks = emptyList()
         )
+    }
+
+    private suspend fun getExistingTasks(): List<Task> {
+        return taskRepository
+            .getAllTasks()
+            .first()
+    }
+
+    private suspend fun saveDetectedTasksAndMapToUi(
+        result: AiChatResult
+    ): List<DetectedTaskUiModel> {
+        if (result.detectedTasks.isEmpty()) {
+            return emptyList()
+        }
+
+        return result.detectedTasks.map { task ->
+            taskRepository.createTask(task)
+
+            task.toDetectedTaskUiModel()
+        }
     }
 
     private fun handleSendMessageFailure(throwable: Throwable) {
@@ -105,6 +130,7 @@ class AiTaskViewModel @Inject constructor(
             id = UUID.randomUUID().toString(),
             content = fallbackMessage,
             isFromUser = false,
+            createdAt = LocalDateTime.now(),
             detectedTasks = emptyList()
         )
 
@@ -115,18 +141,6 @@ class AiTaskViewModel @Inject constructor(
                 isGeneratingResponse = false,
                 errorMessage = fallbackMessage
             )
-        }
-    }
-
-    private suspend fun getExistingTasks(): List<Task> {
-        return taskRepository
-            .getAllTasks()
-            .first()
-    }
-
-    private suspend fun saveDetectedTasks(result: AiChatResult) {
-        result.detectedTasks.forEach { task ->
-            taskRepository.createTask(task)
         }
     }
 

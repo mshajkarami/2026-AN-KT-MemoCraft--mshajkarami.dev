@@ -32,53 +32,84 @@ internal fun AiMessageBubble(
 ) {
     val isUser = message.isFromUser
 
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = if (isUser) Arrangement.End else Arrangement.Start
-    ) {
-        if (!isUser) {
-            AiAvatar()
-            Spacer(modifier = Modifier.width(10.dp))
-        }
-
-        Column(
-            modifier = Modifier.fillMaxWidth(0.82f),
-            horizontalAlignment = if (isUser) Alignment.End else Alignment.Start
+    if (isUser) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.End
         ) {
             Surface(
+                modifier = Modifier.fillMaxWidth(0.82f),
                 shape = RoundedCornerShape(
                     topStart = 22.dp,
                     topEnd = 22.dp,
-                    bottomStart = if (isUser) 22.dp else 6.dp,
-                    bottomEnd = if (isUser) 6.dp else 22.dp
+                    bottomStart = 22.dp,
+                    bottomEnd = 6.dp
                 ),
-                color = if (isUser) {
-                    MaterialTheme.colorScheme.primary
-                } else {
-                    MaterialTheme.colorScheme.surface
-                },
+                color = MaterialTheme.colorScheme.primary,
                 tonalElevation = 0.dp
             ) {
                 Text(
                     text = message.content,
-                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 13.dp),
+                    modifier = Modifier.padding(
+                        horizontal = 16.dp,
+                        vertical = 13.dp
+                    ),
                     style = MaterialTheme.typography.bodyMedium,
-                    color = if (isUser) {
-                        MaterialTheme.colorScheme.onPrimary
-                    } else {
-                        MaterialTheme.colorScheme.onSurface
-                    }
+                    color = MaterialTheme.colorScheme.onPrimary
                 )
             }
+        }
+        return
+    }
 
-            if (!isUser && message.detectedTasks.isNotEmpty()) {
-                Spacer(modifier = Modifier.height(10.dp))
+    Column(
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Start,
+            verticalAlignment = Alignment.Top
+        ) {
+            AiAvatar()
 
-                DetectedTasksCard(
-                    tasks = message.detectedTasks,
-                    onDetectedTaskClick = onAddDetectedTaskClick
+            Spacer(modifier = Modifier.width(10.dp))
+
+            Surface(
+                modifier = Modifier.fillMaxWidth(0.82f),
+                shape = RoundedCornerShape(
+                    topStart = 22.dp,
+                    topEnd = 22.dp,
+                    bottomStart = 6.dp,
+                    bottomEnd = 22.dp
+                ),
+                color = MaterialTheme.colorScheme.surface,
+                tonalElevation = 0.dp
+            ) {
+                Text(
+                    text = message.content,
+                    modifier = Modifier.padding(
+                        horizontal = 16.dp,
+                        vertical = 13.dp
+                    ),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurface
                 )
             }
+        }
+
+        if (message.detectedTasks.isNotEmpty()) {
+            Spacer(modifier = Modifier.height(12.dp))
+
+            DetectedTasksCard(
+                tasks = message.detectedTasks,
+                onDetectedTaskClick = onAddDetectedTaskClick,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(
+                        start = 44.dp,
+                        end = 0.dp
+                    )
+            )
         }
     }
 }

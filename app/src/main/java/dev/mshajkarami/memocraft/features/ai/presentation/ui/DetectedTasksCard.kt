@@ -18,6 +18,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.AddTask
 import androidx.compose.material.icons.outlined.ArrowForward
+import androidx.compose.material.icons.outlined.Description
 import androidx.compose.material.icons.outlined.Schedule
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -30,6 +31,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -45,7 +47,7 @@ internal fun DetectedTasksCard(
 
     Card(
         modifier = modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(16.dp),
+        shape = RoundedCornerShape(18.dp),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surface
         ),
@@ -65,7 +67,7 @@ internal fun DetectedTasksCard(
                 tasksCount = tasks.size
             )
 
-            Spacer(modifier = Modifier.height(10.dp))
+            Spacer(modifier = Modifier.height(12.dp))
 
             tasks.forEachIndexed { index, task ->
                 DetectedTaskItem(
@@ -77,9 +79,9 @@ internal fun DetectedTasksCard(
 
                 if (index < tasks.lastIndex) {
                     HorizontalDivider(
-                        modifier = Modifier.padding(vertical = 8.dp),
+                        modifier = Modifier.padding(vertical = 10.dp),
                         color = MaterialTheme.colorScheme.outlineVariant.copy(
-                            alpha = 0.5f
+                            alpha = 0.45f
                         )
                     )
                 }
@@ -99,8 +101,8 @@ private fun DetectedTasksHeader(
     ) {
         Box(
             modifier = Modifier
-                .size(32.dp)
-                .clip(RoundedCornerShape(10.dp))
+                .size(34.dp)
+                .clip(RoundedCornerShape(11.dp))
                 .background(
                     MaterialTheme.colorScheme.primary.copy(alpha = 0.12f)
                 ),
@@ -114,7 +116,7 @@ private fun DetectedTasksHeader(
             )
         }
 
-        Spacer(modifier = Modifier.width(8.dp))
+        Spacer(modifier = Modifier.width(9.dp))
 
         Column(
             modifier = Modifier.weight(1f)
@@ -129,10 +131,9 @@ private fun DetectedTasksHeader(
             )
 
             Text(
-                text = if (tasksCount == 1) {
-                    "1 task was created and saved"
-                } else {
-                    "$tasksCount tasks were created and saved"
+                text = when (tasksCount) {
+                    1 -> "1 task was created and saved"
+                    else -> "$tasksCount tasks were created and saved"
                 },
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -150,6 +151,20 @@ private fun DetectedTaskItem(
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val taskDescription = task.description
+        ?.trim()
+        ?.takeIf { it.isNotBlank() }
+
+    val dueText = task.dueText
+        .trim()
+        .takeIf { it.isNotBlank() }
+        ?: "No date"
+
+    val actionText = task.actionText
+        .trim()
+        .takeIf { it.isNotBlank() }
+        ?: "View task"
+
     Column(
         modifier = modifier.fillMaxWidth()
     ) {
@@ -159,40 +174,51 @@ private fun DetectedTaskItem(
         ) {
             Box(
                 modifier = Modifier
-                    .padding(top = 5.dp)
+                    .padding(top = 6.dp)
                     .size(8.dp)
                     .clip(CircleShape)
                     .background(task.priority.color())
             )
 
-            Spacer(modifier = Modifier.width(8.dp))
+            Spacer(modifier = Modifier.width(9.dp))
 
-            Text(
-                text = task.title,
-                modifier = Modifier.weight(1f),
-                style = MaterialTheme.typography.titleSmall,
-                fontWeight = FontWeight.SemiBold,
-                color = MaterialTheme.colorScheme.onSurface,
-                maxLines = 2,
-                overflow = TextOverflow.Ellipsis
-            )
+            Column(
+                modifier = Modifier.weight(1f)
+            ) {
+                Text(
+                    text = task.title,
+                    style = MaterialTheme.typography.titleSmall,
+                    fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis
+                )
+
+                if (taskDescription != null) {
+                    Spacer(modifier = Modifier.height(4.dp))
+
+                    Text(
+                        text = taskDescription,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
+            }
         }
 
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(9.dp))
 
         FlowRow(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(6.dp),
             verticalArrangement = Arrangement.spacedBy(6.dp)
         ) {
-            task.dueText
-                .takeIf { it.isNotBlank() }
-                ?.let { dueText ->
-                    TaskMetaChip(
-                        icon = Icons.Outlined.Schedule,
-                        text = dueText
-                    )
-                }
+            TaskMetaChip(
+                icon = Icons.Outlined.Schedule,
+                text = dueText
+            )
 
             TaskMetaChip(
                 icon = null,
@@ -200,29 +226,40 @@ private fun DetectedTaskItem(
                 containerColor = task.priority.color().copy(alpha = 0.12f),
                 contentColor = task.priority.color()
             )
+
+            if (taskDescription != null) {
+                TaskMetaChip(
+                    icon = Icons.Outlined.Description,
+                    text = "Has details",
+                    containerColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.10f),
+                    contentColor = MaterialTheme.colorScheme.secondary
+                )
+            }
         }
 
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(10.dp))
 
         Surface(
             onClick = onClick,
             modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(10.dp),
+            shape = RoundedCornerShape(12.dp),
             color = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)
         ) {
             Row(
                 modifier = Modifier.padding(
                     horizontal = 12.dp,
-                    vertical = 8.dp
+                    vertical = 9.dp
                 ),
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "View task",
+                    text = actionText,
                     style = MaterialTheme.typography.labelMedium,
                     fontWeight = FontWeight.SemiBold,
-                    color = MaterialTheme.colorScheme.primary
+                    color = MaterialTheme.colorScheme.primary,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
                 )
 
                 Spacer(modifier = Modifier.width(6.dp))
@@ -243,12 +280,13 @@ private fun TaskMetaChip(
     icon: ImageVector?,
     text: String,
     modifier: Modifier = Modifier,
-    containerColor: androidx.compose.ui.graphics.Color =
-        MaterialTheme.colorScheme.primary.copy(alpha = 0.09f),
-    contentColor: androidx.compose.ui.graphics.Color =
-        MaterialTheme.colorScheme.primary
+    containerColor: Color = MaterialTheme.colorScheme.primary.copy(alpha = 0.09f),
+    contentColor: Color = MaterialTheme.colorScheme.primary
 ) {
-    if (text.isBlank()) return
+    val normalizedText = text
+        .trim()
+        .takeIf { it.isNotBlank() }
+        ?: return
 
     Row(
         modifier = modifier
@@ -272,7 +310,7 @@ private fun TaskMetaChip(
         }
 
         Text(
-            text = text,
+            text = normalizedText,
             style = MaterialTheme.typography.labelSmall,
             color = contentColor,
             fontWeight = FontWeight.Medium,
