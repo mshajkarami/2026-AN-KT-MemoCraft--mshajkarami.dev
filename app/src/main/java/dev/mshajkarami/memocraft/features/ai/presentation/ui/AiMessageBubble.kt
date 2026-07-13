@@ -76,7 +76,7 @@ internal fun AiMessageBubble(
 
                 DetectedTasksCard(
                     tasks = message.detectedTasks,
-                    onAddDetectedTaskClick = onAddDetectedTaskClick
+                    onDetectedTaskClick = onAddDetectedTaskClick
                 )
             }
         }

@@ -10,7 +10,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.navArgument
 import dev.mshajkarami.memocraft.features.ai.presentation.ui.AiScreen
-import dev.mshajkarami.memocraft.features.home.presentation.HomeScreenRoute
 import dev.mshajkarami.memocraft.features.profile.presentation.ui.ProfileScreen
 import dev.mshajkarami.memocraft.features.task.presentation.CreateTaskScreenRoute
 import dev.mshajkarami.memocraft.features.tasks.presentation.TasksScreenRoute
@@ -28,18 +27,13 @@ fun AppNavHost(
         modifier = modifier
     ) {
         navigation(
-            startDestination = HomeDestination.route,
+            startDestination = TasksDestination.route,
             route = Graph.MAIN
         ) {
-            composable(HomeDestination.route) {
-                HomeScreenRoute(
-                    onSeeAllTasksClick = navigator::navigateToTasks,
-                    onTaskClick = navigator::navigateToEditTask
-                )
-            }
             composable(TasksDestination.route) {
                 TasksScreenRoute(
-                    onCreateTaskClick = navigator::navigateToCreateTask
+                    onCreateTaskClick = navigator::navigateToCreateTask,
+                    onTaskClick = navigator::navigateToEditTask
                 )
             }
             composable(AiDestination.route) {
@@ -49,6 +43,7 @@ fun AppNavHost(
             composable(ProfileDestination.route) {
                 ProfileScreen()
             }
+
             composable(CreateTaskDestination.route) {
                 CreateTaskScreenRoute(
                     onBackClick = navigator::navigateBack,

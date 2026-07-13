@@ -70,4 +70,8 @@ class TaskRepositoryImpl @Inject constructor(
     override suspend fun deleteTaskById(taskId: String) {
         taskDao.deleteTaskById(taskId)
     }
+
+    override fun getAllTasks(): Flow<List<Task>> {
+        return observeTasks()
+    }
 }

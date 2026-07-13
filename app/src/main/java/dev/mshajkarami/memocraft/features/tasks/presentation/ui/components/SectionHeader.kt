@@ -1,4 +1,4 @@
-package dev.mshajkarami.memocraft.features.home.presentation.ui.components
+package dev.mshajkarami.memocraft.features.tasks.presentation.ui.components
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement

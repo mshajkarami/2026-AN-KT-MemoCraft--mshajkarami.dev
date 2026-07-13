@@ -1,6 +1,5 @@
 package dev.mshajkarami.memocraft.features.task.domain.model
 
-import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.UUID
 import kotlin.math.roundToInt
@@ -9,7 +8,7 @@ data class Task(
     val id: String = UUID.randomUUID().toString(),
     val title: String,
     val description: String? = null,
-    val dueDate: LocalDate? = null,
+    val dueAt: LocalDateTime? = null,
     val startAt: LocalDateTime? = null,
     val endAt: LocalDateTime? = null,
     val estimatedDurationHours: Int? = null,
@@ -27,14 +26,18 @@ data class Task(
 
     val progress: Int
         get() {
-            if (subTasks.isEmpty()) return 0
+            if (subTasks.isEmpty()) {
+                return if (status == TaskStatus.Completed) 100 else 0
+            }
+
             return ((completedSubTasksCount.toFloat() / totalSubTasksCount.toFloat()) * 100)
                 .roundToInt()
                 .coerceIn(0, 100)
         }
 
     val isCompleted: Boolean
-        get() = subTasks.isNotEmpty() && completedSubTasksCount == totalSubTasksCount
+        get() = status == TaskStatus.Completed ||
+                (subTasks.isNotEmpty() && completedSubTasksCount == totalSubTasksCount)
 
     fun addSubTask(title: String): Task {
         val trimmedTitle = title.trim()

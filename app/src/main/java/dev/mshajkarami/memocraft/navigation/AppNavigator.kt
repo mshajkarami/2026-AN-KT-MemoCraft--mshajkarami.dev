@@ -16,7 +16,6 @@ class AppNavigator(
         }
     }
 
-    fun navigateToHome() = navigateToBottomBarDestination(HomeDestination.route)
     fun navigateToTasks() = navigateToBottomBarDestination(TasksDestination.route)
     fun navigateToAi() = navigateToBottomBarDestination(AiDestination.route)
     fun navigateToProfile() = navigateToBottomBarDestination(ProfileDestination.route)

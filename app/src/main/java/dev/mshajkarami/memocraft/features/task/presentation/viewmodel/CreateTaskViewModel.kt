@@ -19,6 +19,8 @@ import dev.mshajkarami.memocraft.features.task.presentation.model.SubTaskUiModel
 import dev.mshajkarami.memocraft.navigation.EditTaskDestination
 import kotlinx.coroutines.launch
 import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeParseException
 import javax.inject.Inject
@@ -33,7 +35,20 @@ class CreateTaskViewModel @Inject constructor(
 
     companion object {
         private const val TAG = "CreateTask"
+
         private const val MAX_ESTIMATED_HOURS = 999
+
+        private const val ERROR_TASK_TITLE_EMPTY = "Task title cannot be empty."
+        private const val ERROR_DUE_DATE_EMPTY = "Task due date cannot be empty."
+        private const val ERROR_DUE_DATE_FORMAT = "Due date format must be yyyy-MM-dd."
+        private const val ERROR_DUE_TIME_EMPTY = "Task due time cannot be empty."
+        private const val ERROR_DUE_TIME_FORMAT = "Due time format must be HH:mm."
+        private const val ERROR_TASK_NOT_FOUND = "Task not found."
+        private const val ERROR_SAVE_FAILED = "Failed to save task."
+        private const val ERROR_LOAD_FAILED = "Failed to load task."
+
+        private val DATE_FORMATTER: DateTimeFormatter = DateTimeFormatter.ISO_LOCAL_DATE
+        private val TIME_FORMATTER: DateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm")
     }
 
     private val editingTaskId: String? =
@@ -44,6 +59,9 @@ class CreateTaskViewModel @Inject constructor(
     private var loadedTask: Task? = null
 
     var dueDateInput by mutableStateOf("")
+        private set
+
+    var dueTimeInput by mutableStateOf("")
         private set
 
     var taskTitle by mutableStateOf("")
@@ -93,6 +111,27 @@ class CreateTaskViewModel @Inject constructor(
         selectedPriority = priority
     }
 
+    fun onDueDateChange(value: String) {
+        dueDateInput = value
+    }
+
+    fun onDueTimeChange(value: String) {
+        /*
+         * ورودی مجاز برای ساعت:
+         * 09:30
+         * 23:59
+         *
+         * این کنترل سبک است و اعتبارسنجی اصلی در validateForm انجام می‌شود.
+         */
+        val filtered = value.filter { character ->
+            character.isDigit() || character == ':'
+        }
+
+        if (filtered.length <= 5) {
+            dueTimeInput = filtered
+        }
+    }
+
     fun onEstimatedDurationHoursChange(value: String) {
         val filtered = value.filter { it.isDigit() }
 
@@ -102,6 +141,7 @@ class CreateTaskViewModel @Inject constructor(
         }
 
         val numericValue = filtered.toIntOrNull() ?: return
+
         if (numericValue <= MAX_ESTIMATED_HOURS) {
             estimatedDurationHoursInput = numericValue.toString()
         }
@@ -109,10 +149,6 @@ class CreateTaskViewModel @Inject constructor(
 
     fun onNewSubTaskTitleChange(value: String) {
         newSubTaskTitle = value
-    }
-
-    fun onDueDateChange(value: String) {
-        dueDateInput = value
     }
 
     fun addSubTask() {
@@ -167,7 +203,7 @@ class CreateTaskViewModel @Inject constructor(
                 onSaved?.invoke()
             }.onFailure { throwable ->
                 Log.e(TAG, "Failed to save task", throwable)
-                errorMessage = throwable.message ?: "Failed to save task."
+                errorMessage = throwable.message ?: ERROR_SAVE_FAILED
             }
 
             isSaving = false
@@ -183,7 +219,7 @@ class CreateTaskViewModel @Inject constructor(
                 getTaskByIdUseCase(taskId)
             }.onSuccess { task ->
                 if (task == null) {
-                    errorMessage = "Task not found."
+                    errorMessage = ERROR_TASK_NOT_FOUND
                     return@onSuccess
                 }
 
@@ -191,7 +227,7 @@ class CreateTaskViewModel @Inject constructor(
                 fillForm(task)
             }.onFailure { throwable ->
                 Log.e(TAG, "Failed to load task", throwable)
-                errorMessage = throwable.message ?: "Failed to load task."
+                errorMessage = throwable.message ?: ERROR_LOAD_FAILED
             }
 
             isLoading = false
@@ -206,7 +242,7 @@ class CreateTaskViewModel @Inject constructor(
                 title = formData.title,
                 description = formData.description,
                 estimatedDurationHours = formData.estimatedDurationHours,
-                dueDate = formData.dueDate,
+                dueAt = formData.dueAt,
                 priority = formData.priority,
                 subTasks = formData.subTasks
             )
@@ -221,14 +257,14 @@ class CreateTaskViewModel @Inject constructor(
 
         val currentTask = loadedTask
             ?: getTaskByIdUseCase(taskId)
-            ?: throw IllegalStateException("Task not found.")
+            ?: throw IllegalStateException(ERROR_TASK_NOT_FOUND)
 
         updateTaskUseCase(
             currentTask.copy(
                 title = formData.title,
                 description = formData.description,
                 estimatedDurationHours = formData.estimatedDurationHours,
-                dueDate = formData.dueDate,
+                dueAt = formData.dueAt,
                 priority = formData.priority,
                 subTasks = formData.subTasks
             )
@@ -240,7 +276,16 @@ class CreateTaskViewModel @Inject constructor(
         taskDescription = task.description.orEmpty()
         selectedPriority = task.priority
         estimatedDurationHoursInput = task.estimatedDurationHours?.toString().orEmpty()
-        dueDateInput = task.dueDate?.format(DateTimeFormatter.ISO_LOCAL_DATE).orEmpty()
+
+        dueDateInput = task.dueAt
+            ?.toLocalDate()
+            ?.format(DATE_FORMATTER)
+            .orEmpty()
+
+        dueTimeInput = task.dueAt
+            ?.toLocalTime()
+            ?.format(TIME_FORMATTER)
+            .orEmpty()
 
         subTasks.clear()
         subTasks.addAll(
@@ -257,36 +302,48 @@ class CreateTaskViewModel @Inject constructor(
         val trimmedTitle = taskTitle.trim()
         val trimmedDescription = taskDescription.trim()
         val trimmedDueDate = dueDateInput.trim()
+        val trimmedDueTime = dueTimeInput.trim()
 
         if (trimmedTitle.isEmpty()) {
-            errorMessage = "Task title cannot be empty."
+            errorMessage = ERROR_TASK_TITLE_EMPTY
             Log.d(TAG, "Title is empty")
             return null
         }
 
-        if (trimmedDescription.isEmpty()) {
-            errorMessage = "Task description cannot be empty."
-            Log.d(TAG, "Description is empty")
-            return null
-        }
-
         if (trimmedDueDate.isEmpty()) {
-            errorMessage = "Task DueDate cannot be empty."
+            errorMessage = ERROR_DUE_DATE_EMPTY
             Log.d(TAG, "Due date is empty")
             return null
         }
 
-        val dueDate = try {
-            LocalDate.parse(trimmedDueDate)
-        } catch (exception: DateTimeParseException) {
-            errorMessage = "Due date format must be yyyy-MM-dd."
+        if (trimmedDueTime.isEmpty()) {
+            errorMessage = ERROR_DUE_TIME_EMPTY
+            Log.d(TAG, "Due time is empty")
             return null
         }
 
+        val dueDate = try {
+            LocalDate.parse(trimmedDueDate, DATE_FORMATTER)
+        } catch (exception: DateTimeParseException) {
+            errorMessage = ERROR_DUE_DATE_FORMAT
+            Log.d(TAG, "Invalid due date format", exception)
+            return null
+        }
+
+        val dueTime = try {
+            LocalTime.parse(trimmedDueTime, TIME_FORMATTER)
+        } catch (exception: DateTimeParseException) {
+            errorMessage = ERROR_DUE_TIME_FORMAT
+            Log.d(TAG, "Invalid due time format", exception)
+            return null
+        }
+
+        val dueAt = LocalDateTime.of(dueDate, dueTime)
+
         return TaskFormData(
             title = trimmedTitle,
-            description = trimmedDescription,
-            dueDate = dueDate,
+            description = trimmedDescription.ifBlank { null },
+            dueAt = dueAt,
             estimatedDurationHours = estimatedDurationHoursInput.toIntOrNull(),
             priority = selectedPriority,
             subTasks = subTasks.map { subTask ->
@@ -300,8 +357,8 @@ class CreateTaskViewModel @Inject constructor(
 
     private data class TaskFormData(
         val title: String,
-        val description: String,
-        val dueDate: LocalDate,
+        val description: String?,
+        val dueAt: LocalDateTime,
         val estimatedDurationHours: Int?,
         val priority: TaskPriority,
         val subTasks: List<SubTask>

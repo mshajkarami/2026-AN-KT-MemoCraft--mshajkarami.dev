@@ -16,16 +16,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import dev.mshajkarami.memocraft.core.presentation.ui.theme.MemoCraftAppTheme
 import dev.mshajkarami.memocraft.core.presentation.ui.theme.MemoCraftTheme
-import dev.mshajkarami.memocraft.features.home.presentation.ui.components.SectionHeader
-import dev.mshajkarami.memocraft.features.task.domain.model.TaskPriority
+import dev.mshajkarami.memocraft.features.tasks.presentation.ui.components.SectionHeader
 import dev.mshajkarami.memocraft.features.task.domain.model.TaskStatus
 import dev.mshajkarami.memocraft.features.task.presentation.component.card.CompactDashboardTaskCard
 import dev.mshajkarami.memocraft.features.task.presentation.model.TaskCardUiModel
@@ -34,14 +28,13 @@ import dev.mshajkarami.memocraft.features.tasks.presentation.ui.components.TaskF
 import dev.mshajkarami.memocraft.features.tasks.presentation.ui.components.TaskSummaryCard
 import dev.mshajkarami.memocraft.features.tasks.presentation.ui.components.TasksTopBar
 import dev.mshajkarami.memocraft.features.tasks.presentation.viewmodel.TasksUiState
-import dev.mshajkarami.memocraft.features.tasks.presentation.viewmodel.TasksViewModel
-
 
 
 @Composable
 fun TasksScreen(
     uiState: TasksUiState,
     onCreateTaskClick: () -> Unit,
+    onTaskClick: (String) -> Unit,
     onFilterSelected: (TaskFilter) -> Unit,
     onSearchQueryChange: (String) -> Unit,
     onSearchClick: () -> Unit,
@@ -87,10 +80,12 @@ fun TasksScreen(
             isLoading = uiState.isLoading,
             errorMessage = uiState.errorMessage,
             onFilterSelected = onFilterSelected,
+            onTaskClick = onTaskClick,
             modifier = Modifier.padding(innerPadding)
         )
     }
 }
+
 
 @Composable
 private fun TasksScreenContent(
@@ -102,6 +97,7 @@ private fun TasksScreenContent(
     isLoading: Boolean,
     errorMessage: String?,
     onFilterSelected: (TaskFilter) -> Unit,
+    onTaskClick: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     LazyColumn(
@@ -181,7 +177,8 @@ private fun TasksScreenContent(
                 ) { _, task ->
                     CompactDashboardTaskCard(
                         task = task,
-                        onTaskClick = {}
+                        onTaskClick = onTaskClick,
+                        onConfirmClick = {}
                     )
                 }
             }

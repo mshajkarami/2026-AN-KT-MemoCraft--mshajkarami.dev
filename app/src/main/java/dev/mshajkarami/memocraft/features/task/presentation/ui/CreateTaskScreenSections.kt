@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material3.AlertDialog
@@ -22,7 +21,9 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.TimePicker
 import androidx.compose.material3.rememberDatePickerState
+import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -33,13 +34,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import dev.mshajkarami.memocraft.core.presentation.ui.theme.MemoCraftTheme
 import dev.mshajkarami.memocraft.features.task.domain.model.TaskPriority
 import dev.mshajkarami.memocraft.features.task.presentation.component.card.CompactDashboardTaskCard
 import dev.mshajkarami.memocraft.features.task.presentation.model.SubTaskUiModel
 import dev.mshajkarami.memocraft.features.task.presentation.model.TaskCardUiModel
+import java.util.Locale
 
 @Composable
 internal fun PreviewSection(task: TaskCardUiModel) {
@@ -58,7 +59,8 @@ internal fun PreviewSection(task: TaskCardUiModel) {
 
         CompactDashboardTaskCard(
             task = task,
-            onTaskClick = {}
+            onTaskClick = {},
+            onConfirmClick = {}
         )
     }
 }
@@ -147,47 +149,96 @@ internal fun ProgressSection(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DueDateSection(
+fun DueDateTimeSection(
     dueDateInput: String,
+    dueTimeInput: String,
     onDueDateChange: (String) -> Unit,
+    onDueTimeChange: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     var showDatePicker by remember { mutableStateOf(false) }
+    var showTimePicker by remember { mutableStateOf(false) }
+
     val datePickerState = rememberDatePickerState()
 
-    TaskInputContainer(
-        label = "Due Date",
-        modifier = modifier
+    val initialHour = remember(dueTimeInput) {
+        dueTimeInput
+            .substringBefore(":")
+            .toIntOrNull()
+            ?.coerceIn(MIN_HOUR, MAX_HOUR)
+            ?: DEFAULT_TASK_HOUR
+    }
+
+    val initialMinute = remember(dueTimeInput) {
+        dueTimeInput
+            .substringAfter(":", missingDelimiterValue = "")
+            .toIntOrNull()
+            ?.coerceIn(MIN_MINUTE, MAX_MINUTE)
+            ?: DEFAULT_TASK_MINUTE
+    }
+
+    val timePickerState = rememberTimePickerState(
+        initialHour = initialHour,
+        initialMinute = initialMinute,
+        is24Hour = true
+    )
+
+    Row(
+        modifier = modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .clickable { showDatePicker = true }
+        TaskInputContainer(
+            label = "Task Date",
+            modifier = Modifier.weight(1f)
         ) {
-            TransparentTextField(
-                value = dueDateInput,
-                onValueChange = {},
-                placeholder = "22 Feb",
-                modifier = Modifier.fillMaxWidth(),
-                singleLine = true,
-                readOnly = true,
-                enabled = false
-            )
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { showDatePicker = true }
+            ) {
+                TransparentTextField(
+                    value = dueDateInput,
+                    onValueChange = {},
+                    placeholder = "yyyy-MM-dd",
+                    modifier = Modifier.fillMaxWidth(),
+                    singleLine = true,
+                    readOnly = true,
+                    enabled = false
+                )
+            }
+        }
+
+        TaskInputContainer(
+            label = "Task Time",
+            modifier = Modifier.weight(1f)
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { showTimePicker = true }
+            ) {
+                TransparentTextField(
+                    value = dueTimeInput,
+                    onValueChange = {},
+                    placeholder = "HH:mm",
+                    modifier = Modifier.fillMaxWidth(),
+                    singleLine = true,
+                    readOnly = true,
+                    enabled = false
+                )
+            }
         }
     }
 
     if (showDatePicker) {
         DatePickerDialog(
-            onDismissRequest = {
-                showDatePicker = false
-            },
+            onDismissRequest = { showDatePicker = false },
             confirmButton = {
                 TextButton(
                     onClick = {
                         datePickerState.selectedDateMillis?.let { selectedMillis ->
-                            onDueDateChange(formatDueDate(selectedMillis))
+                            onDueDateChange(formatTaskDate(selectedMillis))
                         }
-
                         showDatePicker = false
                     }
                 ) {
@@ -195,62 +246,69 @@ fun DueDateSection(
                 }
             },
             dismissButton = {
-                TextButton(
-                    onClick = {
-                        showDatePicker = false
-                    }
-                ) {
+                TextButton(onClick = { showDatePicker = false }) {
                     Text(text = "Cancel")
                 }
             }
         ) {
-            DatePicker(
-                state = datePickerState
-            )
+            DatePicker(state = datePickerState)
         }
     }
-}
 
-
-private fun formatDueDate(millis: Long): String {
-    val formatter = java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.ENGLISH)
-    formatter.timeZone = java.util.TimeZone.getTimeZone("UTC")
-    return formatter.format(java.util.Date(millis))
-}
-
-@Composable
-fun EstimatedTimeSection(
-    estimatedDurationHoursInput: String,
-    onEstimatedDurationHoursChange: (String) -> Unit,
-    modifier: Modifier = Modifier
-) {
-    val colors = MemoCraftTheme.colors
-
-    TaskInputContainer(
-        label = "Estimated Time",
-        modifier = modifier
-    ) {
-        TransparentTextField(
-            value = estimatedDurationHoursInput,
-            onValueChange = { value ->
-                onEstimatedDurationHoursChange(value.filter { it.isDigit() })
+    if (showTimePicker) {
+        AlertDialog(
+            onDismissRequest = { showTimePicker = false },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        onDueTimeChange(
+                            formatTaskTime(
+                                hour = timePickerState.hour,
+                                minute = timePickerState.minute
+                            )
+                        )
+                        showTimePicker = false
+                    }
+                ) {
+                    Text(text = "OK")
+                }
             },
-            placeholder = "10",
-            modifier = Modifier.fillMaxWidth(),
-            keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Number
-            ),
-            singleLine = true,
-            suffix = {
-                Text(
-                    text = "h",
-                    color = colors.progressMiniCardContent.copy(alpha = 0.7f)
-                )
+            dismissButton = {
+                TextButton(onClick = { showTimePicker = false }) {
+                    Text(text = "Cancel")
+                }
+            },
+            title = { Text(text = "Select Task Time") },
+            text = {
+                Box(
+                    modifier = Modifier.fillMaxWidth(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    TimePicker(state = timePickerState)
+                }
             }
         )
     }
 }
 
+private fun formatTaskDate(millis: Long): String {
+    val formatter = java.text.SimpleDateFormat(TASK_DATE_PATTERN, Locale.ENGLISH)
+    formatter.timeZone = java.util.TimeZone.getTimeZone("UTC")
+    return formatter.format(java.util.Date(millis))
+}
+
+private fun formatTaskTime(hour: Int, minute: Int): String {
+    return String.format(Locale.ENGLISH, TASK_TIME_PATTERN, hour, minute)
+}
+
+private const val TASK_DATE_PATTERN = "yyyy-MM-dd"
+private const val TASK_TIME_PATTERN = "%02d:%02d"
+private const val MIN_HOUR = 0
+private const val MAX_HOUR = 23
+private const val MIN_MINUTE = 0
+private const val MAX_MINUTE = 59
+private const val DEFAULT_TASK_HOUR = 9
+private const val DEFAULT_TASK_MINUTE = 0
 
 @Composable
 fun SubTaskSection(

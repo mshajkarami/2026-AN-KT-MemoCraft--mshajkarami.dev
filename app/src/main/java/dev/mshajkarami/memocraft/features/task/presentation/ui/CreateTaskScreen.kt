@@ -2,7 +2,6 @@ package dev.mshajkarami.memocraft.features.task.presentation.ui
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -37,8 +36,8 @@ fun CreateTaskScreen(
     onTaskTitleChange: (String) -> Unit,
     dueDateInput: String,
     onDueDateChange: (String) -> Unit,
-    estimatedDurationHoursInput: String,
-    onEstimatedDurationHoursChange: (String) -> Unit,
+    dueTimeInput: String,
+    onDueTimeChange: (String) -> Unit,
     selectedPriority: TaskPriority,
     onPrioritySelected: (TaskPriority) -> Unit,
     subTasks: List<SubTaskUiModel>,
@@ -65,23 +64,23 @@ fun CreateTaskScreen(
 
     val isFormValid = taskTitle.isNotBlank() && taskDescription.isNotBlank()
 
+    val timeLabel = buildPreviewTimeLabel(
+        dueDateInput = dueDateInput,
+        dueTimeInput = dueTimeInput
+    )
+
     val livePreviewTask = TaskCardUiModel(
+        id = "preview_id",
         title = taskTitle.ifBlank { "Task Title Preview" },
+        description = taskDescription.takeIf { it.isNotBlank() },
+        subtitle = taskDescription.take(50).ifBlank { "No description added yet" },
         progress = progress,
         priority = selectedPriority,
         status = TaskStatus.Pending,
         isCompleted = progress == 100 && subTasks.isNotEmpty(),
-        timeLabel = listOfNotNull(
-            dueDateInput.takeIf { it.isNotBlank() },
-            estimatedDurationHoursInput.takeIf { it.isNotBlank() }?.let { "$it h" }
-        ).joinToString(" • ").ifBlank { "Just now" },
-        // در صفحه ایجاد تسک، چون هنوز ID تولید نشده، از یک مقدار ثابت یا خالی استفاده می‌کنیم
-        id = "preview_id",
-        // subtitle معمولاً خلاصه یا بخشی از دیسکریپشن است
-        subtitle = taskDescription.take(50).ifBlank { "No description added yet" }
+        timeLabel = timeLabel,
+        createdAtLabel = "Created: Just now"
     )
-
-
 
     Scaffold(
         modifier = modifier.fillMaxSize(),
@@ -110,23 +109,13 @@ fun CreateTaskScreen(
                 )
             }
 
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-                DueDateSection(
-                    dueDateInput = dueDateInput,
-                    onDueDateChange = onDueDateChange,
-                    modifier = Modifier.weight(1f)
-                )
-
-                EstimatedTimeSection(
-                    estimatedDurationHoursInput = estimatedDurationHoursInput,
-                    onEstimatedDurationHoursChange = onEstimatedDurationHoursChange,
-                    modifier = Modifier.weight(1f)
-                )
-            }
-
+            DueDateTimeSection(
+                dueDateInput = dueDateInput,
+                dueTimeInput = dueTimeInput,
+                onDueDateChange = onDueDateChange,
+                onDueTimeChange = onDueTimeChange,
+                modifier = Modifier.fillMaxWidth()
+            )
 
             PrioritySection(
                 selectedPriority = selectedPriority,
@@ -173,6 +162,21 @@ fun CreateTaskScreen(
     }
 }
 
+private fun buildPreviewTimeLabel(
+    dueDateInput: String,
+    dueTimeInput: String
+): String? {
+    val date = dueDateInput.trim().takeIf { it.isNotBlank() }
+    val time = dueTimeInput.trim().takeIf { it.isNotBlank() }
+
+    return when {
+        date != null && time != null -> "Task time: $date $time"
+        date != null -> "Task date: $date"
+        time != null -> "Task time: $time"
+        else -> null
+    }
+}
+
 @Preview(
     name = "Create Task Screen - Light",
     showBackground = true,
@@ -204,8 +208,8 @@ private fun CreateTaskScreenDarkPreview() {
 @Composable
 private fun CreateTaskScreenPreviewContent() {
     var taskTitle by remember { mutableStateOf("Design MemoCraft task flow") }
-    var dueDateInput by remember { mutableStateOf("22 Feb") }
-    var estimatedDurationHoursInput by remember { mutableStateOf("10") }
+    var dueDateInput by remember { mutableStateOf("2026-07-13") }
+    var dueTimeInput by remember { mutableStateOf("09:00") }
     var selectedPriority by remember { mutableStateOf(TaskPriority.Urgent) }
     var newSubTaskTitle by remember { mutableStateOf("") }
     var taskDescription by remember {
@@ -228,8 +232,8 @@ private fun CreateTaskScreenPreviewContent() {
         onTaskTitleChange = { taskTitle = it },
         dueDateInput = dueDateInput,
         onDueDateChange = { dueDateInput = it },
-        estimatedDurationHoursInput = estimatedDurationHoursInput,
-        onEstimatedDurationHoursChange = { estimatedDurationHoursInput = it },
+        dueTimeInput = dueTimeInput,
+        onDueTimeChange = { dueTimeInput = it },
         selectedPriority = selectedPriority,
         onPrioritySelected = { selectedPriority = it },
         subTasks = subTasks,

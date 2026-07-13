@@ -15,13 +15,12 @@ fun CreateTaskScreenRoute(
 ) {
     CreateTaskScreen(
         onBackClick = onBackClick,
-        modifier = modifier,
         taskTitle = viewModel.taskTitle,
         onTaskTitleChange = viewModel::onTaskTitleChange,
         dueDateInput = viewModel.dueDateInput,
         onDueDateChange = viewModel::onDueDateChange,
-        estimatedDurationHoursInput = viewModel.estimatedDurationHoursInput,
-        onEstimatedDurationHoursChange = viewModel::onEstimatedDurationHoursChange,
+        dueTimeInput = viewModel.dueTimeInput,
+        onDueTimeChange = viewModel::onDueTimeChange,
         selectedPriority = viewModel.selectedPriority,
         onPrioritySelected = viewModel::onPrioritySelected,
         subTasks = viewModel.subTasks,
@@ -36,7 +35,7 @@ fun CreateTaskScreenRoute(
         isSaving = viewModel.isSaving,
         onSaveClick = {
             viewModel.saveTask(onSaved = onTaskSaved)
-        }
+        },
+        modifier = modifier
     )
-
 }

@@ -11,6 +11,7 @@ import dev.mshajkarami.memocraft.features.tasks.presentation.viewmodel.TasksView
 @Composable
 fun TasksScreenRoute(
     onCreateTaskClick: () -> Unit,
+    onTaskClick: (String) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: TasksViewModel = hiltViewModel()
 ) {
@@ -19,6 +20,7 @@ fun TasksScreenRoute(
     TasksScreen(
         uiState = uiState,
         onCreateTaskClick = onCreateTaskClick,
+        onTaskClick = onTaskClick,
         onFilterSelected = viewModel::onFilterSelected,
         onSearchQueryChange = viewModel::onSearchQueryChange,
         onSearchClick = viewModel::onSearchClick,

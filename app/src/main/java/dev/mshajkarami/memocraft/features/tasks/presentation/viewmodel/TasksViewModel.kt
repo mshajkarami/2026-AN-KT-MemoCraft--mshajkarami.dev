@@ -62,6 +62,8 @@ class TasksViewModel @Inject constructor(
         val query = _uiState.value.searchQuery.trim()
 
         if (query.isBlank()) return
+
+        // فعلاً نیازی به کار اضافه نیست، چون جستجو reactive و داخل filteredTasks انجام می‌شود.
     }
 
     private fun observeTasks() {
@@ -77,8 +79,13 @@ class TasksViewModel @Inject constructor(
                 }
                 .collectLatest { tasks ->
                     val taskItems = tasks
-                        .sortedByDescending { it.createdAt }
-                        .map { it.toTaskCardUiModel() }
+                        .sortedWith(
+                            compareByDescending<Task> { it.dueAt }
+                                .thenByDescending { it.createdAt }
+                        )
+                        .map { task ->
+                            task.toTaskCardUiModel()
+                        }
 
                     _uiState.update { state ->
                         state.copy(
@@ -105,9 +112,17 @@ data class TasksUiState(
         get() {
             val filterAppliedTasks = when (selectedFilter) {
                 TaskFilter.All -> allTasks
-                TaskFilter.InProgress -> allTasks.filter { it.status == TaskStatus.InProgress }
-                TaskFilter.Pending -> allTasks.filter { it.status == TaskStatus.Pending }
-                TaskFilter.Completed -> allTasks.filter { it.status == TaskStatus.Completed }
+                TaskFilter.InProgress -> allTasks.filter { task ->
+                    task.status == TaskStatus.InProgress
+                }
+
+                TaskFilter.Pending -> allTasks.filter { task ->
+                    task.status == TaskStatus.Pending
+                }
+
+                TaskFilter.Completed -> allTasks.filter { task ->
+                    task.status == TaskStatus.Completed
+                }
             }
 
             val normalizedQuery = searchQuery.trim()
@@ -118,40 +133,82 @@ data class TasksUiState(
 
             return filterAppliedTasks.filter { task ->
                 task.title.contains(normalizedQuery, ignoreCase = true) ||
+                        task.description.orEmpty().contains(normalizedQuery, ignoreCase = true) ||
                         task.subtitle.orEmpty().contains(normalizedQuery, ignoreCase = true) ||
                         task.status.name.contains(normalizedQuery, ignoreCase = true) ||
                         task.priority.name.contains(normalizedQuery, ignoreCase = true) ||
-                        task.timeLabel.orEmpty().contains(normalizedQuery, ignoreCase = true)
+                        task.dateLabel.orEmpty().contains(normalizedQuery, ignoreCase = true) ||
+                        task.timeLabel.orEmpty().contains(normalizedQuery, ignoreCase = true) ||
+                        task.createdAtLabel.orEmpty().contains(normalizedQuery, ignoreCase = true)
             }
         }
 }
 
-private val taskDateFormatter = DateTimeFormatter.ofPattern("dd MMM yyyy", Locale.ENGLISH)
+private val taskDateFormatter: DateTimeFormatter =
+    DateTimeFormatter.ofPattern("dd MMM yyyy", Locale.ENGLISH)
+
+private val taskTimeFormatter: DateTimeFormatter =
+    DateTimeFormatter.ofPattern("HH:mm", Locale.ENGLISH)
 
 private fun Task.toTaskCardUiModel(): TaskCardUiModel {
-    val completedSubTasks = subTasks.count { it.isCompleted }
+    val completedSubTasks = subTasks.count { subTask ->
+        subTask.isCompleted
+    }
 
     val progress = when {
-        subTasks.isNotEmpty() -> ((completedSubTasks * 100f) / subTasks.size).toInt()
+        subTasks.isNotEmpty() -> {
+            ((completedSubTasks * 100f) / subTasks.size).toInt()
+        }
+
         status == TaskStatus.Completed -> 100
+
         status == TaskStatus.InProgress -> 50
+
         else -> 0
     }.coerceIn(0, 100)
 
-    val timeLabel = listOfNotNull(
-        dueDate?.format(taskDateFormatter),
-        estimatedDurationHours?.let { "$it h" }
-    ).joinToString(" • ").ifBlank { "Just now" }
+    val dateLabel = dueAt
+        ?.toLocalDate()
+        ?.format(taskDateFormatter)
+
+    val timeLabel = dueAt
+        ?.toLocalTime()
+        ?.format(taskTimeFormatter)
+
+    val createdAtLabel = createdAt
+        ?.toLocalDate()
+        ?.format(taskDateFormatter)
 
     return TaskCardUiModel(
         id = id,
         title = title,
         description = description,
-        subtitle = description,
+        subtitle = buildTaskSubtitle(
+            description = description,
+            estimatedDurationHours = estimatedDurationHours
+        ),
         progress = progress,
         priority = priority,
         status = status,
         isCompleted = status == TaskStatus.Completed,
-        timeLabel = timeLabel
+        dateLabel = dateLabel,
+        timeLabel = timeLabel,
+        createdAtLabel = createdAtLabel
     )
+}
+
+private fun buildTaskSubtitle(
+    description: String?,
+    estimatedDurationHours: Int?
+): String? {
+    val durationLabel = estimatedDurationHours?.let { hours ->
+        "$hours h"
+    }
+
+    return listOfNotNull(
+        description?.takeIf { it.isNotBlank() },
+        durationLabel
+    )
+        .joinToString(separator = " • ")
+        .takeIf { it.isNotBlank() }
 }

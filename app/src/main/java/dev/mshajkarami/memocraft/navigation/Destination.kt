@@ -6,10 +6,6 @@ sealed interface Destination {
 
 sealed interface BottomBarDestination : Destination
 
-data object HomeDestination : BottomBarDestination {
-    override val route: String = "home"
-}
-
 data object TasksDestination : BottomBarDestination {
     override val route: String = "tasks"
 }

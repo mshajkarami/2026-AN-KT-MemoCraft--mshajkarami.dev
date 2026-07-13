@@ -15,7 +15,6 @@ import dev.mshajkarami.memocraft.navigation.AppNavHost
 import dev.mshajkarami.memocraft.navigation.AppNavigator
 import dev.mshajkarami.memocraft.navigation.BottomNavBar
 import dev.mshajkarami.memocraft.navigation.BottomNavItem
-import dev.mshajkarami.memocraft.navigation.HomeDestination
 import dev.mshajkarami.memocraft.navigation.ProfileDestination
 import dev.mshajkarami.memocraft.navigation.TasksDestination
 
@@ -29,11 +28,10 @@ fun MainScreen(
     val currentDestination = navBackStackEntry?.destination
 
     val currentBottomNavItem = when {
-        currentDestination.isInHierarchy(HomeDestination.route) -> BottomNavItem.Home
         currentDestination.isInHierarchy(TasksDestination.route) -> BottomNavItem.Tasks
         currentDestination.isInHierarchy(AiDestination.route) -> BottomNavItem.Ai
         currentDestination.isInHierarchy(ProfileDestination.route) -> BottomNavItem.Profile
-        else -> BottomNavItem.Home
+        else -> BottomNavItem.Tasks
     }
 
     Scaffold(
@@ -41,7 +39,6 @@ fun MainScreen(
         bottomBar = {
             BottomNavBar(
                 selectedItem = currentBottomNavItem,
-                onHomeClick = navigator::navigateToHome,
                 onTasksClick = navigator::navigateToTasks,
                 onAiClick = navigator::navigateToAi,
                 onProfileClick = navigator::navigateToProfile
@@ -57,7 +54,6 @@ fun MainScreen(
         )
     }
 }
-
 
 private fun NavDestination?.isInHierarchy(route: String): Boolean {
     return this?.hierarchy?.any { it.route == route } == true

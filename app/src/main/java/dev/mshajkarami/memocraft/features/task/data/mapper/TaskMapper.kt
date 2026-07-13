@@ -5,6 +5,9 @@ import dev.mshajkarami.memocraft.features.task.data.local.entity.TaskEntity
 import dev.mshajkarami.memocraft.features.task.data.local.entity.TaskWithSubTasks
 import dev.mshajkarami.memocraft.features.task.domain.model.SubTask
 import dev.mshajkarami.memocraft.features.task.domain.model.Task
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.LocalTime
 
 fun TaskWithSubTasks.toDomain(): Task {
     return task.toDomain(
@@ -19,7 +22,7 @@ fun TaskEntity.toDomain(
         id = id,
         title = title,
         description = description,
-        dueDate = dueDate,
+        dueAt = dueDate.toDueAt(),
         startAt = startAt,
         endAt = endAt,
         estimatedDurationHours = estimatedDurationHours,
@@ -36,7 +39,7 @@ fun Task.toEntity(): TaskEntity {
         id = id,
         title = title,
         description = description,
-        dueDate = dueDate,
+        dueDate = dueAt.toDueDate(),
         startAt = startAt,
         endAt = endAt,
         estimatedDurationHours = estimatedDurationHours,
@@ -70,4 +73,12 @@ fun SubTask.toEntity(
         updatedAt = updatedAt,
         completedAt = completedAt
     )
+}
+
+private fun LocalDate?.toDueAt(): LocalDateTime? {
+    return this?.atTime(LocalTime.of(23, 59, 59))
+}
+
+private fun LocalDateTime?.toDueDate(): LocalDate? {
+    return this?.toLocalDate()
 }

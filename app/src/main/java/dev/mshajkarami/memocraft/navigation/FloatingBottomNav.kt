@@ -35,8 +35,7 @@ import dev.mshajkarami.memocraft.core.presentation.ui.theme.MemoCraftTheme
 @Composable
 fun BottomNavBar(
     modifier: Modifier = Modifier,
-    selectedItem: BottomNavItem = BottomNavItem.Home,
-    onHomeClick: () -> Unit = {},
+    selectedItem: BottomNavItem = BottomNavItem.Tasks,
     onTasksClick: () -> Unit = {},
     onAiClick: () -> Unit = {},
     onProfileClick: () -> Unit = {}
@@ -61,20 +60,6 @@ fun BottomNavBar(
             horizontalArrangement = Arrangement.SpaceAround,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            BottomNavItemButton(
-                label = "Home",
-                selected = selectedItem == BottomNavItem.Home,
-                selectedColor = selectedColor,
-                unselectedColor = unselectedColor,
-                onClick = onHomeClick
-            ) {
-                Icon(
-                    imageVector = Icons.Outlined.Home,
-                    contentDescription = "Home",
-                    modifier = Modifier.size(24.dp)
-                )
-            }
-
             BottomNavItemButton(
                 label = "Tasks",
                 selected = selectedItem == BottomNavItem.Tasks,
