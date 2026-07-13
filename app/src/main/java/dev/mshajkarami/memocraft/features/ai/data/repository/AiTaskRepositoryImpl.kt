@@ -2,23 +2,28 @@ package dev.mshajkarami.memocraft.features.ai.data.repository
 
 import android.util.Log
 import com.google.gson.Gson
-import dev.mshajkarami.memocraft.features.ai.data.remote.dto.GapGptChatMessageDto
-import dev.mshajkarami.memocraft.features.ai.data.remote.dto.GapGptChatRequestDto
 import dev.mshajkarami.memocraft.features.ai.data.mapper.AiChatResultMapper
 import dev.mshajkarami.memocraft.features.ai.data.prompt.AiTaskPromptBuilder
 import dev.mshajkarami.memocraft.features.ai.data.remote.api.GapGptApiService
+import dev.mshajkarami.memocraft.features.ai.data.remote.dto.GapGptChatMessageDto
+import dev.mshajkarami.memocraft.features.ai.data.remote.dto.GapGptChatRequestDto
 import dev.mshajkarami.memocraft.features.ai.domain.exception.AiTaskException
 import dev.mshajkarami.memocraft.features.ai.domain.model.AiChatResult
 import dev.mshajkarami.memocraft.features.ai.domain.repository.AiTaskRepository
 import dev.mshajkarami.memocraft.features.task.domain.model.Task
+import dev.mshajkarami.memocraft.features.task.domain.model.TaskScheduleConflictResult
+import dev.mshajkarami.memocraft.features.task.domain.usecase.CheckTaskScheduleConflictsUseCase
 import retrofit2.HttpException
 import java.io.IOException
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
 class AiTaskRepositoryImpl @Inject constructor(
     private val apiService: GapGptApiService,
     private val gson: Gson,
-    private val promptBuilder: AiTaskPromptBuilder
+    private val promptBuilder: AiTaskPromptBuilder,
+    private val checkTaskScheduleConflictsUseCase: CheckTaskScheduleConflictsUseCase
 ) : AiTaskRepository {
 
     override suspend fun sendMessage(
@@ -73,11 +78,16 @@ class AiTaskRepositoryImpl @Inject constructor(
         requestMessages.forEachIndexed { index, message ->
             Log.d(
                 TAG,
-                "Request message[$index]: role=${message.role}, contentLength=${message.content.length}"
+                "Request message[$index]: " +
+                        "role=${message.role}, " +
+                        "contentLength=${message.content.length}"
             )
 
             if (ENABLE_VERBOSE_LOGS) {
-                Log.d(TAG, "Request message[$index] content:\n${message.content}")
+                Log.d(
+                    TAG,
+                    "Request message[$index] content:\n${message.content}"
+                )
             }
         }
 
@@ -112,13 +122,38 @@ class AiTaskRepositoryImpl @Inject constructor(
                 )
             }
 
-            result
+            val scheduleConflictResults =
+                checkTaskScheduleConflictsUseCase(
+                    newTasks = result.detectedTasks,
+                    existingTasks = existingTasks
+                )
+
+            logScheduleConflictResults(
+                conflictResults = scheduleConflictResults
+            )
+
+            val conflictMessage = buildScheduleConflictMessage(
+                conflictResults = scheduleConflictResults
+            )
+
+            if (conflictMessage.isBlank()) {
+                result
+            } else {
+                result.copy(
+                    assistantMessage = buildString {
+                        append(result.assistantMessage.trimEnd())
+                        append("\n\n")
+                        append(conflictMessage)
+                    }
+                )
+            }
         } catch (exception: AiTaskException) {
             Log.e(
                 TAG,
                 "AiTaskException occurred: ${exception::class.java.simpleName}",
                 exception
             )
+
             throw exception
         } catch (exception: HttpException) {
             Log.e(TAG, "HttpException occurred", exception)
@@ -131,15 +166,27 @@ class AiTaskRepositoryImpl @Inject constructor(
 
             throw exception.toAiTaskException()
         } catch (exception: IOException) {
-            Log.e(TAG, "IOException / Network error occurred", exception)
+            Log.e(
+                TAG,
+                "IOException / Network error occurred",
+                exception
+            )
+
             throw AiTaskException.NetworkError(exception)
         } catch (exception: Exception) {
-            Log.e(TAG, "Unknown exception occurred", exception)
+            Log.e(
+                TAG,
+                "Unknown exception occurred",
+                exception
+            )
+
             throw AiTaskException.Unknown(exception)
         }
     }
 
-    private fun buildRequestMessages(finalPrompt: String): List<GapGptChatMessageDto> {
+    private fun buildRequestMessages(
+        finalPrompt: String
+    ): List<GapGptChatMessageDto> {
         return listOf(
             GapGptChatMessageDto(
                 role = ROLE_SYSTEM,
@@ -152,19 +199,163 @@ class AiTaskRepositoryImpl @Inject constructor(
         )
     }
 
-    private fun readHttpErrorBody(exception: HttpException): String? {
+    private fun buildScheduleConflictMessage(
+        conflictResults: List<TaskScheduleConflictResult>
+    ): String {
+        val conflicts = conflictResults.filter { result ->
+            result.hasConflict
+        }
+
+        if (conflicts.isEmpty()) {
+            return ""
+        }
+
+        return buildString {
+            appendLine("⚠️ تداخل زمانی شناسایی شد:")
+
+            conflicts.forEachIndexed { conflictIndex, conflict ->
+                if (conflictIndex > 0) {
+                    appendLine()
+                }
+
+                append("تسک «")
+                append(conflict.task.title)
+                appendLine("» با برنامه‌های موجود تداخل دارد.")
+
+                if (conflict.conflictingTasks.isNotEmpty()) {
+                    appendLine("تداخل با:")
+
+                    conflict.conflictingTasks.forEach { existingTask ->
+                        append("• ")
+                        append(existingTask.title)
+
+                        val timeDescription =
+                            buildTaskTimeDescription(existingTask)
+
+                        if (timeDescription.isNotBlank()) {
+                            append(" — ")
+                            append(timeDescription)
+                        }
+
+                        appendLine()
+                    }
+                }
+
+                if (conflict.suggestions.isNotEmpty()) {
+                    appendLine("زمان‌های جایگزین پیشنهادی:")
+
+                    conflict.suggestions.forEach { suggestion ->
+                        append("• ")
+                        append(formatDateTime(suggestion.startAt))
+                        append(" تا ")
+                        append(formatDateTime(suggestion.endAt))
+                        appendLine()
+                    }
+                }
+            }
+        }.trimEnd()
+    }
+
+    private fun buildTaskTimeDescription(
+        task: Task
+    ): String {
+        val startAt = task.startAt
+        val endAt = task.endAt
+        val dueAt = task.dueAt
+
+        return when {
+            startAt != null && endAt != null -> {
+                "${formatDateTime(startAt)} تا ${formatDateTime(endAt)}"
+            }
+
+            startAt != null -> {
+                "شروع: ${formatDateTime(startAt)}"
+            }
+
+            endAt != null -> {
+                "پایان: ${formatDateTime(endAt)}"
+            }
+
+            dueAt != null -> {
+                "مهلت: ${formatDateTime(dueAt)}"
+            }
+
+            else -> ""
+        }
+    }
+
+    private fun formatDateTime(
+        dateTime: LocalDateTime
+    ): String {
+        return dateTime.format(DISPLAY_DATE_TIME_FORMATTER)
+    }
+
+    private fun logScheduleConflictResults(
+        conflictResults: List<TaskScheduleConflictResult>
+    ) {
+        Log.d(
+            TAG,
+            "Schedule conflict check completed. " +
+                    "resultsCount=${conflictResults.size}"
+        )
+
+        conflictResults.forEachIndexed { index, result ->
+            Log.d(
+                TAG,
+                "Schedule conflict result[$index]: " +
+                        "taskTitle=${result.task.title}, " +
+                        "hasConflict=${result.hasConflict}, " +
+                        "conflictingTasksCount=${result.conflictingTasks.size}, " +
+                        "suggestionsCount=${result.suggestions.size}"
+            )
+
+            result.conflictingTasks.forEachIndexed { taskIndex, conflictingTask ->
+                Log.d(
+                    TAG,
+                    "Conflict result[$index], " +
+                            "conflictingTask[$taskIndex]: " +
+                            "title=${conflictingTask.title}, " +
+                            "startAt=${conflictingTask.startAt}, " +
+                            "endAt=${conflictingTask.endAt}, " +
+                            "dueAt=${conflictingTask.dueAt}"
+                )
+            }
+
+            result.suggestions.forEachIndexed { suggestionIndex, suggestion ->
+                Log.d(
+                    TAG,
+                    "Conflict result[$index], " +
+                            "suggestion[$suggestionIndex]: " +
+                            "startAt=${suggestion.startAt}, " +
+                            "endAt=${suggestion.endAt}"
+                )
+            }
+        }
+    }
+
+    private fun readHttpErrorBody(
+        exception: HttpException
+    ): String? {
         return try {
             exception.response()
                 ?.errorBody()
                 ?.string()
         } catch (bodyException: Exception) {
-            Log.e(TAG, "Failed to read error body", bodyException)
+            Log.e(
+                TAG,
+                "Failed to read error body",
+                bodyException
+            )
+
             null
         }
     }
 
     private fun HttpException.toAiTaskException(): AiTaskException {
-        Log.d(TAG, "Mapping HttpException to AiTaskException. code=${code()}")
+        Log.d(
+            TAG,
+            "Mapping HttpException to AiTaskException. code=${code()}"
+        )
 
         return when (code()) {
             401, 403 -> {
@@ -179,11 +370,15 @@ class AiTaskRepositoryImpl @Inject constructor(
 
             in 500..599 -> {
                 Log.e(TAG, "Server error. code=${code()}")
-                AiTaskException.ServerError(statusCode = code())
+
+                AiTaskException.ServerError(
+                    statusCode = code()
+                )
             }
 
             else -> {
                 Log.e(TAG, "HTTP error. code=${code()}")
+
                 AiTaskException.HttpError(
                     statusCode = code(),
                     cause = this
@@ -223,6 +418,9 @@ class AiTaskRepositoryImpl @Inject constructor(
 
         const val ENABLE_VERBOSE_LOGS = true
 
+        private val DISPLAY_DATE_TIME_FORMATTER: DateTimeFormatter =
+            DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm")
+
         const val SYSTEM_MESSAGE = """
 You are MemoCraft AI assistant.
 
@@ -246,6 +444,26 @@ Each detected task must use dueAt, startAt, and endAt for date-time fields:
 Do not use dueDate.
 All date-time values must be local Gregorian date-time strings in this format:
 yyyy-MM-dd'T'HH:mm:ss
+
+For scheduled tasks, prefer filling both startAt and endAt.
+
+If the user provides a clear start time and end time:
+- Fill both startAt and endAt.
+
+If the user provides a start time and duration:
+- Calculate endAt from startAt and the duration.
+
+If the user provides a deadline and duration:
+- Set dueAt to the deadline.
+- Calculate startAt using estimatedDurationHours.
+- Set endAt equal to dueAt.
+
+If the user provides only a deadline without a clear duration:
+- Set dueAt.
+- Leave startAt and endAt null.
+
+Do not claim that a time slot is conflict-free.
+Schedule conflicts are checked locally by the application after your response.
 """
     }
 }
