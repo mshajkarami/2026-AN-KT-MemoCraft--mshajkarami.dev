@@ -7,11 +7,9 @@ import dev.mshajkarami.memocraft.features.ai.domain.model.AiChatResult
 import dev.mshajkarami.memocraft.features.ai.domain.repository.AiTaskRepository
 import dev.mshajkarami.memocraft.features.ai.presentation.mapper.toAiChatMessageUiModel
 import dev.mshajkarami.memocraft.features.ai.presentation.ui.AiChatMessageUiModel
-import dev.mshajkarami.memocraft.features.ai.presentation.ui.DetectedTaskPriority
-import dev.mshajkarami.memocraft.features.ai.presentation.ui.DetectedTaskUiModel
 import dev.mshajkarami.memocraft.features.task.domain.model.Task
-import dev.mshajkarami.memocraft.features.task.domain.model.TaskPriority
 import dev.mshajkarami.memocraft.features.task.domain.repository.TaskRepository
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -33,18 +31,17 @@ class AiTaskViewModel @Inject constructor(
     fun onSendMessage(text: String) {
         val prompt = text.trim()
 
-        if (prompt.isBlank() || _uiState.value.isLoading) return
+        if (prompt.isBlank() || _uiState.value.isGeneratingResponse) {
+            return
+        }
 
-        val userMessage = AiChatMessageUiModel(
-            id = UUID.randomUUID().toString(),
-            content = prompt,
-            isFromUser = true
-        )
+        val userMessage = createUserMessage(prompt)
 
         _uiState.update { currentState ->
             currentState.copy(
                 messages = currentState.messages + userMessage,
                 isLoading = true,
+                isGeneratingResponse = true,
                 errorMessage = null
             )
         }
@@ -54,7 +51,7 @@ class AiTaskViewModel @Inject constructor(
 
     private fun sendMessageToAi(prompt: String) {
         viewModelScope.launch {
-            runCatching {
+            try {
                 val existingTasks = getExistingTasks()
 
                 val result = aiTaskRepository.sendMessage(
@@ -64,44 +61,77 @@ class AiTaskViewModel @Inject constructor(
 
                 saveDetectedTasks(result)
 
-                result
-            }.onSuccess { result ->
                 val aiMessage = result.toAiChatMessageUiModel()
 
                 _uiState.update { currentState ->
                     currentState.copy(
+                        messages = currentState.messages + aiMessage,
                         isLoading = false,
-                        errorMessage = null,
-                        messages = currentState.messages + aiMessage
+                        isGeneratingResponse = false,
+                        errorMessage = null
                     )
                 }
-            }.onFailure { throwable ->
-                val fallbackMessage = throwable.message
-                    ?: "مشکلی در پردازش پیام شما پیش آمد."
-
+            } catch (exception: CancellationException) {
+                // لغو Coroutine نباید به‌عنوان خطای معمولی نمایش داده شود.
                 _uiState.update { currentState ->
                     currentState.copy(
                         isLoading = false,
-                        errorMessage = fallbackMessage,
-                        messages = currentState.messages + AiChatMessageUiModel(
-                            id = UUID.randomUUID().toString(),
-                            content = fallbackMessage,
-                            isFromUser = false,
-                            detectedTasks = emptyList()
-                        )
+                        isGeneratingResponse = false
                     )
                 }
+
+                throw exception
+            } catch (throwable: Throwable) {
+                handleSendMessageFailure(throwable)
             }
         }
     }
 
+    private fun createUserMessage(prompt: String): AiChatMessageUiModel {
+        return AiChatMessageUiModel(
+            id = UUID.randomUUID().toString(),
+            content = prompt,
+            isFromUser = true,
+            detectedTasks = emptyList()
+        )
+    }
+
+    private fun handleSendMessageFailure(throwable: Throwable) {
+        val fallbackMessage = throwable.message
+            ?.takeIf { message -> message.isNotBlank() }
+            ?: DEFAULT_ERROR_MESSAGE
+
+        val errorMessage = AiChatMessageUiModel(
+            id = UUID.randomUUID().toString(),
+            content = fallbackMessage,
+            isFromUser = false,
+            detectedTasks = emptyList()
+        )
+
+        _uiState.update { currentState ->
+            currentState.copy(
+                messages = currentState.messages + errorMessage,
+                isLoading = false,
+                isGeneratingResponse = false,
+                errorMessage = fallbackMessage
+            )
+        }
+    }
+
     private suspend fun getExistingTasks(): List<Task> {
-        return taskRepository.getAllTasks().first()
+        return taskRepository
+            .getAllTasks()
+            .first()
     }
 
     private suspend fun saveDetectedTasks(result: AiChatResult) {
         result.detectedTasks.forEach { task ->
             taskRepository.createTask(task)
         }
+    }
+
+    private companion object {
+        const val DEFAULT_ERROR_MESSAGE =
+            "مشکلی در پردازش پیام شما پیش آمد. لطفاً دوباره تلاش کنید."
     }
 }

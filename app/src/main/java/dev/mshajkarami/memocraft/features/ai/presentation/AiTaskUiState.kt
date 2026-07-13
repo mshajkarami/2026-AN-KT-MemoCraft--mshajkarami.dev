@@ -12,6 +12,7 @@ data class AiTaskUiState(
             detectedTasks = emptyList()
         )
     ),
+    val isGeneratingResponse: Boolean = false,
     val isLoading: Boolean = false,
     val errorMessage: String? = null
 )
