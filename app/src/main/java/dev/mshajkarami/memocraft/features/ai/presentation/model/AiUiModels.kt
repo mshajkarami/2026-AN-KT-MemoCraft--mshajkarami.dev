@@ -1,6 +1,8 @@
 package dev.mshajkarami.memocraft.features.ai.presentation.model
 
+import androidx.annotation.StringRes
 import androidx.compose.ui.graphics.Color
+import dev.mshajkarami.memocraft.R
 import java.time.LocalDateTime
 import java.util.UUID
 
@@ -14,28 +16,21 @@ data class AiChatMessageUiModel(
 
 data class DetectedTaskUiModel(
     val id: String = UUID.randomUUID().toString(),
-
     val savedTaskId: String = id,
-
     val title: String,
-
     val description: String? = null,
-
     val dueAt: LocalDateTime? = null,
-
-    val dueText: String = "No date",
-
+    val dueText: String? = null,
     val priority: DetectedTaskPriority = DetectedTaskPriority.Normal,
-
-    val actionText: String = "View task"
+    val actionText: String? = null
 )
 
 enum class DetectedTaskPriority(
-    val label: String
+    @StringRes val labelResId: Int
 ) {
-    Low("Low"),
-    Normal("Normal"),
-    Urgent("Urgent");
+    Low(R.string.task_priority_low),
+    Normal(R.string.task_priority_normal),
+    Urgent(R.string.task_priority_urgent);
 
     fun color(): Color {
         return when (this) {

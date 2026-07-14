@@ -1,9 +1,6 @@
 package dev.mshajkarami.memocraft.app.navigation
 
-import android.content.res.Configuration
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -26,9 +23,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import dev.mshajkarami.memocraft.core.designsystem.theme.MemoCraftAppTheme
 import dev.mshajkarami.memocraft.core.designsystem.theme.MemoCraftTheme
 
 @Composable
@@ -140,51 +135,6 @@ private fun BottomNavItemButton(
                 text = label,
                 color = contentColor,
                 style = MaterialTheme.typography.labelSmall
-            )
-        }
-    }
-}
-
-@Preview(
-    name = "Bottom Navigation Bar - Light",
-    showBackground = true,
-    backgroundColor = 0xFFF8F8FF
-)
-@Composable
-private fun BottomNavBarLightPreview() {
-    MemoCraftAppTheme(darkTheme = false) {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(160.dp)
-                .background(MaterialTheme.colorScheme.background),
-            contentAlignment = Alignment.BottomCenter
-        ) {
-            BottomNavBar(
-                selectedItem = BottomNavItem.Ai
-            )
-        }
-    }
-}
-
-@Preview(
-    name = "Bottom Navigation Bar - Dark",
-    showBackground = true,
-    backgroundColor = 0xFF0F1226,
-    uiMode = Configuration.UI_MODE_NIGHT_YES
-)
-@Composable
-private fun BottomNavBarDarkPreview() {
-    MemoCraftAppTheme(darkTheme = true) {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(160.dp)
-                .background(MaterialTheme.colorScheme.background),
-            contentAlignment = Alignment.BottomCenter
-        ) {
-            BottomNavBar(
-                selectedItem = BottomNavItem.Ai
             )
         }
     }

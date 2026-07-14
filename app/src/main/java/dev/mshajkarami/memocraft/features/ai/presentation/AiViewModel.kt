@@ -1,8 +1,11 @@
 package dev.mshajkarami.memocraft.features.ai.presentation
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
+import dev.mshajkarami.memocraft.R
 import dev.mshajkarami.memocraft.features.ai.domain.model.AiChatResult
 import dev.mshajkarami.memocraft.features.ai.domain.repository.AiTaskRepository
 import dev.mshajkarami.memocraft.features.ai.presentation.mapper.toAiChatMessageUiModel
@@ -25,7 +28,8 @@ import javax.inject.Inject
 @HiltViewModel
 class AiViewModel @Inject constructor(
     private val aiTaskRepository: AiTaskRepository,
-    private val taskRepository: TaskRepository
+    private val taskRepository: TaskRepository,
+    @ApplicationContext private val context: Context
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(AiUiState())
@@ -116,7 +120,6 @@ class AiViewModel @Inject constructor(
 
         return result.detectedTasks.map { task ->
             taskRepository.createTask(task)
-
             task.toDetectedTaskUiModel()
         }
     }
@@ -124,7 +127,7 @@ class AiViewModel @Inject constructor(
     private fun handleSendMessageFailure(throwable: Throwable) {
         val fallbackMessage = throwable.message
             ?.takeIf { message -> message.isNotBlank() }
-            ?: DEFAULT_ERROR_MESSAGE
+            ?: context.getString(R.string.ai_default_error_message)
 
         val errorMessage = AiChatMessageUiModel(
             id = UUID.randomUUID().toString(),
@@ -142,10 +145,5 @@ class AiViewModel @Inject constructor(
                 errorMessage = fallbackMessage
             )
         }
-    }
-
-    private companion object {
-        const val DEFAULT_ERROR_MESSAGE =
-            "مشکلی در پردازش پیام شما پیش آمد. لطفاً دوباره تلاش کنید."
     }
 }

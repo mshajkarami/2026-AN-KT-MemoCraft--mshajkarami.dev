@@ -1,3 +1,21 @@
 <resources>
     <string name="app_name">Memo Craft</string>
+    <!-- AI thinking card -->
+    <string name="ai_thinking_default_name">MemoCraft AI</string>
+    <string name="ai_thinking_title">Analyzing your request</string>
+    <string name="ai_thinking_context">MemoCraft AI is reviewing your text, extracting tasks, and preparing a response.</string>
+    <string name="ai_thinking_status">Thinking</string>
+    <string name="ai_thinking_message_received">Your message has been received</string>
+    <string name="ai_thinking_detecting_tasks">Detecting tasks and scheduling</string>
+    <string name="ai_thinking_preparing_response">Preparing the final response</string>
+    <string name="ai_welcome_message">Hi! I’m MemoCraft AI. Tell me what you need to do, and I’ll detect tasks from your text.</string>
+    <string name="ai_default_error_message">Something went wrong while processing your message. Please try again.</string>
+    <string name="ai_detected_task_no_date">No date</string>
+    <string name="ai_detected_task_view_task">View task</string>
+
+    <string name="task_priority_low">Low</string>
+    <string name="task_priority_normal">Normal</string>
+    <string name="task_priority_urgent">Urgent</string>
+
+
 </resources>
