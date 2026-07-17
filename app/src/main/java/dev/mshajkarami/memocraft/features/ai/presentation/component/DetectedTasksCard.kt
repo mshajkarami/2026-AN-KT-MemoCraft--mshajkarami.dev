@@ -16,8 +16,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.ArrowForward
 import androidx.compose.material.icons.outlined.AddTask
-import androidx.compose.material.icons.outlined.ArrowForward
 import androidx.compose.material.icons.outlined.Description
 import androidx.compose.material.icons.outlined.Schedule
 import androidx.compose.material3.Card
@@ -157,14 +157,18 @@ private fun DetectedTaskItem(
         ?.takeIf { it.isNotBlank() }
 
     val dueText = task.dueText
-        .trim()
-        .takeIf { it.isNotBlank() }
+        ?.trim()
+        ?.takeIf { it.isNotBlank() }
         ?: "No date"
 
     val actionText = task.actionText
-        .trim()
-        .takeIf { it.isNotBlank() }
+        ?.trim()
+        ?.takeIf { it.isNotBlank() }
         ?: "View task"
+
+    val priorityText = task.priority.name
+        .lowercase()
+        .replaceFirstChar { it.titlecase() }
 
     Column(
         modifier = modifier.fillMaxWidth()
@@ -223,7 +227,7 @@ private fun DetectedTaskItem(
 
             TaskMetaChip(
                 icon = null,
-                text = task.priority.label,
+                text = priorityText,
                 containerColor = task.priority.color().copy(alpha = 0.12f),
                 contentColor = task.priority.color()
             )
@@ -266,7 +270,7 @@ private fun DetectedTaskItem(
                 Spacer(modifier = Modifier.width(6.dp))
 
                 Icon(
-                    imageVector = Icons.Outlined.ArrowForward,
+                    imageVector = Icons.AutoMirrored.Outlined.ArrowForward,
                     contentDescription = null,
                     tint = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.size(16.dp)
